@@ -1,8 +1,8 @@
 # Creative Design Explorer
 
-## Phase 1: Component Database
+## Phase 1: Component Database [x]
 
-- [ ] Write components_db.json (~40 real parts, 8 categories)
+- [x] Write components_db.json (~40 real parts, 8 categories)
   - SBCs: Pi5, Pi4, Jetson Orin Nano, Rock 5B, Orange Pi 5
   - AI Accelerators: Coral USB, Coral Mini PCIe, Hailo-8, none
   - Cameras: Camera Module 3 Wide, OV9782 global shutter, IMX477 HQ
@@ -12,9 +12,9 @@
   - Batteries: 2x18650, 4x18650, LiPo 3000mAh, LiPo 5000mAh
   - Power mgmt: PowerBoost 1000C, TP4056+boost, PiJuice
 
-## Phase 2: Creative Evolver Engine
+## Phase 2: Creative Evolver Engine [x]
 
-- [ ] Write creative_evolver.py
+- [x] Write creative_evolver.py
   - Random population of 20 assemblies (1 component per category)
   - Fitness: cost budget check + size compatibility + power budget + physics
   - Sort, take top 3
@@ -22,17 +22,17 @@
   - Output creative_report.json with 3 competing designs
   - Log to evolution_log.json
 
-## Phase 3: Dashboard Integration
+## Phase 3: Dashboard Integration [x]
 
-- [ ] Add POST /api/run-creative endpoint to dashboard_server.py
-- [ ] Add GET /api/creative-report endpoint
-- [ ] Add "🎨 Explore Designs" button to sidebar
-- [ ] Add "Top 3 Designs" comparison panel to dashboard
+- [x] Add POST /api/run-creative endpoint to dashboard_server.py
+- [x] Add GET /api/creative-report endpoint
+- [x] Add "🎨 Explore Designs" button to sidebar
+- [x] Add "Top 3 Designs" comparison panel to dashboard
   - Component grid per design
   - Key metrics side-by-side (cost, mass, AI TOPS, print time, fitness)
-- [ ] Commit + push
+- [x] Commit + push
 
-## Phase 4: Verify
+## Phase 4: Verify [x]
 
-- [ ] Run creative_evolver.py manually
-- [ ] Check dashboard shows top-3 panel
+- [x] Run creative_evolver.py manually
+- [x] Check dashboard shows top-3 panel

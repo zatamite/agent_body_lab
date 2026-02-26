@@ -17,12 +17,18 @@ Physics models used:
   - Overhang angle risk (45° rule)
 """
 
+import os
+import sys
 import json
 import re
 import math
 import copy
 from datetime import datetime
 from pathlib import Path
+
+# Spatial Reasoning Engine
+from physics_engine import (Component, WheelContact, DrivetrainConfig,
+                           evaluate_design, default_v2_layout)
 
 # ── Try numpy; fall back to math-only if not installed ───────────────────────
 try:
@@ -68,19 +74,77 @@ MIN_WALL     = 3.0    # mm  (structural minimum — 3 perimeters at 0.4mm nozzle
 MIN_CLEARANCE = 3.0   # mm  (minimum gap between component and wall)
 
 # ─────────────────────────────────────────────────────────────────────────────
-# INITIAL DESIGN PARAMETERS  (sourced from skeleton_v1.scad v1.0)
+# INITIAL DESIGN PARAMETERS  (sourced from skeleton_v1.scad v1.0 or active design)
 # ─────────────────────────────────────────────────────────────────────────────
-INITIAL_PARAMS = {
-    "wall":    3.5,    # mm
-    "int_x":  95.0,   # mm — internal width
-    "int_y":  68.0,   # mm — internal depth
-    "int_z": 130.0,   # mm — internal height
-    "vent_w": 12.0,   # mm — vent slot width
-    "vent_h": 35.0,   # mm — vent slot height
-    "n_vents": 12,    # count — total cooling vents (all 4 sides)
-    "boss_od":  7.0,  # mm — standoff boss outer diameter
-    "boss_h":   5.0,  # mm — standoff boss height
-}
+
+def _get_active_payload_and_params():
+    # Base defaults
+    payload = {
+        "pi5":       43,    # Raspberry Pi 5 PCB + heatsink
+        "coral":     25,    # Coral USB Accelerator
+        "camera":     8,    # Camera Module 3
+        "nema17":   280,    # NEMA17 stepper motor
+        "batteries": 184,   # 2× Panasonic NCR18650B (92g each)
+        "pcbs_misc": 120,   # RP2040, INA219, LSM6DSOX, BME688, buck, powerboost
+        "hardware":   50,   # Standoffs, M2.5/M3 screws, USB hub, cables
+    }
+    
+    params = {
+        "wall":    3.5,    # mm
+        "int_x":  95.0,   # mm — internal width
+        "int_y":  68.0,   # mm — internal depth
+        "int_z": 130.0,   # mm — internal height
+        "vent_w": 12.0,   # mm — vent slot width
+        "vent_h": 35.0,   # mm — vent slot height
+        "n_vents": 12,    # count — total cooling vents (all 4 sides)
+        "boss_od":  7.0,  # mm — standoff boss outer diameter
+        "boss_h":   5.0,  # mm — standoff boss height
+        "has_wheels": 1,  # 1 = true, 0 = false
+        "wheel_dia": 65.0, # mm
+        "wheel_width": 26.0, # mm
+        "ground_clear": 15.0, # mm
+        "gear_ratio": 5.0,    # mm
+    }
+    
+    cre_file = ROOT / "creative_report.json"
+    if cre_file.exists():
+        try:
+            cre_report = json.loads(cre_file.read_text())
+            if cre_report and "top3" in cre_report and cre_report["top3"]:
+                best = cre_report["top3"][0]
+                # Override payload base
+                payload = {"components": best["metrics"]["total_mass_g"] - best["metrics"]["chassis_mass_g"]}
+                # Override params
+                ch = best["metrics"]["chassis"]
+                params["wall"] = ch.get("wall", 3.5)
+                params["int_x"] = ch.get("int_x", 95.0)
+                params["int_y"] = ch.get("int_y", 68.0)
+                params["int_z"] = ch.get("int_z", 130.0)
+                params["vent_w"] = ch.get("vent_w", 12.0)
+                params["vent_h"] = ch.get("vent_h", 35.0)
+                params["n_vents"] = ch.get("n_vents", 12)
+                params["ground_clear"] = ch.get("ground_clear", 15.0)
+                asm = best.get("assembly", {})
+                wheels = asm.get("wheels", {})
+                if wheels and wheels.get("id") != "none":
+                    params["has_wheels"] = 1
+                    params["wheel_dia"] = wheels.get("diameter_mm", 65.0)
+                    params["wheel_width"] = wheels.get("width_mm", 26.0)
+                else:
+                    params["has_wheels"] = 0
+                print("🧬 Initializing design_evolver from generative design winner...")
+        except Exception:
+            pass
+            
+    return payload, params
+
+PAYLOAD_G, INITIAL_PARAMS = _get_active_payload_and_params()
+TOTAL_PAYLOAD_G = sum(PAYLOAD_G.values())
+TOTAL_PAYLOAD_N = TOTAL_PAYLOAD_G * 1e-3 * GRAVITY
+
+PI5_MIN_X    = 85.0   # minimum internal width constraints
+PI5_MIN_Y    = 58.0
+NEMA17_FACE  = 42.0
 
 # Tunable parameter search space: {name: (min, max, step)}
 SEARCH_SPACE = {
@@ -91,7 +155,11 @@ SEARCH_SPACE = {
     "vent_w": (8.0,   20.0,  2.0),
     "vent_h": (25.0,  55.0,  5.0),
     "n_vents":(8,     20,    2),
+    "wheel_dia": (40.0, 90.0, 5.0),
+    "ground_clear": (10.0, 30.0, 2.0),
+    "gear_ratio": (1.0, 15.0, 1.0),
 }
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # PHYSICS FITNESS FUNCTION
@@ -121,6 +189,7 @@ def compute_fitness(p: dict) -> dict:
     stress_Pa   = TOTAL_PAYLOAD_N / A_walls_m2          # Pa
     stress_MPa  = stress_Pa * 1e-6                      # MPa
     safety_factor = PETG_YIELD_MPa / stress_MPa         # dimensionless (higher = safer)
+    ssf_score     = min(1.0, safety_factor / 20.0)      # safety factor of 20 = 1.0
 
     # ── 2. THERMAL VENT RATIO ─────────────────────────────────────────────────
     # Vent slots cut through all 4 walls. We have n_vents split across 4 sides.
@@ -131,6 +200,7 @@ def compute_fitness(p: dict) -> dict:
         out_x * out_y                                   # bottom (top is open/lid)
     )
     thermal_ratio = total_vent_area_mm2 / chassis_surface_mm2
+    thermal_score = min(1.0, thermal_ratio / 0.15)  # 15% vent-to-surface ratio = 1.0
 
     # ── 3. PETG MASS ──────────────────────────────────────────────────────────
     # Shell volume = outer box − inner cavity − vent volumes + boss volumes
@@ -142,6 +212,10 @@ def compute_fitness(p: dict) -> dict:
     shell_vol_mm3  = outer_vol_mm3 - inner_vol_mm3 - vent_vol_mm3 + boss_vol_mm3
     shell_vol_cm3  = max(0, shell_vol_mm3) / 1000.0
     mass_g         = shell_vol_cm3 * PETG_DENSITY       # grams
+    if p.get("has_wheels", 0):
+        # 2 rubber wheels + caster + motors estimate
+        mass_g += 80 * 2 + 15 + 280   # 160g wheels + 15g caster + 280g NEMA17(base)
+    mass_score = max(0.0, 1.0 - mass_g / 1500.0)  # 1.5kg = zero score
 
     # ── 4. PRINT TIME ─────────────────────────────────────────────────────────
     # Prusa XL: perimeter passes + top/bottom solid layers + sparse infill (15%)
@@ -182,22 +256,37 @@ def compute_fitness(p: dict) -> dict:
     boss_overhang_ratio = (boss_od / 2.0) / boss_h     # ≤ 1.0 = safe
     overhang_risk       = max(0.0, boss_overhang_ratio - 1.0)  # 0 = safe
 
-    # ── 9. COMPOSITE FITNESS ──────────────────────────────────────────────────
-    # Weights tuned to reflect priority: structural > thermal > mass > clearance > print > warp
-    ssf_score      = min(1.0, safety_factor / 300.0)   # 300x = perfect (physically massive margin)
-    thermal_score  = min(1.0, thermal_ratio  / 0.20)   # 20% vent = perfect
-    mass_score     = max(0.0, 1.0 - mass_g   / 600.0)  # 0g=1.0, 600g=0
-    time_score     = max(0.0, 1.0 - print_time_min / 720.0)  # 12h = 0
-    warp_score     = 1.0 - warp_risk
-    fitness = (
-        0.28 * ssf_score      +
-        0.22 * thermal_score  +
-        0.18 * mass_score     +
-        0.14 * clearance_score+
-        0.10 * time_score     +
-        0.05 * warp_score     +
-        0.03 * adhesion_score
+    # ── 9. SPATIAL REASONING SCORE (v2.0 Logic) ──────────────────────────────
+    # Initialize component layout with current params
+    layout = default_v2_layout(
+        ground_clear=p.get("ground_clear", 15.0),
+        wall=wall,
+        int_x=int_x,
+        int_y=int_y,
+        gear_ratio=p.get("gear_ratio", 5.0)
     )
+
+    spatial = evaluate_design(
+        layout["components"],
+        layout["contacts"],
+        layout["drivetrain"],
+        chassis_mass_g=mass_g
+    )
+
+    # ── 10. COMPOSITE FITNESS ──────────────────────────────────────────────────
+    # Weights re-balanced for engineering intelligence
+    # Spatial score (includes stability, mobility, packaging, CoG) accounts for 60%
+    fitness = (
+        0.60 * spatial["composite_score"] +
+        0.10 * ssf_score +
+        0.10 * thermal_score +
+        0.10 * mass_score +
+        0.10 * print_time_min / 720.0 # printability weight
+    )
+
+    # Penetration penalty: massive hit for overlapping components
+    if spatial["collisions"]["has_collisions"]:
+        fitness *= 0.1
 
     return {
         "fitness":        round(fitness, 5),
@@ -210,19 +299,17 @@ def compute_fitness(p: dict) -> dict:
         "warp_risk":      round(warp_risk, 4),
         "bed_area_mm2":   round(bed_area_mm2, 1),
         "adhesion_score": round(adhesion_score, 3),
-        "min_clearance_mm": round(min_margin, 2),
-        "clearance_score":round(clearance_score, 3),
-        "overhang_risk":  round(overhang_risk, 4),
+        "shell_vol_cm3":  round(shell_vol_cm3, 3), # Needed for simulate_print_pull
+        "min_clearance_mm": round(min_margin, 2),  # Needed for simulate_print_pull
+        "clearance_score":  round(clearance_score, 3),
         "outer_dims_mm":  [round(out_x, 1), round(out_y, 1), round(out_z, 1)],
-        "shell_vol_cm3":  round(shell_vol_cm3, 1),
+        "spatial":        spatial, # Full physics breakdown
         "sub_scores": {
+            "spatial":     round(spatial["composite_score"], 3),
             "structural":  round(ssf_score, 3),
             "thermal":     round(thermal_score, 3),
             "mass":        round(mass_score, 3),
-            "clearance":   round(clearance_score, 3),
-            "print_time":  round(time_score, 3),
-            "warp":        round(warp_score, 3),
-            "adhesion":    round(adhesion_score, 3),
+            "print":       round(print_time_min / 720.0, 3)
         },
     }
 
@@ -391,6 +478,10 @@ def write_scad_params(params: dict, scad_path: Path):
         "vent_w": f"vent_w = {params['vent_w']:.0f};",
         "vent_h": f"vent_h = {params['vent_h']:.0f};",
         "n_vents":f"n_vents = {int(params['n_vents'])};",
+        "has_wheels":   f"has_wheels     = {int(params['has_wheels'])};",
+        "wheel_dia":    f"wheel_dia      = {params['wheel_dia']:.1f};",
+        "wheel_width":  f"wheel_width    = {params['wheel_width']:.1f};",
+        "ground_clear": f"ground_clear   = {params['ground_clear']:.1f};",
     }
 
     patterns = {
@@ -401,6 +492,10 @@ def write_scad_params(params: dict, scad_path: Path):
         "vent_w":  r"vent_w\s+=\s+[\d.]+;",
         "vent_h":  r"vent_h\s+=\s+[\d.]+;",
         "n_vents": r"n_vents\s+=\s+[\d]+;",
+        "has_wheels":   r"has_wheels\s+=\s+[\d]+;",
+        "wheel_dia":    r"wheel_dia\s+=\s+[\d.]+;",
+        "wheel_width":  r"wheel_width\s+=\s+[\d.]+;",
+        "ground_clear": r"ground_clear\s+=\s+[\d.]+;",
     }
 
     for key, pattern in patterns.items():
@@ -418,14 +513,34 @@ def write_scad_params(params: dict, scad_path: Path):
 # MAIN
 # ─────────────────────────────────────────────────────────────────────────────
 def run(iterations: int = 10):
+    global INITIAL_PARAMS
+    
+    # ── Resume Logic ──────────────────────────────────────────────────────────
+    report_path = ROOT / "evolution_report.json"
+    start_iter = 0
+    if report_path.exists():
+        try:
+            old_report = json.loads(report_path.read_text())
+            p = old_report["winner"]["params"]
+            if "gear_ratio" not in p: p["gear_ratio"] = 5.0
+            if "ground_clear" not in p: p["ground_clear"] = 15.0
+            INITIAL_PARAMS.update(p)
+            start_iter = old_report.get("iterations", 10)
+            print(f"♻️  Resuming from existing winner (Iter {start_iter})...")
+        except Exception as e:
+            print(f"⚠️  Could not load existing report for resume: {e}")
+
     print("\n" + "=" * 60)
-    print("  🧬  design_evolver.py — Body v1.0 Chassis Optimizer")
+    print(f"  🧬  design_evolver.py — Body v1.0 Optimizer [Iter {start_iter+1}–{start_iter+iterations}]")
     print("=" * 60)
     print(f"\n  Payload mass:  {TOTAL_PAYLOAD_G}g ({TOTAL_PAYLOAD_N:.2f}N)")
     print(f"  PETG yield:    {PETG_YIELD_MPa} MPa")
     print(f"  PETG density:  {PETG_DENSITY} g/cm³")
     print(f"  Warp model:    α={PETG_ALPHA}/°C, ΔT={PETG_DELTA_T}°C")
     print(f"  Iterations:    {iterations}")
+
+    # For local scope visibility in reasoning_engine log call later
+    globals()["start_iter"] = start_iter
 
     # Baseline
     baseline = compute_fitness(INITIAL_PARAMS)
@@ -457,7 +572,7 @@ def run(iterations: int = 10):
     # Write report
     report = {
         "generated":   datetime.now().isoformat(),
-        "iterations":  iterations,
+        "iterations":  start_iter + iterations,
         "baseline":    {"params": INITIAL_PARAMS, "metrics": baseline},
         "winner":      {"params": best_params,    "metrics": best_metrics},
         "history":     history,
@@ -486,10 +601,10 @@ def run(iterations: int = 10):
     try:
         import reasoning_engine
         reasoning_engine.log_evolution(
-            f"v1.0-evolved-iter{iterations}",
+            f"v1.0-evolved-iter{start_iter + iterations}",
             {
                 "intent": (
-                    f"Chassis optimized over {iterations} iterations. "
+                    f"Chassis further optimized from Iter {start_iter} to {start_iter + iterations}. "
                     f"Fitness improved {delta:+.4f} to {best_metrics['fitness']:.4f}. "
                     f"Mass: {best_metrics['mass_g']:.0f}g, "
                     f"Safety: {best_metrics['safety_factor']:.0f}x, "

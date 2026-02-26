@@ -34,6 +34,10 @@ import argparse
 from datetime import datetime
 from pathlib import Path
 
+# Spatial Reasoning Engine
+from physics_engine import (Component, WheelContact, DrivetrainConfig,
+                           evaluate_design, check_collisions)
+
 ROOT = Path(__file__).parent
 DB_PATH      = ROOT / "components_db.json"
 REPORT_PATH  = ROOT / "creative_report.json"
@@ -76,7 +80,7 @@ def sample_assembly(db: dict, rng: random.Random) -> dict:
     """Pick one component from each category at random."""
     asm = {}
     for cat in ["sbc", "accelerator", "camera", "microphone",
-                "motor", "motor_driver", "sensor_hub", "battery", "power_mgmt"]:
+                "motor", "motor_driver", "sensor_hub", "battery", "power_mgmt", "wheels"]:
         pool = db.get(cat, [])
         if pool:
             asm[cat] = rng.choice(pool)
@@ -129,7 +133,7 @@ def chassis_from_assembly(asm: dict) -> dict:
     layer1  = hub_h + 12     # sensor layer
     layer2  = sbc_h + accel_h + 8   # compute layer
     layer3  = batt_h + pwr_h + 8    # power layer
-    int_z   = layer1 + layer2 + layer3 + cam_h
+    int_z   = layer1 + layer2 + layer3 + cam_h + 20 # 20mm extra for internal wiring/clearance
 
     # Outer dims
     wall   = BASE_WALL
@@ -157,12 +161,15 @@ def evaluate_assembly(asm: dict, budget: float = 400.0) -> dict:
     Returns a metrics dict with composite fitness (0–1).
     """
     ch = chassis_from_assembly(asm)
+    sbc = asm.get("sbc", {})
+    motor = asm.get("motor", {})
+    batt = asm.get("battery", {})
 
     # ── Cost ────────────────────────────────────────────────────────────────
     cats = ["sbc","accelerator","camera","microphone","motor",
-            "motor_driver","sensor_hub","battery","power_mgmt"]
-    bom_cost = sum(asm.get(c, {}).get("cost", 0) for c in cats)
-    bom_cost += sum(s.get("cost", 0) for s in FIXED_SENSORS.values())
+            "motor_driver","sensor_hub","battery","power_mgmt", "wheels"]
+    bom_cost = float(sum(asm.get(c, {}).get("cost", 0) for c in cats))
+    bom_cost += float(sum(s.get("cost", 0) for s in FIXED_SENSORS.values()))
     cost_score = max(0.0, 1.0 - bom_cost / budget)       # 1.0 if free, 0 if at budget
 
     # ── AI Performance (TOPS) ────────────────────────────────────────────────
@@ -183,8 +190,8 @@ def evaluate_assembly(asm: dict, budget: float = 400.0) -> dict:
     vent_vol_mm3  = n_v * vw * vh * wall
     chassis_mass_g = max(0, (outer_vol_mm3 - inner_vol_mm3 - vent_vol_mm3) / 1000.0 * PETG_DENSITY)
 
-    component_mass_g = sum(asm.get(c, {}).get("mass_g", 0) for c in cats)
-    component_mass_g += sum(s.get("mass_g", 0) for s in FIXED_SENSORS.values())
+    component_mass_g = float(sum(asm.get(c, {}).get("mass_g", 0) for c in cats))
+    component_mass_g += float(sum(s.get("mass_g", 0) for s in FIXED_SENSORS.values()))
     total_mass_g = chassis_mass_g + component_mass_g
     mass_score = max(0.0, 1.0 - total_mass_g / 1200.0)   # 1200g = 0 score
 
@@ -229,42 +236,80 @@ def evaluate_assembly(asm: dict, budget: float = 400.0) -> dict:
     path_per_layer       = (2*(out_x+out_y)) * perimeters_per_layer + 0.10*int_x*int_y
     print_time_min       = (n_layers * path_per_layer / PRINT_SPEED_MM_S) / 60.0
 
-    # ── COMPOSITE FITNESS ─────────────────────────────────────────────────────
-    # Weights: structural strength, runtime, AI, cost, mass, thermal, printability
-    fitness = (
-        0.20 * ssf_score       +
-        0.20 * runtime_score   +
-        0.18 * tops_score      +
-        0.15 * cost_score      +
-        0.12 * mass_score      +
-        0.10 * thermal_score   +
-        0.05 * warp_score      -
-        0.50 * (0 if fits_printer else 1)   # hard penalty for not fitting printer
+    # ── 9. SPATIAL REASONING (v2.0 Logic) ──────────────────────────────────
+    # Map assembly to physics components
+    z_base = ch.get("ground_clear", 15.0) + ch["wall"]
+
+    # Layer 0: Battery
+    p_batt = Component("Battery", batt.get("mass_g", 184), 0, 0, z_base + 34, 40, 20, 65)
+
+    # Layer 1: Motor
+    p_motor = Component("Motor", motor.get("mass_g", 280), 0, 0, z_base + 91, 42, 42, 42)
+
+    # Layer 2: SBC + Accel
+    p_sbc = Component("SBC", sbc.get("mass_g", 43), 0, 0, z_base + 121, 85, 58, 17)
+
+    # Contacts
+    wheel_dia = asm.get("wheels", {}).get("diameter_mm", 65)
+    wheel_r = wheel_dia / 2.0
+    contacts = [
+        WheelContact("Wheel R",  65, 0, wheel_r),
+        WheelContact("Wheel L", -65, 0, wheel_r),
+        WheelContact("Caster",    0, 25, 10),
+    ]
+
+    # Drivetrain
+    drivetrain = DrivetrainConfig(
+        motor_torque_nm=motor.get("torque_nm", 0.40),
+        gear_ratio=5.0, # Default for exploration
+        wheel_radius_mm=wheel_r
     )
+
+    spatial = evaluate_design(
+        [p_batt, p_motor, p_sbc],
+        contacts,
+        drivetrain,
+        chassis_mass_g=chassis_mass_g
+    )
+
+    # ── COMPOSITE FITNESS ─────────────────────────────────────────────────────
+    # Weights: Spatial (Stability/Mobility/Packaging) is now the primary driver
+    fitness = (
+        0.50 * spatial["composite_score"] +
+        0.15 * runtime_score +
+        0.15 * tops_score +
+        0.10 * cost_score +
+        0.10 * mass_score
+    )
+
+    # Collision penalty
+    if spatial["collisions"]["has_collisions"]:
+        fitness *= 0.1
+
     fitness = max(0.0, min(1.0, fitness))
 
     return {
-        "fitness":         round(fitness, 5),
-        "bom_cost":        round(bom_cost, 2),
-        "total_mass_g":    round(total_mass_g, 1),
-        "chassis_mass_g":  round(chassis_mass_g, 1),
-        "total_tops":      total_tops,
-        "runtime_h":       round(runtime_h, 2),
-        "idle_w":          round(idle_w, 2),
-        "safety_factor":   round(safety_factor, 0),
-        "thermal_ratio":   round(thermal_ratio, 4),
-        "warp_mm":         round(warp_mm, 3),
-        "fits_printer":    fits_printer,
-        "print_time_min":  round(print_time_min, 1),
+        "fitness":         float(round(float(fitness), 5)),
+        "bom_cost":        float(round(float(bom_cost), 2)),
+        "total_mass_g":    float(round(float(total_mass_g), 1)),
+        "chassis_mass_g":  float(round(float(chassis_mass_g), 1)),
+        "total_tops":      int(total_tops),
+        "runtime_h":       float(round(float(runtime_h), 2)),
+        "idle_w":          float(round(float(idle_w), 2)),
+        "safety_factor":   float(round(float(safety_factor), 0)),
+        "thermal_ratio":   float(round(float(thermal_ratio), 4)),
+        "warp_mm":         float(round(float(warp_mm), 3)),
+        "fits_printer":    bool(fits_printer),
+        "print_time_min":  float(round(float(print_time_min), 1)),
         "chassis":         ch,
         "sub_scores": {
-            "structural":  round(ssf_score,       3),
-            "runtime":     round(runtime_score,   3),
-            "ai_tops":     round(tops_score,       3),
-            "cost":        round(cost_score,       3),
-            "mass":        round(mass_score,       3),
-            "thermal":     round(thermal_score,    3),
-            "warp":        round(warp_score,       3),
+            "structural":  float(round(ssf_score,       3)),
+            "runtime":     float(round(runtime_score,   3)),
+            "ai_tops":     float(round(tops_score,       3)),
+            "cost":        float(round(cost_score,       3)),
+            "mass":        float(round(mass_score,       3)),
+            "thermal":     float(round(thermal_score,    3)),
+            "warp":        float(round(warp_score,       3)),
         }
     }
 
@@ -317,7 +362,7 @@ def run(population: int = 40, budget: float = 400.0, seed: int = None):
               f"  {m['total_mass_g']:>6.0f}g  {c['name'][:50]}")
 
     # ── Select top 3 distinct designs ─────────────────────────────────────
-    top3 = candidates[:3]
+    top3 = list(candidates[:3])
 
     print(f"\n\n  ── Top 3 Designs ───────────────────────────────────────")
     for i, c in enumerate(top3):

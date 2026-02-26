@@ -17,30 +17,95 @@
 // =============================================================================
 
 // ── Agentic Parameters ────────────────────────────────────────────────────────
-wall           = 3.00;   // mm — PETG wall thickness (≥3 perimeters at 0.4mm nozzle)
+wall           = 5.50;   // mm — PETG wall thickness (≥3 perimeters at 0.4mm nozzle)
 bolt_dia       = 3.4;   // mm — M3 clearance (3.4mm)
 m25_dia        = 2.7;   // mm — M2.5 clearance
 m2_dia         = 2.2;   // mm — M2 clearance
 boss_od        = 7.0;   // mm — outer diameter of all standoff bosses
 boss_h_m25     = 5.0;   // mm — boss raise height for M2.5 standoffs
 boss_h_m2      = 4.0;   // mm — boss height for M2 standoffs
-tpu_wall           = 3.00;   // mm — TPU skin thickness
+tpu_wall           = 5.50;   // mm — TPU skin thickness
 
-// ── Internal cavity (fits stacked component layers) ───────────────────────────
-int_x     = 95;    // mm — internal width  (Pi 5 = 85mm + clearance)
-int_y     = 68;    // mm — internal depth  (Pi 5 = 58mm + clearance)
-int_z     = 118;   // mm — internal height (full layer stack)
+// ── Mobility Parameters ─────────────────────────────────────────────────────
+has_wheels     = 1;      // Boolean: 1 = rolling, 0 = stationary
+wheel_dia      = 65.0;   // mm
+wheel_width    = 26.0;   // mm
+ground_clear   = 15.0;   // mm — distance from bottom of chassis to floor
 
-// Outer envelope
-out_x     = int_x + wall * 2;   // = 102mm
-out_y     = int_y + wall * 2;   // = 75mm
-out_z     = int_z + wall;       // = 133.5mm (open top for lid)
+// ── Layer Stack Heights (Z-offsets from bottom wall) ────────────────────────
+Z_HUB     = wall + 0;        // Sensor hub layer
+Z_PI      = Z_HUB + 40;     // Pi 5 layer
+Z_BATT    = Z_PI + 30;      // Battery layer
 
-// ── Layer Z offsets (bottom of each bay) ──────────────────────────────────────
-Z_NEMA    = 0;    // NEMA17 mount face (bottom)
-Z_HUB     = 40;   // Sensor hub + TMC2209 bay
-Z_PI      = 80;   // Raspberry Pi 5 + Coral bay
-Z_BATT    = 110;  // Battery tray + PowerBoost bay
+// Derived dims
+out_x     = int_x + wall * 2;
+out_y     = int_y + wall * 2;
+out_z     = int_z + wall;
+
+// ── Rendering logic ──────────────────────────────────────────────────────────
+$fn = 32;
+
+module wheel(side="left") {
+    color("black")
+    rotate([0, 90, 0])
+    cylinder(d=wheel_dia, h=wheel_width, center=true);
+}
+
+module caster() {
+    color("silver")
+    sphere(d=ground_clear + 5);
+}
+
+module rounded_box_2d(w, d, r) {
+    offset(r=r) square([w-2*r, d-2*r], center=true);
+}
+
+module chassis_shell() {
+    difference() {
+        // Main extruded shell with filleted corners
+        linear_extrude(height=out_z)
+            rounded_box_2d(out_x, out_y, 4);
+        
+        // Inner cavity (hollowed out)
+        translate([0, 0, wall])
+            linear_extrude(height=int_z + 1)
+                rounded_box_2d(int_x, int_y, 2);
+        
+        // Cable management channels (rear corners)
+        for (x=[-1, 1], y=[-1, 1]) {
+            translate([x * (int_x/2 - 5), y * (int_y/2 - 5), wall])
+                cylinder(d=8, h=int_z, $fn=16);
+        }
+    }
+}
+
+module boss_pattern_pi5() {
+    for (x = [0, 58], y = [0, 49]) {
+        translate([x, y, 0])
+        difference() {
+            cylinder(d=boss_od, h=boss_h_m25);
+            translate([0, 0, -1])
+            cylinder(d=m25_dia, h=boss_h_m25 + 2);
+        }
+    }
+}
+
+// Final Assembly
+translate([0, 0, ground_clear + (out_z/2)]) {
+    chassis_base();
+    
+    if (has_wheels) {
+        // Drive wheels
+        translate([out_x/2 + wheel_width/2 + 2, 0, -out_z/2 + 10])
+        wheel("right");
+        translate([-out_x/2 - wheel_width/2 - 2, 0, -out_z/2 + 10])
+        wheel("left");
+        
+        // Caster support
+        translate([0, out_y/2 - 15, -out_z/2 - ground_clear/2])
+        caster();
+    }
+}
 
 // =============================================================================
 // MODULE: Boss — a standoff mounting post with through-hole
@@ -196,37 +261,31 @@ module camera_aperture() {
 // =============================================================================
 module mechanical_core() {
     difference() {
-        union() {
-            // ── Outer chassis shell ──────────────────────────────────
-            translate([-out_x/2, -out_y/2, 0])
-                cube([out_x, out_y, out_z]);
-        }
+        chassis_shell();
         
-        // ── Interior cavity ──────────────────────────────────────────
-        translate([-int_x/2, -int_y/2, wall])
-            cube([int_x, int_y, int_z + 1]);
-        
-        // ── Cooling vents ────────────────────────────────────────────
+        // ── Cooling vents (using dynamic loop) ──────────────────────────
         cooling_vents();
         
         // ── Camera aperture ──────────────────────────────────────────
         camera_aperture();
+
+        // ── Axle holes ───────────────────────────────────────────────
+        if (has_wheels) {
+            translate([0, 0, 10])
+            rotate([0, 90, 0])
+            cylinder(d=8, h=out_x + 10, center=true);
+        }
     }
     
-    // ── NEMA17 bottom mount plate (separate, attaches at base) ───────
-    translate([0, 0, 0]) nema17_mount();
+    // ── NEMA17 bottom mount plate ─────────────────
+    nema17_mount();
     
-    // ── Raspberry Pi 5 standoff bosses ───────────────────────────────
-    pi5_mounts(Z_PI + wall);
-    
-    // ── Camera module bosses ─────────────────────────────────────────
+    // ── Components Stacks ──────────────────────────────────────────
+    pi5_mounts(Z_PI);
     camera_mount(Z_PI);
+    sensor_bay_mounts(Z_HUB);
     
-    // ── Sensor hub bay bosses ────────────────────────────────────────
-    sensor_bay_mounts(Z_HUB + wall);
-    
-    // ── Battery tray (integrated into upper bay) ──────────────────────
-    translate([0, 0, Z_BATT + wall])
+    translate([0, 0, Z_BATT + 34])
         battery_tray(0);
 }
 

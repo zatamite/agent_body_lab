@@ -138,7 +138,7 @@
       display: grid;
       grid-template-columns: 240px 1fr 320px;
       gap: 0;
-      height: calc(100vh - 57px);
+      min-height: calc(100vh - 57px);
     }
 
     /* ── SIDEBAR ─────────────────────────────────────────── */
@@ -244,8 +244,9 @@
     .center {
       display: flex;
       flex-direction: column;
-      gap: 0;
-      overflow-y: auto;
+      gap: 20px;
+      /* Give panels some breathing room */
+      padding: 20px;
       background: var(--bg);
     }
 
@@ -706,11 +707,11 @@
           <span class="panel-title">🧊 3D Body View — Parametric Three.js Model</span>
           <div style="display:flex;gap:8px;align-items:center">
             <button class="btn btn-ghost" style="padding:4px 10px;font-size:11px" id="explodeBtn"
-              onclick="toggleExplode()">💥 Explode Layers</button>
-            <button class="btn btn-ghost" style="padding:4px 10px;font-size:11px" onclick="resetCamera()">⟳ Reset
-              View</button>
-            <button class="btn btn-ghost" style="padding:4px 10px;font-size:11px" onclick="exportSTL()">📦 Export
-              STL</button>
+              onclick="window.explodeLayers && window.explodeLayers()">💥 Explode Layers</button>
+            <button class="btn btn-ghost" style="padding:4px 10px;font-size:11px"
+              onclick="window.resetView && window.resetView()">⟳ Reset View</button>
+            <button class="btn btn-ghost" style="padding:4px 10px;font-size:11px"
+              onclick="window.exportSTL && window.exportSTL(this)">📦 Export STL</button>
           </div>
         </div>
         <div style="position:relative">
@@ -725,6 +726,19 @@
           position:absolute;top:12px;left:14px;font-size:10px;color:var(--text-dim);
           display:flex;flex-wrap:wrap;gap:10px
         " id="threeLegend"></div>
+        </div>
+      </div>
+
+      <!-- PHYSICS REPORT PANEL -->
+      <div class="panel" id="physicsPanel">
+        <div class="panel-header">
+          <span class="panel-title">🧠 Spatial Reasoning — Physics Report</span>
+          <button class="btn btn-ghost" style="padding:4px 10px;font-size:11px" onclick="fetchPhysics()">🔄
+            Refresh</button>
+        </div>
+        <div id="physicsBody"
+          style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;padding:16px">
+          <div style="color:var(--text-dim);font-size:11px">Loading physics data...</div>
         </div>
       </div>
 
@@ -1192,16 +1206,32 @@
 
     async function runCreative() {
       const pop = 40;
-      if (!confirm(`Run generative design explorer?\n\n• Evaluates ${pop} random hardware assemblies\n• From ${pop > 1 ? pop : '?'} components across 9 categories\n• Returns top 3 competing body designs\n\nTakes ~5 seconds.`)) return;
+      if (!confirm(`Run generative design explorer?\n\n• Evaluates ${pop} random hardware assemblies\n• From components across 9 categories\n• Returns top 3 competing body designs\n\nTakes ~5 seconds.`)) return;
+
+      const btn = document.querySelector('button[onclick="runCreative()"]');
+      const originalText = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<span class="loading-spinner"></span> Brain Thinking...';
+
       const r = await fetch('/api/run-creative', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ population: pop, budget: 400 })
       });
       const j = await r.json();
-      if (!j.ok) { alert(j.message); return; }
-      alert(j.message + '\n\nDashboard will auto-refresh.');
-      setTimeout(() => { fetchCreative(); }, 6000);
+      if (!j.ok) {
+        alert(j.message);
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+        return;
+      }
+
+      // Poll for completion instead of alert? Simple timeout for now.
+      setTimeout(() => {
+        fetchCreative();
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+      }, 6000);
     }
 
     // ── CREATIVE REPORT ───────────────────────────────────────────────────────────
@@ -1322,9 +1352,95 @@
       ctx.closePath();
     }
 
+    // ── PHYSICS REPORT ────────────────────────────────────────────────────────
+    async function fetchPhysics() {
+      try {
+        const data = await fetch('/api/physics-report').then(r => r.json());
+        if (data.error) { console.warn('Physics:', data.error); return; }
+
+        const body = document.getElementById('physicsBody');
+        if (!body) return;
+
+        const cog = data.cog || {};
+        const stab = data.stability || {};
+        const torq = data.torque || {};
+        const coll = data.collisions || {};
+        const wire = data.wiring || {};
+        const scores = data.sub_scores || {};
+
+        function bar(v) {
+          const pct = Math.round(v * 100);
+          const col = pct > 70 ? '#00e676' : pct > 40 ? '#ffcc00' : '#ff4444';
+          return `<div style="background:rgba(255,255,255,.06);border-radius:3px;height:6px;margin-top:4px">
+            <div style="width:${pct}%;height:100%;background:${col};border-radius:3px"></div>
+          </div>`;
+        }
+
+        body.innerHTML = `
+          <div class="stat-card">
+            <div class="stat-label">⚖️ Center of Gravity</div>
+            <div class="stat-value" style="font-size:14px">(${cog.cog_x}, ${cog.cog_y}, ${cog.cog_z}) mm</div>
+            <div style="font-size:10px;color:var(--text-dim);margin-top:4px">
+              Height Ratio: ${cog.cog_height_ratio} · Mass: ${cog.total_mass_g}g
+            </div>
+            ${bar(scores.cog_quality || 0)}
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">🔺 Stability</div>
+            <div class="stat-value" style="font-size:14px;color:${stab.is_stable ? '#00e676' : '#ff4444'}">
+              ${stab.is_stable ? '✅ STABLE' : '❌ UNSTABLE'}
+            </div>
+            <div style="font-size:10px;color:var(--text-dim);margin-top:4px">
+              Margin: ${stab.margin_mm}mm (${stab.margin_pct}%)
+            </div>
+            ${bar(scores.stability || 0)}
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">⚙️ Drivetrain</div>
+            <div class="stat-value" style="font-size:14px;color:${torq.verdict === 'MOBILE' ? '#00e676' : '#ffcc00'}">
+              ${torq.verdict} — ${torq.gear_ratio}:1
+            </div>
+            <div style="font-size:10px;color:var(--text-dim);margin-top:4px">
+              Max Incline: ${torq.max_incline_deg}° · Top Speed: ${torq.top_speed_kmh} km/h
+            </div>
+            ${bar(scores.mobility || 0)}
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">📦 Packaging</div>
+            <div class="stat-value" style="font-size:14px;color:${!coll.has_collisions ? '#00e676' : '#ff4444'}">
+              ${coll.has_collisions ? '❌ ' + coll.clearance_violations + ' collisions' : '✅ No overlaps'}
+            </div>
+            <div style="font-size:10px;color:var(--text-dim);margin-top:4px">
+              Min gap: ${coll.min_clearance_mm}mm · Wire: ${wire.total_wire_mm}mm
+            </div>
+            ${bar(scores.packaging || 0)}
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">📐 Composite Score</div>
+            <div class="stat-value" style="font-size:22px;color:#00c8ff">${(data.composite_score * 100).toFixed(1)}%</div>
+            ${bar(data.composite_score || 0)}
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">🎯 Tip-Over Angles</div>
+            ${Object.entries(stab.tip_angles || {}).map(([d, a]) =>
+          `<div style="display:flex;justify-content:space-between;font-size:10px;padding:1px 0">
+                <span style="color:var(--text-dim)">${d}</span>
+                <span style="color:${a > 15 ? '#00e676' : a > 5 ? '#ffcc00' : '#ff4444'}">${a}°</span>
+              </div>`
+        ).join('')}
+          </div>
+        `;
+
+        // Store physics data globally for the 3D viewer
+        window._physicsData = data;
+        if (window.updatePhysicsVisuals) window.updatePhysicsVisuals(data);
+      } catch (e) { console.warn('fetchPhysics:', e); }
+    }
+
     // ── INIT ──────────────────────────────────────────────────────────────────────
     fetchAll();
     fetchCreative();                // Load previous creative report if exists
+    fetchPhysics();                 // Load physics spatial reasoning report
     setInterval(fetchAll, 15000);  // Auto-refresh every 15s
   </script>
 
@@ -1333,185 +1449,317 @@
     import * as THREE from 'three';
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-    const data = await fetch('/api/stl-params').then(r => r.json()).catch(() => null);
-    if (!data) { console.warn('stl-params failed'); return; }
+    async function init3DViewer() {
+      // ── Fetch data ─────────────────────────────────────────
+      let data;
+      try {
+        const resp = await fetch('/api/stl-params');
+        data = await resp.json();
+      } catch (err) {
+        console.error('[3D Viewer] Failed to fetch stl-params:', err);
+        return;
+      }
+      console.log('[3D Viewer] Data loaded:', Object.keys(data));
 
-    const canvas = document.getElementById('threeCanvas');
-    const W = canvas.clientWidth || 700, H = 420;
+      // ── Canvas ─────────────────────────────────────────────
+      const canvas = document.getElementById('threeCanvas');
+      if (!canvas) { console.error('[3D Viewer] No canvas#threeCanvas found'); return; }
 
-    // ── Renderer ──────────────────────────────────────────
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setSize(W, H);
-    renderer.setClearColor(0x080c14, 1);
-    renderer.shadowMap.enabled = true;
+      // Force explicit pixel dimensions (CSS % can cause 0-width on async load)
+      const W = Math.max(canvas.parentElement?.clientWidth || 800, 400);
+      const H = 420;
+      canvas.width = W * Math.min(window.devicePixelRatio, 2);
+      canvas.height = H * Math.min(window.devicePixelRatio, 2);
+      canvas.style.width = W + 'px';
+      canvas.style.height = H + 'px';
+      console.log('[3D Viewer] Canvas size:', W, 'x', H);
 
-    // ── Scene + Lights ────────────────────────────────────
-    const scene = new THREE.Scene();
-    scene.fog = new THREE.Fog(0x080c14, 800, 1600);
-    scene.add(new THREE.AmbientLight(0x334466, 1.0));
-    const sun = new THREE.DirectionalLight(0x00c8ff, 1.4);
-    sun.position.set(160, 280, 200); sun.castShadow = true;
-    scene.add(sun);
-    scene.add(Object.assign(new THREE.DirectionalLight(0x9c64ff, 0.5),
-      { position: new THREE.Vector3(-120, -80, -100) }));
+      // ── Renderer ───────────────────────────────────────────
+      const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setSize(W, H, false);
+      renderer.setClearColor(0x080c14, 1);
+      renderer.shadowMap.enabled = true;
 
-    // ── Camera ────────────────────────────────────────────
-    const { out_x, out_y, out_z } = data.chassis;
-    const camera = new THREE.PerspectiveCamera(42, W / H, 1, 3000);
-    camera.position.set(out_x * 2.0, out_z * 1.3, out_y * 2.5);
-    camera.lookAt(0, out_z / 2, 0);
+      // ── Scene + Lights ─────────────────────────────────────
+      const scene = new THREE.Scene();
+      scene.fog = new THREE.Fog(0x080c14, 800, 1600);
+      scene.add(new THREE.AmbientLight(0x667799, 1.5));
 
-    // ── Controls ──────────────────────────────────────────
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true; controls.dampingFactor = 0.08;
-    controls.target.set(0, out_z / 2, 0); controls.update();
+      const sun = new THREE.DirectionalLight(0xffffff, 1.8);
+      sun.position.set(160, 280, 200); sun.castShadow = true;
+      scene.add(sun);
 
-    // ── Grid ──────────────────────────────────────────────
-    const grid = new THREE.GridHelper(500, 25, 0x1a2a40, 0x1a2a40);
-    grid.position.y = -42; scene.add(grid);
+      const fill = new THREE.DirectionalLight(0x9c64ff, 0.6);
+      fill.position.set(-120, -80, -100);
+      scene.add(fill);
 
-    // ── Helper: solid box with glowing edge ───────────────
-    function solidBox(w, h, d, hexColor, opacity = 1) {
-      const mat = new THREE.MeshPhongMaterial({
-        color: hexColor, opacity, transparent: opacity < 1,
-        depthWrite: opacity >= 0.99, shininess: 80,
+      // ── Chassis data ───────────────────────────────────────
+      const ground_clear = (data.params && data.params.ground_clear) || 0;
+      const out_x = data.chassis.out_x || 101;
+      const out_y = data.chassis.out_y || 74;
+      const out_z = data.chassis.out_z || 121;
+      const wall = data.chassis.wall || 3;
+      const int_x = data.chassis.int_x || 95;
+      const int_y = data.chassis.int_y || 68;
+      const int_z = data.chassis.int_z || 118;
+      console.log('[3D Viewer] Chassis:', { out_x, out_y, out_z, wall, ground_clear });
+
+      // ── Camera ─────────────────────────────────────────────
+      const camY = out_z / 2 + ground_clear;
+      const camera = new THREE.PerspectiveCamera(42, W / H, 1, 3000);
+      camera.position.set(out_x * 2.2, out_z * 1.5 + ground_clear, out_y * 2.8);
+      camera.lookAt(0, camY, 0);
+
+      // ── Controls ───────────────────────────────────────────
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true; controls.dampingFactor = 0.08;
+      controls.target.set(0, camY, 0);
+      controls.update();
+
+      // ── Grid ───────────────────────────────────────────────
+      const grid = new THREE.GridHelper(500, 25, 0x1a2a40, 0x1a2a40);
+      grid.position.y = 0;
+      scene.add(grid);
+
+      // ── Helper: solid box with edge glow ───────────────────
+      function solidBox(w, h, d, hexColor, opacity = 1) {
+        const mat = new THREE.MeshStandardMaterial({
+          color: hexColor, opacity, transparent: opacity < 1,
+          depthWrite: opacity >= 0.99, roughness: 0.6, metalness: 0.1,
+        });
+        const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
+        mesh.castShadow = mesh.receiveShadow = true;
+        const edges = new THREE.LineSegments(
+          new THREE.EdgesGeometry(mesh.geometry),
+          new THREE.LineBasicMaterial({ color: hexColor, opacity: 0.7, transparent: true })
+        );
+        mesh.add(edges);
+        return mesh;
+      }
+
+      // ── Chassis shell — 5 separate PETG wall panels ────────
+      const petgMat = new THREE.MeshStandardMaterial({
+        color: 0x2a5a8a, opacity: 0.35, transparent: true,
+        side: THREE.DoubleSide, depthWrite: false, roughness: 0.4, metalness: 0.1,
       });
-      const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
-      mesh.castShadow = mesh.receiveShadow = true;
-      // Edge glow
-      const edges = new THREE.LineSegments(
-        new THREE.EdgesGeometry(mesh.geometry),
-        new THREE.LineBasicMaterial({ color: hexColor, opacity: 0.7, transparent: true })
+
+      const walls = [
+        [out_x, out_z, wall, 0, out_z / 2, int_y / 2 + wall / 2],     // front
+        [out_x, out_z, wall, 0, out_z / 2, -int_y / 2 - wall / 2],    // back
+        [wall, out_z, int_y, -int_x / 2 - wall / 2, out_z / 2, 0],    // left
+        [wall, out_z, int_y, int_x / 2 + wall / 2, out_z / 2, 0],     // right
+        [out_x, wall, out_y, 0, wall / 2, 0],                          // floor
+      ];
+
+      const chassisGroup = new THREE.Group();
+      walls.forEach(([w, h, d, x, y, z]) => {
+        const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), petgMat);
+        m.position.set(x, y, z);
+        chassisGroup.add(m);
+      });
+
+      // Bounding wireframe
+      const bwire = new THREE.LineSegments(
+        new THREE.EdgesGeometry(new THREE.BoxGeometry(out_x, out_z, out_y)),
+        new THREE.LineBasicMaterial({ color: 0x00c8ff, opacity: 0.45, transparent: true })
       );
-      mesh.add(edges);
-      return mesh;
+      bwire.position.set(0, out_z / 2, 0);
+      chassisGroup.add(bwire);
+
+      // Offset entire chassis by ground clearance
+      chassisGroup.position.y = ground_clear;
+      scene.add(chassisGroup);
+      console.log('[3D Viewer] Chassis group added, children:', chassisGroup.children.length);
+
+      // ── Vent cut-outs ──────────────────────────────────────
+      if (data.vents && data.vents.length) {
+        data.vents.forEach(v => {
+          const m = solidBox(v.w, v.h, v.d, 0x050a12, 1);
+          m.position.set(v.cx, v.cz + ground_clear, v.cy);
+          scene.add(m);
+        });
+      }
+
+      // ── Component boxes ────────────────────────────────────
+      const meshes = [];
+      const baseY = [];
+      const legItems = [];
+
+      (data.components || []).forEach(c => {
+        const col = parseInt((c.color || '#888888').replace('#', ''), 16);
+        let mesh;
+        if (c.type === 'cylinder') {
+          const geom = new THREE.CylinderGeometry(c.d / 2, c.d / 2, c.w, 32);
+          mesh = new THREE.Mesh(geom, new THREE.MeshStandardMaterial({ color: col, roughness: 0.8 }));
+          mesh.rotation.z = Math.PI / 2;
+          mesh.position.set(c.x, c.z + ground_clear, c.y);
+        } else if (c.type === 'sphere') {
+          const geom = new THREE.SphereGeometry(c.w / 2, 32, 32);
+          mesh = new THREE.Mesh(geom, new THREE.MeshStandardMaterial({ color: col, roughness: 0.4 }));
+          mesh.position.set(c.x, c.z + ground_clear, c.y);
+        } else {
+          mesh = solidBox(c.w, c.h, c.d, col, 0.88);
+          mesh.position.set(c.x, c.z + c.h / 2 + ground_clear, c.y);
+        }
+        mesh.userData = { label: c.label, color: c.color };
+        scene.add(mesh);
+        meshes.push(mesh);
+        baseY.push(mesh.position.y);
+        legItems.push({ label: c.label, color: c.color });
+      });
+      console.log('[3D Viewer] Components rendered:', meshes.length);
+
+      // ── Physics Visuals (CoG & Stability Hull) ────────────
+      const physicsGroup = new THREE.Group();
+      scene.add(physicsGroup);
+
+      window.updatePhysicsVisuals = (data) => {
+        // Clear old visuals
+        while (physicsGroup.children.length) physicsGroup.remove(physicsGroup.children[0]);
+        if (!data) return;
+
+        // 1. Center of Gravity (Glowy Sphere)
+        if (data.cog) {
+          const cogGeom = new THREE.SphereGeometry(6, 16, 16);
+          const cogMat = new THREE.MeshBasicMaterial({ color: 0xff4444, transparent: true, opacity: 0.8 });
+          const cogMesh = new THREE.Mesh(cogGeom, cogMat);
+          cogMesh.position.set(data.cog.cog_x, data.cog.cog_z + ground_clear, data.cog.cog_y);
+
+          // Outer glow
+          const glowGeom = new THREE.SphereGeometry(10, 16, 16);
+          const glowMat = new THREE.MeshBasicMaterial({ color: 0xff4444, transparent: true, opacity: 0.25 });
+          cogMesh.add(new THREE.Mesh(glowGeom, glowMat));
+
+          physicsGroup.add(cogMesh);
+        }
+
+        // 2. Stability Polygon (Support Hull)
+        if (data.stability && data.stability.support_polygon) {
+          const pts = data.stability.support_polygon.map(p => new THREE.Vector3(p[0], 0.5, p[1]));
+          pts.push(pts[0]); // close loop
+          const polyGeom = new THREE.BufferGeometry().setFromPoints(pts);
+          const polyLine = new THREE.Line(polyGeom, new THREE.LineBasicMaterial({
+            color: data.stability.is_stable ? 0x00e676 : 0xff4444,
+            linewidth: 2,
+            transparent: true,
+            opacity: 0.8
+          }));
+          physicsGroup.add(polyLine);
+        }
+      };
+
+      // Initial call if data exists
+      if (window._physicsData) window.updatePhysicsVisuals(window._physicsData);
+
+      // ── Legend ──────────────────────────────────────────────
+      const legendEl = document.getElementById('threeLegend');
+      if (legendEl) {
+        legendEl.innerHTML = legItems.map(l =>
+          `<span style="display:inline-flex;align-items:center;gap:4px;background:rgba(0,0,0,.4);padding:2px 6px;border-radius:4px">
+           <span style="display:inline-block;width:8px;height:8px;background:${l.color};border-radius:2px;flex-shrink:0"></span>
+           <span style="font-size:9px">${l.label}</span>
+         </span>`
+        ).join('');
+      }
+
+      // ── Explode animation ──────────────────────────────────
+      window.explodeLayers = () => {
+        meshes.forEach((m, i) => {
+          m.userData._targetY = baseY[i] + (i * 22);
+          m.userData._anim = true;
+        });
+        const btn = document.getElementById('explodeBtn');
+        if (btn) btn.textContent = '💥 Layer View';
+      };
+
+      window.resetView = () => {
+        controls.reset();
+        camera.position.set(out_x * 2.2, out_z * 1.5 + ground_clear, out_y * 2.8);
+        controls.target.set(0, camY, 0);
+        meshes.forEach((m, i) => {
+          m.userData._targetY = baseY[i];
+          m.userData._anim = true;
+        });
+        const btn = document.getElementById('explodeBtn');
+        if (btn) btn.textContent = '💥 Explode Layers';
+      };
+
+      window.exportSTL = async (btn) => {
+        if (!btn || btn instanceof Event) btn = document.querySelector('button[onclick*="exportSTL"]');
+        const originalText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '⌛ Exporting...';
+        try {
+          const r = await fetch('/api/export-stl', { method: 'POST' });
+          const j = await r.json();
+          if (!j.ok && j.install_url) {
+            if (confirm(j.message + "\n\nOpen OpenSCAD download page?")) {
+              window.open(j.install_url, '_blank');
+            }
+          } else {
+            alert(j.message);
+          }
+        } catch (err) {
+          alert('Export failed: ' + err);
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = originalText;
+        }
+      };
+
+      // ── Hover tooltip ──────────────────────────────────────
+      const ray = new THREE.Raycaster();
+      const mpos = new THREE.Vector2();
+      const tip = Object.assign(document.createElement('div'), {
+        style: 'position:fixed;background:#0d1420;border:1px solid #1a2a40;padding:4px 10px;border-radius:6px;font-size:11px;color:#c8d8e8;pointer-events:none;display:none;z-index:9999'
+      });
+      document.body.appendChild(tip);
+      canvas.addEventListener('mousemove', e => {
+        const rc = canvas.getBoundingClientRect();
+        mpos.set(((e.clientX - rc.left) / rc.width) * 2 - 1, -((e.clientY - rc.top) / rc.height) * 2 + 1);
+        ray.setFromCamera(mpos, camera);
+        const hit = ray.intersectObjects(meshes);
+        if (hit.length) {
+          tip.textContent = hit[0].object.userData.label;
+          tip.style.display = 'block'; tip.style.left = (e.clientX + 14) + 'px'; tip.style.top = (e.clientY - 4) + 'px';
+        } else { tip.style.display = 'none'; }
+      });
+
+      // ── Render loop ────────────────────────────────────────
+      console.log('[3D Viewer] Starting render loop');
+      (function loop() {
+        requestAnimationFrame(loop);
+        controls.update();
+        meshes.forEach(m => {
+          if (m.userData._anim) {
+            const d = m.userData._targetY - m.position.y;
+            if (Math.abs(d) < 0.4) { m.position.y = m.userData._targetY; m.userData._anim = false; }
+            else m.position.y += d * 0.12;
+          }
+        });
+        renderer.render(scene, camera);
+      })();
+
+      // ── Resize ─────────────────────────────────────────────
+      window.addEventListener('resize', () => {
+        const nw = Math.max(canvas.parentElement?.clientWidth || 400, 400);
+        canvas.style.width = nw + 'px';
+        renderer.setSize(nw, H, false);
+        camera.aspect = nw / H;
+        camera.updateProjectionMatrix();
+      });
+
+      console.log('[3D Viewer] ✅ Initialization complete');
     }
 
-    // ── Chassis shell — 5 separate PETG wall panels ───────
-    const petgMat = new THREE.MeshPhongMaterial({
-      color: 0x1a3a5a, opacity: 0.18, transparent: true,
-      side: THREE.DoubleSide, depthWrite: false, shininess: 120,
-    });
-    const wall = data.chassis.wall;
-    const int_x = data.chassis.int_x, int_y = data.chassis.int_y, int_z = data.chassis.int_z;
-    const walls = [
-      [out_x, out_z, wall, 0, out_z / 2, int_y / 2 + wall / 2],   // front
-      [out_x, out_z, wall, 0, out_z / 2, -int_y / 2 - wall / 2],   // back
-      [wall, out_z, int_y, -int_x / 2 - wall / 2, out_z / 2, 0],              // left
-      [wall, out_z, int_y, int_x / 2 + wall / 2, out_z / 2, 0],              // right
-      [out_x, wall, out_y, 0, wall / 2, 0],                   // floor
-    ];
-    const chassisGroup = new THREE.Group();
-    walls.forEach(([w, h, d, x, y, z]) => {
-      const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), petgMat);
-      m.position.set(x, y, z); chassisGroup.add(m);
-    });
-    // Bounding wireframe
-    const bwire = new THREE.LineSegments(
-      new THREE.EdgesGeometry(new THREE.BoxGeometry(out_x, out_z, out_y)),
-      new THREE.LineBasicMaterial({ color: 0x00c8ff, opacity: 0.35, transparent: true })
-    );
-    bwire.position.set(0, out_z / 2, 0); chassisGroup.add(bwire);
-    scene.add(chassisGroup);
-
-    // ── Vent cut-outs (dark slabs) ────────────────────────
-    data.vents.forEach(v => {
-      const m = solidBox(v.w, v.h, v.d, 0x050a12, 1);
-      m.position.set(v.cx, v.cz, v.cy);
-      scene.add(m);
-    });
-
-    // ── Component boxes ───────────────────────────────────
-    const meshes = [];
-    const baseY = [];
-    const legItems = [];
-
-    data.components.forEach(c => {
-      const col = parseInt(c.color.replace('#', ''), 16);
-      const mesh = solidBox(c.w, c.h, c.d, col, 0.88);
-      // SCAD: z=Z-offset from bottom, y=depth offset
-      // Three.js: Y=up, Z=depth
-      mesh.position.set(c.x, c.z + c.h / 2, c.y);
-      mesh.userData = { label: c.label, color: c.color };
-      scene.add(mesh);
-      meshes.push(mesh);
-      baseY.push(c.z + c.h / 2);
-      legItems.push({ label: c.label, color: c.color });
-    });
-
-    // Legend
-    document.getElementById('threeLegend').innerHTML = legItems.map(l =>
-      `<span style="display:inline-flex;align-items:center;gap:4px;background:rgba(0,0,0,.4);padding:2px 6px;border-radius:4px">
-         <span style="display:inline-block;width:8px;height:8px;background:${l.color};border-radius:2px;flex-shrink:0"></span>
-         <span style="font-size:9px">${l.label}</span>
-       </span>`
-    ).join('');
-
-    // ── Explode animation ─────────────────────────────────
-    let exploded = false;
-    window.toggleExplode = () => {
-      exploded = !exploded;
-      document.getElementById('explodeBtn').textContent =
-        exploded ? '🗜 Collapse' : '💥 Explode Layers';
-      meshes.forEach((m, i) => {
-        m.userData._targetY = baseY[i] + (exploded ? i * 22 : 0);
-        m.userData._anim = true;
-      });
-    };
-    window.resetCamera = () => {
-      camera.position.set(out_x * 2.0, out_z * 1.3, out_y * 2.5);
-      controls.target.set(0, out_z / 2, 0); controls.update();
-    };
-    window.exportSTL = async () => {
-      const toast = document.getElementById('stlToast');
-      toast.style.display = 'block'; toast.textContent = 'Requesting STL export…';
-      const j = await fetch('/api/export-stl', { method: 'POST' }).then(r => r.json());
-      toast.innerHTML = j.ok
-        ? j.message
-        : `${j.message} ${j.install_url
-          ? `<a href="${j.install_url}" target="_blank" style="color:#00c8ff">Download OpenSCAD</a>`
-          : ''}`;
-      setTimeout(() => { toast.style.display = 'none'; }, 10000);
-    };
-
-    // ── Hover tooltip ─────────────────────────────────────
-    const ray = new THREE.Raycaster();
-    const mpos = new THREE.Vector2();
-    const tip = Object.assign(document.createElement('div'), {
-      style: 'position:fixed;background:#0d1420;border:1px solid #1a2a40;padding:4px 10px;border-radius:6px;font-size:11px;color:#c8d8e8;pointer-events:none;display:none;z-index:9999'
-    });
-    document.body.appendChild(tip);
-    canvas.addEventListener('mousemove', e => {
-      const rc = canvas.getBoundingClientRect();
-      mpos.set(((e.clientX - rc.left) / rc.width) * 2 - 1, -((e.clientY - rc.top) / rc.height) * 2 + 1);
-      ray.setFromCamera(mpos, camera);
-      const hit = ray.intersectObjects(meshes);
-      if (hit.length) {
-        tip.textContent = hit[0].object.userData.label;
-        tip.style.display = 'block'; tip.style.left = (e.clientX + 14) + 'px'; tip.style.top = (e.clientY - 4) + 'px';
-      } else { tip.style.display = 'none'; }
-    });
-
-    // ── Render loop ───────────────────────────────────────
-    (function loop() {
-      requestAnimationFrame(loop);
-      controls.update();
-      meshes.forEach(m => {
-        if (m.userData._anim) {
-          const d = m.userData._targetY - m.position.y;
-          if (Math.abs(d) < 0.4) { m.position.y = m.userData._targetY; m.userData._anim = false; }
-          else m.position.y += d * 0.12;
-        }
-      });
-      renderer.render(scene, camera);
-    })();
-
-    // Resize
-    window.addEventListener('resize', () => {
-      const nw = canvas.clientWidth;
-      renderer.setSize(nw, H); camera.aspect = nw / H; camera.updateProjectionMatrix();
-    });
+    // Wait for DOM to be fully laid out before measuring canvas
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init3DViewer);
+    } else {
+      // DOM already parsed, but wait a tick for layout
+      setTimeout(init3DViewer, 100);
+    }
   </script>
 </body>
 

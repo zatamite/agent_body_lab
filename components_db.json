@@ -11,7 +11,8 @@
             "motor_driver",
             "sensor_hub",
             "battery",
-            "power_mgmt"
+            "power_mgmt",
+            "wheels"
         ]
     },
     "sbc": [
@@ -562,6 +563,53 @@
             "power_max_w": 15.0,
             "notes": "Supports 3S LiPo. Higher current output than PowerBoost",
             "url": "https://www.waveshare.com/ups-module-3s.htm"
+        }
+    ],
+    "wheels": [
+        {
+            "id": "rubber_65mm",
+            "name": "65mm Rubber Robot Wheel (pair)",
+            "cost": 10,
+            "dims_mm": [
+                65,
+                65,
+                26
+            ],
+            "mass_g": 80,
+            "diameter_mm": 65,
+            "width_mm": 26,
+            "notes": "Standard high-traction rubber wheels",
+            "url": "https://www.adafruit.com/product/3763"
+        },
+        {
+            "id": "omni_50mm",
+            "name": "50mm Omni-Directional Wheel (pair)",
+            "cost": 24,
+            "dims_mm": [
+                50,
+                50,
+                22
+            ],
+            "mass_g": 90,
+            "diameter_mm": 50,
+            "width_mm": 22,
+            "notes": "Allows lateral movement without turning",
+            "url": "https://www.nexusrobot.com/product/50mm-omni-wheel/"
+        },
+        {
+            "id": "caster_ball",
+            "name": "Ball Caster (front support)",
+            "cost": 4,
+            "dims_mm": [
+                25,
+                25,
+                20
+            ],
+            "mass_g": 15,
+            "diameter_mm": 19,
+            "width_mm": 19,
+            "notes": "Low-friction support for 3-wheel configuration",
+            "url": "https://www.pololu.com/product/1179"
         }
     ]
 }
