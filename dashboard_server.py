@@ -102,32 +102,9 @@ def api_evolution():
     return jsonify(report)
 
 
-def _get_active_design():
-    cre_report = _load_json(ROOT / "creative_report.json")
-    if cre_report and "top3" in cre_report and cre_report["top3"]:
-        return cre_report["top3"][0]
-    return None
-
 @app.route("/api/parts")
 def api_parts():
     """Return the structured parts BOM."""
-    design = _get_active_design()
-    if design:
-        asm = design.get("assembly", {})
-        parts = []
-        total = 25 # base hardware
-        labels = {"sbc": "BRAIN", "accelerator": "CORTEX", "camera": "VISION", "microphone": "HEARING", "motor": "MOTION", "motor_driver": "MOTOR CTL", "sensor_hub": "NERVE HUB", "battery": "ENERGY", "power_mgmt": "CHARGER", "wheels": "LOCOMOTION"}
-        idx = 1
-        for k, v in labels.items():
-            comp = asm.get(k)
-            if comp and isinstance(comp, dict) and comp.get("name"):
-                d = comp.get("dims_mm", [0,0,0])
-                c = comp.get("cost", 0)
-                parts.append({"id": f"{idx:02d}", "organ": v, "part": comp["name"], "cost": c, "dims": f"{d[0]}×{d[1]}×{d[2]}mm", "mount": comp.get("mount", "custom")})
-                total += c
-                idx += 1
-        return jsonify({"parts": parts, "total_cost_usd": total})
-
     parts = [
         {"id": "01", "organ": "BRAIN",      "part": "Raspberry Pi 5 8GB",          "cost": 80,  "dims": "85×58×17mm", "mount": "M2.5 (58×49mm)"},
         {"id": "02", "organ": "CORTEX",     "part": "Google Coral USB Accelerator", "cost": 60,  "dims": "65×30×8mm",  "mount": "TPU clip"},
@@ -147,86 +124,27 @@ def api_parts():
     return jsonify({"parts": parts, "total_cost_usd": total})
 
 def _build_stl_params():
-    design = _get_active_design()
-
     # Load evolution report to get the latest optimized geometry
     evo_report = _load_json(ROOT / "evolution_report.json")
-    evo_wp = evo_report.get("winner", {}).get("params", {}) if evo_report else None
-
-    if design:
-        # Use creative design for layout and components
-        ch = design["metrics"].get("chassis", {})
-        
-        # Override with evolved geometry if available
-        if evo_wp:
-            for k, v in evo_wp.items():
-                ch[k] = v
-                
-        wall = ch.get("wall", 3.0)
-        int_x = ch.get("int_x", 95)
-        int_y = ch.get("int_y", 68)
-        int_z = ch.get("int_z", 130)
-        out_x = ch.get("out_x", int_x + 2*wall)
-        out_y = ch.get("out_y", int_y + 2*wall)
-        out_z = ch.get("out_z", int_z + wall)
-        vent_w = ch.get("vent_w", 16)
-        vent_h = ch.get("vent_h", 40)
-        n_vents = int(ch.get("n_vents", 12))
-        gc = ch.get("ground_clear", 15)
-        
-        components = []
-        asm = design.get("assembly", {})
-        
-        # Layer 0: Battery
-        batt = asm.get("battery", {})
-        b_d = batt.get("dims_mm", [40,20,65])
-        components.append({"label": batt.get("name", "Battery"), "x": 0, "y": 0, "z": gc + b_d[2]/2 + 2, "w": b_d[0], "d": b_d[1], "h": b_d[2], "color": "#ffcc00"})
-        # Layer 1: Motor
-        motor = asm.get("motor", {})
-        m_d = motor.get("dims_mm", [42,42,42])
-        components.append({"label": motor.get("name", "Motor"), "x": 0, "y": 0, "z": gc + b_d[2] + m_d[2]/2 + 10, "w": m_d[0], "d": m_d[1], "h": m_d[2], "color": "#ff8c00"})
-        # Layer 2: SBC
-        sbc = asm.get("sbc", {})
-        c_d = sbc.get("dims_mm", [85,58,17])
-        components.append({"label": sbc.get("name", "SBC"), "x": 0, "y": 0, "z": gc + b_d[2] + m_d[2] + c_d[2]/2 + 15, "w": c_d[0], "d": c_d[1], "h": c_d[2], "color": "#00c8ff"})
-        
-        # Locomotion
-        wheels = asm.get("wheels", {})
-        if wheels.get("id") != "none" and wheels.get("id"):
-            w_dia = wheels.get("diameter_mm", 65)
-            w_width = wheels.get("width_mm", 26)
-            w_dist = out_x / 2 + w_width / 2 + 2
-            w_z = w_dia / 2
-            color = "#333333" if "rubber" in wheels.get("id", "") else "#aaaaaa"
-            if "caster" in wheels.get("id", ""):
-                components.append({"label": wheels.get("name", "Caster"), "x": 0, "y": out_y/2 - 15, "z": 5, "w": w_dia, "d": w_dia, "h": w_dia, "color": color, "type": "sphere"})
-            else:
-                components.append({"label": wheels.get("name", "Wheel R"), "x": w_dist, "y": 0, "z": w_z, "w": w_width, "d": w_dia, "h": w_dia, "color": color, "type": "cylinder"})
-                components.append({"label": wheels.get("name", "Wheel L"), "x": -w_dist, "y": 0, "z": w_z, "w": w_width, "d": w_dia, "h": w_dia, "color": color, "type": "cylinder"})
-                components.append({"label": "Caster", "x": 0, "y": out_y/2 - 15, "z": 5, "w": 20, "d": 20, "h": 20, "color": "#cccccc", "type": "sphere"})
-                
-        wp = ch
-    else:
-        # Fallback to evolution_report.json
-        report = _load_json(ROOT / "evolution_report.json")
-        wp = report["winner"]["params"] if report else {"wall": 3.5, "int_x": 95, "int_y": 68, "int_z": 130, "vent_w": 12, "vent_h": 35, "n_vents": 12}
-        wall = wp.get("wall", 3.5)
-        int_x = wp.get("int_x", 95); int_y = wp.get("int_y", 68); int_z = wp.get("int_z", 130)
-        vent_w = wp.get("vent_w", 12); vent_h = wp.get("vent_h", 35); n_vents = int(wp.get("n_vents", 12))
-        out_x = int_x + 2*wall; out_y = int_y + 2*wall; out_z = int_z + wall
-        gc = wp.get("ground_clear", 15)
-        z_base = gc
-        components = [
-            {"label": "18650 ×2", "x": 0, "y": 0, "z": z_base + 34, "w": 40, "d": 20, "h": 65, "color": "#ffcc00"},
-            {"label": "NEMA17", "x": 0, "y": 0, "z": z_base + 91, "w": 42, "d": 42, "h": 42, "color": "#ff8c00"},
-            {"label": "Pi 5", "x": 0, "y": 0, "z": z_base + 121, "w": 85, "d": 58, "h": 17, "color": "#00c8ff"},
-        ]
-        if wp.get("has_wheels", 1):
-            w_dia = wp.get("wheel_dia", 65); w_width = wp.get("wheel_width", 26)
-            w_dist = out_x / 2 + w_width / 2 + 2; w_z = w_dia / 2
-            components.append({"label": "Wheel R", "x": w_dist, "y": 0, "z": w_z, "w": w_width, "d": w_dia, "h": w_dia, "color": "#333333", "type": "cylinder"})
-            components.append({"label": "Wheel L", "x": -w_dist, "y": 0, "z": w_z, "w": w_width, "d": w_dia, "h": w_dia, "color": "#333333", "type": "cylinder"})
-            components.append({"label": "Caster", "x": 0, "y": out_y/2 - 15, "z": 5, "w": 20, "d": 20, "h": 20, "color": "#cccccc", "type": "sphere"})
+    wp = evo_report.get("winner", {}).get("params", {}) if evo_report else {"wall": 3.5, "int_x": 95, "int_y": 68, "int_z": 130, "vent_w": 12, "vent_h": 35, "n_vents": 12}
+    
+    wall = wp.get("wall", 3.5)
+    int_x = wp.get("int_x", 95); int_y = wp.get("int_y", 68); int_z = wp.get("int_z", 130)
+    vent_w = wp.get("vent_w", 12); vent_h = wp.get("vent_h", 35); n_vents = int(wp.get("n_vents", 12))
+    out_x = int_x + 2*wall; out_y = int_y + 2*wall; out_z = int_z + wall
+    gc = wp.get("ground_clear", 15)
+    z_base = gc
+    components = [
+        {"label": "18650 ×2", "x": 0, "y": 0, "z": z_base + 34, "w": 40, "d": 20, "h": 65, "color": "#ffcc00"},
+        {"label": "NEMA17", "x": 0, "y": 0, "z": z_base + 91, "w": 42, "d": 42, "h": 42, "color": "#ff8c00"},
+        {"label": "Pi 5", "x": 0, "y": 0, "z": z_base + 121, "w": 85, "d": 58, "h": 17, "color": "#00c8ff"},
+    ]
+    if wp.get("has_wheels", 1):
+        w_dia = wp.get("wheel_dia", 65); w_width = wp.get("wheel_width", 26)
+        w_dist = out_x / 2 + w_width / 2 + 2; w_z = w_dia / 2
+        components.append({"label": "Wheel R", "x": w_dist, "y": 0, "z": w_z, "w": w_width, "d": w_dia, "h": w_dia, "color": "#333333", "type": "cylinder"})
+        components.append({"label": "Wheel L", "x": -w_dist, "y": 0, "z": w_z, "w": w_width, "d": w_dia, "h": w_dia, "color": "#333333", "type": "cylinder"})
+        components.append({"label": "Caster", "x": 0, "y": out_y/2 - 15, "z": 5, "w": 20, "d": 20, "h": 20, "color": "#cccccc", "type": "sphere"})
 
     # Vent slot positions
     vents = []
@@ -348,54 +266,10 @@ def api_run_evolution():
     return jsonify({"ok": True, "message": "Evolution started in background."})
 
 
-_creative_running = False
-
-@app.route("/api/creative-report")
-def api_creative_report():
-    """Return creative_report.json (top-3 competing body designs)."""
-    report = _load_json(ROOT / "creative_report.json")
-    if not report:
-        return jsonify({"ok": False, "message": "No creative report yet. Click 🎨 Explore Designs."}), 404
-    return jsonify(report)
-
-
 @app.route("/api/components-db")
 def api_components_db():
-    """Return the full components database."""
-    db = _load_json(ROOT / "components_db.json")
-    return jsonify(db)
-
-
-@app.route("/api/run-creative", methods=["POST"])
-def api_run_creative():
-    """Trigger creative_evolver.py in a background thread."""
-    global _creative_running
-    if _creative_running:
-        return jsonify({"ok": False, "message": "Creative exploration already running."}), 409
-
-    import flask
-    data   = flask.request.get_json(silent=True) or {}
-    pop    = int(data.get("population", 40))
-    budget = float(data.get("budget", 400.0))
-
-    def _run():
-        global _creative_running
-        _creative_running = True
-        try:
-            subprocess.run(
-                [sys.executable, str(ROOT / "creative_evolver.py"),
-                 "--pop", str(pop), "--budget", str(budget)],
-                cwd=ROOT, capture_output=False
-            )
-        finally:
-            _creative_running = False
-
-    threading.Thread(target=_run, daemon=True).start()
-    return jsonify({
-        "ok": True,
-        "message": f"Creative exploration started ({pop} assemblies, ${budget:.0f} budget). Refresh in ~5s."
-    })
-
+    route = ROOT / "components_db.json"
+    return jsonify(_load_json(route) if route.exists() else {})
 
 if __name__ == "__main__":
     print("\n  🌐  agent_body_lab Dashboard")

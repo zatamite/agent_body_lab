@@ -27,8 +27,8 @@ from safety_monitor import run_safety_watch
 # ── Paths ─────────────────────────────────────────────────────────────────────
 ROOT          = Path(__file__).parent
 SCAD_FILE     = ROOT / "skeleton_v1.scad"
-STL_OUTPUT    = ROOT / "skeleton_v1.stl"
-BGCODE_OUTPUT = ROOT / "skeleton_v1.bgcode"
+STL_OUTPUT    = ROOT / "ai_chassis.stl"
+BGCODE_OUTPUT = ROOT / "ai_chassis.bgcode"
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -60,10 +60,11 @@ def step_slice_stl():
     if cfg.dry_run():
         return
 
-    # Adjust --printer-profile to your saved XL config name in PrusaSlicer
+    # Adjust path to the absolute location of PrusaSlicer on macOS
+    ps_path = "/Applications/Original Prusa Drivers/PrusaSlicer.app/Contents/MacOS/PrusaSlicer"
     result = subprocess.run(
         [
-            "prusa-slicer",
+            ps_path,
             "--slice",
             "--output", str(BGCODE_OUTPUT),
             str(STL_OUTPUT),
@@ -140,12 +141,10 @@ def run():
         print(e)
         sys.exit(1)
 
-    # ── Step 2: Export STL ────────────────────────────────────────
-    print("\n[2/5] Exporting STL from parametric model...")
-    try:
-        step_export_stl()
-    except Exception as e:
-        print(f"  ❌  STL export failed: {e}")
+    # ── Step 2: Export STL (Skipped in Organic Mode) ──────────────
+    print("\n[2/5] Organic Chassis Mode: Using existing ai_chassis.stl...")
+    if not STL_OUTPUT.exists():
+        print(f"  ❌  {STL_OUTPUT.name} not found! Run Phase 2 first.")
         sys.exit(1)
 
     # ── Step 3: Slice ─────────────────────────────────────────────

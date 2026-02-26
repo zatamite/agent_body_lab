@@ -1,14 +1,14 @@
 {
-  "generated": "2026-02-26T12:45:54.531442",
-  "iterations": 50,
+  "generated": "2026-02-26T14:31:26.170583",
+  "iterations": 20,
   "baseline": {
     "params": {
       "wall": 3.0,
       "int_x": 95.0,
       "int_y": 68.0,
-      "int_z": 118.0,
+      "int_z": 130.0,
       "vent_w": 20.0,
-      "vent_h": 55.0,
+      "vent_h": 35.0,
       "n_vents": 20,
       "boss_od": 7.0,
       "boss_h": 5.0,
@@ -16,1029 +16,852 @@
       "wheel_dia": 65.0,
       "wheel_width": 26.0,
       "ground_clear": 15.0,
-      "gear_ratio": 5.0
+      "gear_ratio": 5.0,
+      "pos_18650_x2_x": 0.0,
+      "pos_18650_x2_y": 20.0,
+      "pos_18650_x2_z": 0.0,
+      "pos_powerboost_x": -32.0,
+      "pos_powerboost_y": 5.0,
+      "pos_powerboost_z": 0.0,
+      "pos_nema17_x": 0.0,
+      "pos_nema17_y": 10.0,
+      "pos_nema17_z": 70.0,
+      "pos_pi_5_x": -10.0,
+      "pos_pi_5_y": 5.0,
+      "pos_pi_5_z": 100.0,
+      "pos_coral_x": 0.0,
+      "pos_coral_y": 14.0,
+      "pos_coral_z": 115.0,
+      "pos_rp2040_x": 0.0,
+      "pos_rp2040_y": -10.0,
+      "pos_rp2040_z": 130.0,
+      "pos_lsm6dsox_x": 20.0,
+      "pos_lsm6dsox_y": 18.0,
+      "pos_lsm6dsox_z": 130.0,
+      "pos_ina219_x": -35.0,
+      "pos_ina219_y": 10.0,
+      "pos_ina219_z": 130.0
     },
     "metrics": {
-      "fitness": 0.07252,
-      "safety_factor": 7424.7,
-      "stress_mpa": 0.00687,
-      "thermal_ratio": 0.4416,
-      "mass_g": 555.0,
-      "print_time_min": 453.0,
-      "warp_mm": 0.202,
-      "warp_risk": 0.202,
-      "bed_area_mm2": 7474.0,
+      "fitness": 0.0642,
+      "safety_factor": 6919.5,
+      "stress_mpa": 0.00737,
+      "thermal_ratio": 0.2267,
+      "mass_g": 625.6,
+      "print_time_min": 578.3,
+      "warp_mm": 0.191,
+      "warp_risk": 0.191,
+      "bed_area_mm2": 6494.0,
       "adhesion_score": 1.0,
-      "shell_vol_cm3": 78.768,
-      "min_clearance_mm": 5.0,
-      "clearance_score": 0.417,
+      "shell_vol_cm3": 134.352,
+      "min_clearance_mm": -12.0,
       "outer_dims_mm": [
-        101.0,
-        74.0,
-        121.0
+        95.5,
+        68.0,
+        169.0
       ],
       "spatial": {
-        "composite_score": 0.6654,
+        "composite_score": 0.6737,
         "sub_scores": {
-          "stability": 0.6,
+          "stability": 0.695,
           "mobility": 1.0,
-          "packaging": 0.271,
-          "cog_quality": 0.539,
-          "mass": 0.869
+          "packaging": 0.257,
+          "cog_quality": 0.525,
+          "mass": 0.798
         },
         "cog": {
-          "cog_x": -0.64,
-          "cog_y": 0.0,
-          "cog_z": 76.55,
-          "total_mass_g": 1131.0,
-          "cog_height_ratio": 0.461
+          "cog_x": -1.19,
+          "cog_y": 5.99,
+          "cog_z": 74.04,
+          "total_mass_g": 1201.6,
+          "cog_height_ratio": 0.475
         },
         "stability": {
           "is_stable": true,
-          "margin_mm": 0.0,
-          "margin_pct": 0.0,
+          "margin_mm": 5.99,
+          "margin_pct": 9.5,
           "support_polygon": [
             [
-              -65.5,
+              -62.75,
               0
             ],
             [
-              65.5,
+              62.75,
               0
             ],
             [
               0,
-              24.0
+              21.0
             ]
           ],
           "tip_angles": {
-            "forward": 17.2,
-            "backward": 0.0,
-            "left": 40.3,
-            "right": 40.8
+            "forward": 11.2,
+            "backward": 4.6,
+            "left": 30.5,
+            "right": 31.9
           }
         },
         "torque": {
           "available_wheel_torque_nm": 1.0,
-          "rolling_resistance_torque_nm": 0.0054,
+          "rolling_resistance_torque_nm": 0.0057,
           "max_incline_deg": 90.0,
           "top_speed_ms": 0.136,
           "top_speed_kmh": 0.49,
           "gear_ratio": 5.0,
           "incline_analysis": {
             "0\u00b0": {
-              "required_torque_nm": 0.0054,
+              "required_torque_nm": 0.0057,
               "can_climb": true,
-              "torque_margin_pct": 99.5
+              "torque_margin_pct": 99.4
             },
             "5\u00b0": {
-              "required_torque_nm": 0.0368,
+              "required_torque_nm": 0.0391,
               "can_climb": true,
-              "torque_margin_pct": 96.3
+              "torque_margin_pct": 96.1
             },
             "10\u00b0": {
-              "required_torque_nm": 0.068,
+              "required_torque_nm": 0.0723,
               "can_climb": true,
-              "torque_margin_pct": 93.2
+              "torque_margin_pct": 92.8
             },
             "15\u00b0": {
-              "required_torque_nm": 0.0987,
+              "required_torque_nm": 0.1049,
               "can_climb": true,
-              "torque_margin_pct": 90.1
+              "torque_margin_pct": 89.5
             },
             "20\u00b0": {
-              "required_torque_nm": 0.1287,
+              "required_torque_nm": 0.1368,
               "can_climb": true,
-              "torque_margin_pct": 87.1
+              "torque_margin_pct": 86.3
             },
             "30\u00b0": {
-              "required_torque_nm": 0.1857,
+              "required_torque_nm": 0.1973,
               "can_climb": true,
-              "torque_margin_pct": 81.4
+              "torque_margin_pct": 80.3
             }
           },
           "verdict": "MOBILE"
         },
         "collisions": {
           "has_collisions": true,
-          "clearance_violations": 5,
+          "clearance_violations": 3,
           "collision_pairs": [
             {
-              "a": "18650 \u00d72",
+              "a": "18650_x2",
               "b": "PowerBoost",
-              "gap_mm": -3.5,
+              "gap_mm": -6.0,
+              "overlap": true
+            },
+            {
+              "a": "NEMA17",
+              "b": "Pi 5",
+              "gap_mm": -12.0,
               "overlap": true
             },
             {
               "a": "Pi 5",
               "b": "Coral",
-              "gap_mm": 0.5,
-              "overlap": false
-            },
-            {
-              "a": "Coral",
-              "b": "LSM6DSOX",
-              "gap_mm": -1.5,
-              "overlap": true
-            },
-            {
-              "a": "Coral",
-              "b": "INA219",
-              "gap_mm": -1.5,
-              "overlap": true
-            },
-            {
-              "a": "RP2040",
-              "b": "INA219",
-              "gap_mm": -1.5,
+              "gap_mm": -2.0,
               "overlap": true
             }
           ],
-          "min_clearance_mm": -3.5
+          "min_clearance_mm": -12.0
         },
         "wiring": {
           "routes": [
             {
-              "from": "18650 \u00d72",
+              "from": "18650_x2",
               "to": "PowerBoost",
-              "distance_mm": 63.0
+              "distance_mm": 76.5
             },
             {
               "from": "PowerBoost",
-              "to": "18650 \u00d72",
-              "distance_mm": 63.0
+              "to": "18650_x2",
+              "distance_mm": 76.5
             },
             {
               "from": "PowerBoost",
               "to": "Pi 5",
-              "distance_mm": 155.0
+              "distance_mm": 127.5
+            },
+            {
+              "from": "PowerBoost",
+              "to": "INA219",
+              "distance_mm": 137.5
             },
             {
               "from": "Pi 5",
               "to": "Coral",
-              "distance_mm": 37.0
+              "distance_mm": 29.5
             },
             {
               "from": "Pi 5",
               "to": "RP2040",
-              "distance_mm": 41.0
+              "distance_mm": 50.5
             },
             {
               "from": "Coral",
               "to": "Pi 5",
-              "distance_mm": 37.0
+              "distance_mm": 29.5
             },
             {
               "from": "RP2040",
               "to": "Pi 5",
-              "distance_mm": 41.0
+              "distance_mm": 50.5
             },
             {
               "from": "RP2040",
               "to": "LSM6DSOX",
-              "distance_mm": 49.0
+              "distance_mm": 49.5
             },
             {
               "from": "RP2040",
               "to": "INA219",
-              "distance_mm": 38.0
+              "distance_mm": 56.5
             },
             {
               "from": "LSM6DSOX",
               "to": "RP2040",
-              "distance_mm": 49.0
+              "distance_mm": 49.5
             },
             {
               "from": "INA219",
               "to": "RP2040",
-              "distance_mm": 38.0
+              "distance_mm": 56.5
             },
             {
               "from": "INA219",
               "to": "PowerBoost",
-              "distance_mm": 164.0
+              "distance_mm": 137.5
             }
           ],
-          "total_wire_mm": 775.0,
-          "avg_distance_mm": 64.6,
-          "routing_score": 0.677
+          "total_wire_mm": 927.5,
+          "avg_distance_mm": 71.3,
+          "routing_score": 0.643
         }
       },
       "sub_scores": {
-        "spatial": 0.665,
+        "spatial": 0.674,
         "structural": 1.0,
         "thermal": 1.0,
-        "mass": 0.63,
-        "print": 0.629
+        "mass": 0.583,
+        "print": 0.197
       }
     }
   },
   "winner": {
     "params": {
-      "wall": 5.5,
+      "wall": 3.0,
       "int_x": 95.0,
       "int_y": 68.0,
-      "int_z": 165.0,
+      "int_z": 130.0,
       "vent_w": 20.0,
-      "vent_h": 55.0,
+      "vent_h": 50.0,
       "n_vents": 20,
       "boss_od": 7.0,
       "boss_h": 5.0,
       "has_wheels": 1,
       "wheel_dia": 65.0,
       "wheel_width": 26.0,
-      "ground_clear": 15.0,
-      "gear_ratio": 5.0
+      "ground_clear": 13.0,
+      "gear_ratio": 5.0,
+      "pos_18650_x2_x": 0.0,
+      "pos_18650_x2_y": 20.0,
+      "pos_18650_x2_z": 0.0,
+      "pos_powerboost_x": -32.0,
+      "pos_powerboost_y": 5.0,
+      "pos_powerboost_z": 0.0,
+      "pos_nema17_x": 0.0,
+      "pos_nema17_y": 12.5,
+      "pos_nema17_z": 20.0,
+      "pos_pi_5_x": -10.0,
+      "pos_pi_5_y": 5.0,
+      "pos_pi_5_z": 100.0,
+      "pos_coral_x": 0.0,
+      "pos_coral_y": 14.0,
+      "pos_coral_z": 115.0,
+      "pos_rp2040_x": 0.0,
+      "pos_rp2040_y": -10.0,
+      "pos_rp2040_z": 125.0,
+      "pos_lsm6dsox_x": 20.0,
+      "pos_lsm6dsox_y": 18.0,
+      "pos_lsm6dsox_z": 130.0,
+      "pos_ina219_x": -35.0,
+      "pos_ina219_y": 10.0,
+      "pos_ina219_z": 130.0
     },
     "metrics": {
-      "fitness": 0.07803,
-      "safety_factor": 14014.7,
-      "stress_mpa": 0.00364,
-      "thermal_ratio": 0.3079,
-      "mass_g": 764.3,
-      "print_time_min": 1075.7,
-      "warp_mm": 0.212,
-      "warp_risk": 0.212,
-      "bed_area_mm2": 8374.0,
+      "fitness": 0.06581,
+      "safety_factor": 6919.5,
+      "stress_mpa": 0.00737,
+      "thermal_ratio": 0.3327,
+      "mass_g": 596.8,
+      "print_time_min": 561.2,
+      "warp_mm": 0.191,
+      "warp_risk": 0.191,
+      "bed_area_mm2": 6494.0,
       "adhesion_score": 1.0,
-      "shell_vol_cm3": 243.561,
-      "min_clearance_mm": 5.0,
-      "clearance_score": 0.417,
+      "shell_vol_cm3": 111.627,
+      "min_clearance_mm": -23.5,
       "outer_dims_mm": [
-        106.0,
-        79.0,
-        170.5
+        95.5,
+        68.0,
+        164.0
       ],
       "spatial": {
-        "composite_score": 0.6364,
+        "composite_score": 0.6913,
         "sub_scores": {
-          "stability": 0.6,
+          "stability": 0.707,
           "mobility": 1.0,
-          "packaging": 0.271,
-          "cog_quality": 0.555,
-          "mass": 0.66
+          "packaging": 0.258,
+          "cog_quality": 0.593,
+          "mass": 0.827
         },
         "cog": {
-          "cog_x": -0.54,
-          "cog_y": 0.0,
-          "cog_z": 75.04,
-          "total_mass_g": 1340.3,
-          "cog_height_ratio": 0.445
+          "cog_x": -1.22,
+          "cog_y": 6.74,
+          "cog_z": 61.43,
+          "total_mass_g": 1172.8,
+          "cog_height_ratio": 0.407
         },
         "stability": {
           "is_stable": true,
-          "margin_mm": 0.0,
-          "margin_pct": 0.0,
+          "margin_mm": 6.74,
+          "margin_pct": 10.7,
           "support_polygon": [
             [
-              -68.0,
+              -62.75,
               0
             ],
             [
-              68.0,
+              62.75,
               0
             ],
             [
               0,
-              24.0
+              21.0
             ]
           ],
           "tip_angles": {
-            "forward": 17.6,
-            "backward": 0.0,
-            "left": 42.0,
-            "right": 42.4
+            "forward": 12.7,
+            "backward": 6.3,
+            "left": 34.0,
+            "right": 35.5
           }
         },
         "torque": {
           "available_wheel_torque_nm": 1.0,
-          "rolling_resistance_torque_nm": 0.0064,
+          "rolling_resistance_torque_nm": 0.0056,
           "max_incline_deg": 90.0,
           "top_speed_ms": 0.136,
           "top_speed_kmh": 0.49,
           "gear_ratio": 5.0,
           "incline_analysis": {
             "0\u00b0": {
-              "required_torque_nm": 0.0064,
+              "required_torque_nm": 0.0056,
               "can_climb": true,
               "torque_margin_pct": 99.4
             },
             "5\u00b0": {
-              "required_torque_nm": 0.0437,
+              "required_torque_nm": 0.0382,
               "can_climb": true,
-              "torque_margin_pct": 95.6
+              "torque_margin_pct": 96.2
             },
             "10\u00b0": {
-              "required_torque_nm": 0.0806,
+              "required_torque_nm": 0.0705,
               "can_climb": true,
-              "torque_margin_pct": 91.9
+              "torque_margin_pct": 92.9
             },
             "15\u00b0": {
-              "required_torque_nm": 0.117,
+              "required_torque_nm": 0.1024,
               "can_climb": true,
-              "torque_margin_pct": 88.3
+              "torque_margin_pct": 89.8
             },
             "20\u00b0": {
-              "required_torque_nm": 0.1526,
+              "required_torque_nm": 0.1335,
               "can_climb": true,
-              "torque_margin_pct": 84.7
+              "torque_margin_pct": 86.7
             },
             "30\u00b0": {
-              "required_torque_nm": 0.2201,
+              "required_torque_nm": 0.1926,
               "can_climb": true,
-              "torque_margin_pct": 78.0
+              "torque_margin_pct": 80.7
             }
           },
           "verdict": "MOBILE"
         },
         "collisions": {
           "has_collisions": true,
-          "clearance_violations": 5,
+          "clearance_violations": 3,
           "collision_pairs": [
             {
-              "a": "18650 \u00d72",
+              "a": "18650_x2",
               "b": "PowerBoost",
-              "gap_mm": -3.5,
+              "gap_mm": -6.0,
+              "overlap": true
+            },
+            {
+              "a": "18650_x2",
+              "b": "NEMA17",
+              "gap_mm": -23.5,
               "overlap": true
             },
             {
               "a": "Pi 5",
               "b": "Coral",
-              "gap_mm": 0.5,
-              "overlap": false
-            },
-            {
-              "a": "Coral",
-              "b": "LSM6DSOX",
-              "gap_mm": -1.5,
-              "overlap": true
-            },
-            {
-              "a": "Coral",
-              "b": "INA219",
-              "gap_mm": -1.5,
-              "overlap": true
-            },
-            {
-              "a": "RP2040",
-              "b": "INA219",
-              "gap_mm": -1.5,
+              "gap_mm": -2.0,
               "overlap": true
             }
           ],
-          "min_clearance_mm": -3.5
+          "min_clearance_mm": -23.5
         },
         "wiring": {
           "routes": [
             {
-              "from": "18650 \u00d72",
+              "from": "18650_x2",
               "to": "PowerBoost",
-              "distance_mm": 63.0
+              "distance_mm": 76.5
             },
             {
               "from": "PowerBoost",
-              "to": "18650 \u00d72",
-              "distance_mm": 63.0
+              "to": "18650_x2",
+              "distance_mm": 76.5
             },
             {
               "from": "PowerBoost",
               "to": "Pi 5",
-              "distance_mm": 155.0
+              "distance_mm": 127.5
+            },
+            {
+              "from": "PowerBoost",
+              "to": "INA219",
+              "distance_mm": 137.5
             },
             {
               "from": "Pi 5",
               "to": "Coral",
-              "distance_mm": 37.0
+              "distance_mm": 29.5
             },
             {
               "from": "Pi 5",
               "to": "RP2040",
-              "distance_mm": 41.0
+              "distance_mm": 45.5
             },
             {
               "from": "Coral",
               "to": "Pi 5",
-              "distance_mm": 37.0
+              "distance_mm": 29.5
             },
             {
               "from": "RP2040",
               "to": "Pi 5",
-              "distance_mm": 41.0
+              "distance_mm": 45.5
             },
             {
               "from": "RP2040",
               "to": "LSM6DSOX",
-              "distance_mm": 49.0
+              "distance_mm": 51.5
             },
             {
               "from": "RP2040",
               "to": "INA219",
-              "distance_mm": 38.0
+              "distance_mm": 58.5
             },
             {
               "from": "LSM6DSOX",
               "to": "RP2040",
-              "distance_mm": 49.0
+              "distance_mm": 51.5
             },
             {
               "from": "INA219",
               "to": "RP2040",
-              "distance_mm": 38.0
+              "distance_mm": 58.5
             },
             {
               "from": "INA219",
               "to": "PowerBoost",
-              "distance_mm": 164.0
+              "distance_mm": 137.5
             }
           ],
-          "total_wire_mm": 775.0,
-          "avg_distance_mm": 64.6,
-          "routing_score": 0.677
+          "total_wire_mm": 925.5,
+          "avg_distance_mm": 71.2,
+          "routing_score": 0.644
         }
       },
       "sub_scores": {
-        "spatial": 0.636,
+        "spatial": 0.691,
         "structural": 1.0,
         "thermal": 1.0,
-        "mass": 0.49,
-        "print": 1.494
+        "mass": 0.602,
+        "print": 0.221
       }
     }
   },
   "history": [
     {
       "iteration": 1,
-      "timestamp": "2026-02-26T12:45:54.441607",
+      "timestamp": "2026-02-26T14:31:25.896437",
       "params": {
-        "wall": 3.5,
+        "wall": 3.0,
         "int_x": 95.0,
         "int_y": 68.0,
-        "int_z": 118.0,
+        "int_z": 130.0,
         "vent_w": 20.0,
-        "vent_h": 55.0,
+        "vent_h": 35.0,
         "n_vents": 20,
         "boss_od": 7.0,
         "boss_h": 5.0,
         "has_wheels": 1,
         "wheel_dia": 65.0,
         "wheel_width": 26.0,
-        "ground_clear": 15.0,
-        "gear_ratio": 5.0
+        "ground_clear": 13.0,
+        "gear_ratio": 5.0,
+        "pos_18650_x2_x": 0.0,
+        "pos_18650_x2_y": 20.0,
+        "pos_18650_x2_z": 0.0,
+        "pos_powerboost_x": -32.0,
+        "pos_powerboost_y": 5.0,
+        "pos_powerboost_z": 0.0,
+        "pos_nema17_x": 0.0,
+        "pos_nema17_y": 10.0,
+        "pos_nema17_z": 70.0,
+        "pos_pi_5_x": -10.0,
+        "pos_pi_5_y": 5.0,
+        "pos_pi_5_z": 100.0,
+        "pos_coral_x": 0.0,
+        "pos_coral_y": 14.0,
+        "pos_coral_z": 115.0,
+        "pos_rp2040_x": 0.0,
+        "pos_rp2040_y": -10.0,
+        "pos_rp2040_z": 130.0,
+        "pos_lsm6dsox_x": 20.0,
+        "pos_lsm6dsox_y": 18.0,
+        "pos_lsm6dsox_z": 130.0,
+        "pos_ina219_x": -35.0,
+        "pos_ina219_y": 10.0,
+        "pos_ina219_z": 130.0
       },
       "metrics": {
-        "fitness": 0.0731,
-        "safety_factor": 8713.4,
-        "stress_mpa": 0.00585,
-        "thermal_ratio": 0.4343,
-        "mass_g": 573.0,
-        "print_time_min": 514.7,
-        "warp_mm": 0.204,
-        "warp_risk": 0.204,
-        "bed_area_mm2": 7650.0,
+        "fitness": 0.06439,
+        "safety_factor": 6919.5,
+        "stress_mpa": 0.00737,
+        "thermal_ratio": 0.2291,
+        "mass_g": 623.2,
+        "print_time_min": 571.4,
+        "warp_mm": 0.191,
+        "warp_risk": 0.191,
+        "bed_area_mm2": 6494.0,
         "adhesion_score": 1.0,
-        "shell_vol_cm3": 92.889,
-        "min_clearance_mm": 5.0,
-        "clearance_score": 0.417,
+        "shell_vol_cm3": 132.462,
+        "min_clearance_mm": -12.0,
         "outer_dims_mm": [
-          102.0,
-          75.0,
-          121.5
+          95.5,
+          68.0,
+          167.0
         ],
         "spatial": {
-          "composite_score": 0.6628,
+          "composite_score": 0.6741,
           "sub_scores": {
-            "stability": 0.6,
+            "stability": 0.695,
             "mobility": 1.0,
-            "packaging": 0.271,
-            "cog_quality": 0.54,
-            "mass": 0.851
+            "packaging": 0.257,
+            "cog_quality": 0.525,
+            "mass": 0.801
           },
           "cog": {
-            "cog_x": -0.63,
-            "cog_y": 0.0,
-            "cog_z": 76.55,
-            "total_mass_g": 1149.0,
-            "cog_height_ratio": 0.46
+            "cog_x": -1.2,
+            "cog_y": 6.0,
+            "cog_z": 73.1,
+            "total_mass_g": 1199.2,
+            "cog_height_ratio": 0.475
           },
           "stability": {
             "is_stable": true,
-            "margin_mm": 0.0,
-            "margin_pct": 0.0,
+            "margin_mm": 6.0,
+            "margin_pct": 9.5,
             "support_polygon": [
               [
-                -66.0,
+                -62.75,
                 0
               ],
               [
-                66.0,
+                62.75,
                 0
               ],
               [
                 0,
-                24.0
+                21.0
               ]
             ],
             "tip_angles": {
-              "forward": 17.3,
-              "backward": 0.0,
-              "left": 40.5,
-              "right": 41.0
+              "forward": 11.3,
+              "backward": 4.7,
+              "left": 30.8,
+              "right": 32.2
             }
           },
           "torque": {
             "available_wheel_torque_nm": 1.0,
-            "rolling_resistance_torque_nm": 0.0055,
+            "rolling_resistance_torque_nm": 0.0057,
             "max_incline_deg": 90.0,
             "top_speed_ms": 0.136,
             "top_speed_kmh": 0.49,
             "gear_ratio": 5.0,
             "incline_analysis": {
               "0\u00b0": {
-                "required_torque_nm": 0.0055,
+                "required_torque_nm": 0.0057,
                 "can_climb": true,
-                "torque_margin_pct": 99.5
+                "torque_margin_pct": 99.4
               },
               "5\u00b0": {
-                "required_torque_nm": 0.0374,
+                "required_torque_nm": 0.0391,
                 "can_climb": true,
-                "torque_margin_pct": 96.3
+                "torque_margin_pct": 96.1
               },
               "10\u00b0": {
-                "required_torque_nm": 0.0691,
+                "required_torque_nm": 0.0721,
                 "can_climb": true,
-                "torque_margin_pct": 93.1
+                "torque_margin_pct": 92.8
               },
               "15\u00b0": {
-                "required_torque_nm": 0.1003,
+                "required_torque_nm": 0.1047,
                 "can_climb": true,
-                "torque_margin_pct": 90.0
+                "torque_margin_pct": 89.5
               },
               "20\u00b0": {
-                "required_torque_nm": 0.1308,
+                "required_torque_nm": 0.1365,
                 "can_climb": true,
-                "torque_margin_pct": 86.9
+                "torque_margin_pct": 86.3
               },
               "30\u00b0": {
-                "required_torque_nm": 0.1887,
+                "required_torque_nm": 0.1969,
                 "can_climb": true,
-                "torque_margin_pct": 81.1
+                "torque_margin_pct": 80.3
               }
             },
             "verdict": "MOBILE"
           },
           "collisions": {
             "has_collisions": true,
-            "clearance_violations": 5,
+            "clearance_violations": 3,
             "collision_pairs": [
               {
-                "a": "18650 \u00d72",
+                "a": "18650_x2",
                 "b": "PowerBoost",
-                "gap_mm": -3.5,
+                "gap_mm": -6.0,
+                "overlap": true
+              },
+              {
+                "a": "NEMA17",
+                "b": "Pi 5",
+                "gap_mm": -12.0,
                 "overlap": true
               },
               {
                 "a": "Pi 5",
                 "b": "Coral",
-                "gap_mm": 0.5,
-                "overlap": false
-              },
-              {
-                "a": "Coral",
-                "b": "LSM6DSOX",
-                "gap_mm": -1.5,
-                "overlap": true
-              },
-              {
-                "a": "Coral",
-                "b": "INA219",
-                "gap_mm": -1.5,
-                "overlap": true
-              },
-              {
-                "a": "RP2040",
-                "b": "INA219",
-                "gap_mm": -1.5,
+                "gap_mm": -2.0,
                 "overlap": true
               }
             ],
-            "min_clearance_mm": -3.5
+            "min_clearance_mm": -12.0
           },
           "wiring": {
             "routes": [
               {
-                "from": "18650 \u00d72",
+                "from": "18650_x2",
                 "to": "PowerBoost",
-                "distance_mm": 63.0
+                "distance_mm": 76.5
               },
               {
                 "from": "PowerBoost",
-                "to": "18650 \u00d72",
-                "distance_mm": 63.0
+                "to": "18650_x2",
+                "distance_mm": 76.5
               },
               {
                 "from": "PowerBoost",
                 "to": "Pi 5",
-                "distance_mm": 155.0
+                "distance_mm": 127.5
+              },
+              {
+                "from": "PowerBoost",
+                "to": "INA219",
+                "distance_mm": 137.5
               },
               {
                 "from": "Pi 5",
                 "to": "Coral",
-                "distance_mm": 37.0
+                "distance_mm": 29.5
               },
               {
                 "from": "Pi 5",
                 "to": "RP2040",
-                "distance_mm": 41.0
+                "distance_mm": 50.5
               },
               {
                 "from": "Coral",
                 "to": "Pi 5",
-                "distance_mm": 37.0
+                "distance_mm": 29.5
               },
               {
                 "from": "RP2040",
                 "to": "Pi 5",
-                "distance_mm": 41.0
+                "distance_mm": 50.5
               },
               {
                 "from": "RP2040",
                 "to": "LSM6DSOX",
-                "distance_mm": 49.0
+                "distance_mm": 49.5
               },
               {
                 "from": "RP2040",
                 "to": "INA219",
-                "distance_mm": 38.0
+                "distance_mm": 56.5
               },
               {
                 "from": "LSM6DSOX",
                 "to": "RP2040",
-                "distance_mm": 49.0
+                "distance_mm": 49.5
               },
               {
                 "from": "INA219",
                 "to": "RP2040",
-                "distance_mm": 38.0
+                "distance_mm": 56.5
               },
               {
                 "from": "INA219",
                 "to": "PowerBoost",
-                "distance_mm": 164.0
+                "distance_mm": 137.5
               }
             ],
-            "total_wire_mm": 775.0,
-            "avg_distance_mm": 64.6,
-            "routing_score": 0.677
+            "total_wire_mm": 927.5,
+            "avg_distance_mm": 71.3,
+            "routing_score": 0.643
           }
         },
         "sub_scores": {
-          "spatial": 0.663,
+          "spatial": 0.674,
           "structural": 1.0,
           "thermal": 1.0,
-          "mass": 0.618,
-          "print": 0.715
+          "mass": 0.585,
+          "print": 0.206
         }
       },
       "print_sim": {
         "iteration": 1,
         "verdict": "FAIL",
-        "filament_length_m": 38.62,
+        "filament_length_m": 55.07,
         "removal_risk": "LOW",
         "recommendations": [
           "Reduce wall thickness or int_z to lower mass",
-          "Safety factor 8713.4x is excessive \u2014 reduce wall to save mass"
+          "Safety factor 6919.5x is excessive \u2014 reduce wall to save mass"
         ]
       },
       "improved": true,
-      "delta_fitness": 0.00058,
-      "changed_param": "wall",
-      "changed_by": 0.5
+      "delta_fitness": 0.00019,
+      "changed_param": "ground_clear",
+      "changed_by": -2.0
     },
     {
       "iteration": 2,
-      "timestamp": "2026-02-26T12:45:54.451559",
+      "timestamp": "2026-02-26T14:31:25.927484",
       "params": {
-        "wall": 4.0,
+        "wall": 3.0,
         "int_x": 95.0,
         "int_y": 68.0,
-        "int_z": 118.0,
+        "int_z": 130.0,
         "vent_w": 20.0,
-        "vent_h": 55.0,
+        "vent_h": 45.0,
         "n_vents": 20,
         "boss_od": 7.0,
         "boss_h": 5.0,
         "has_wheels": 1,
         "wheel_dia": 65.0,
         "wheel_width": 26.0,
-        "ground_clear": 15.0,
-        "gear_ratio": 5.0
+        "ground_clear": 13.0,
+        "gear_ratio": 5.0,
+        "pos_18650_x2_x": 0.0,
+        "pos_18650_x2_y": 20.0,
+        "pos_18650_x2_z": 0.0,
+        "pos_powerboost_x": -32.0,
+        "pos_powerboost_y": 5.0,
+        "pos_powerboost_z": 0.0,
+        "pos_nema17_x": 0.0,
+        "pos_nema17_y": 10.0,
+        "pos_nema17_z": 70.0,
+        "pos_pi_5_x": -10.0,
+        "pos_pi_5_y": 5.0,
+        "pos_pi_5_z": 100.0,
+        "pos_coral_x": 0.0,
+        "pos_coral_y": 14.0,
+        "pos_coral_z": 115.0,
+        "pos_rp2040_x": 0.0,
+        "pos_rp2040_y": -10.0,
+        "pos_rp2040_z": 130.0,
+        "pos_lsm6dsox_x": 20.0,
+        "pos_lsm6dsox_y": 18.0,
+        "pos_lsm6dsox_z": 130.0,
+        "pos_ina219_x": -35.0,
+        "pos_ina219_y": 10.0,
+        "pos_ina219_z": 130.0
       },
       "metrics": {
-        "fitness": 0.0737,
-        "safety_factor": 10016.8,
-        "stress_mpa": 0.00509,
-        "thermal_ratio": 0.4272,
-        "mass_g": 591.4,
-        "print_time_min": 578.1,
-        "warp_mm": 0.206,
-        "warp_risk": 0.206,
-        "bed_area_mm2": 7828.0,
+        "fitness": 0.06463,
+        "safety_factor": 6919.5,
+        "stress_mpa": 0.00737,
+        "thermal_ratio": 0.2946,
+        "mass_g": 608.0,
+        "print_time_min": 571.4,
+        "warp_mm": 0.191,
+        "warp_risk": 0.191,
+        "bed_area_mm2": 6494.0,
         "adhesion_score": 1.0,
-        "shell_vol_cm3": 107.43,
-        "min_clearance_mm": 5.0,
-        "clearance_score": 0.417,
+        "shell_vol_cm3": 120.462,
+        "min_clearance_mm": -12.0,
         "outer_dims_mm": [
-          103.0,
-          76.0,
-          122.0
+          95.5,
+          68.0,
+          167.0
         ],
         "spatial": {
-          "composite_score": 0.6603,
+          "composite_score": 0.6764,
           "sub_scores": {
-            "stability": 0.6,
+            "stability": 0.696,
             "mobility": 1.0,
-            "packaging": 0.271,
-            "cog_quality": 0.542,
-            "mass": 0.833
+            "packaging": 0.257,
+            "cog_quality": 0.524,
+            "mass": 0.816
           },
           "cog": {
-            "cog_x": -0.62,
-            "cog_y": 0.0,
-            "cog_z": 76.53,
-            "total_mass_g": 1167.4,
-            "cog_height_ratio": 0.458
+            "cog_x": -1.21,
+            "cog_y": 6.08,
+            "cog_z": 73.27,
+            "total_mass_g": 1184.0,
+            "cog_height_ratio": 0.476
           },
           "stability": {
             "is_stable": true,
-            "margin_mm": 0.0,
-            "margin_pct": 0.0,
+            "margin_mm": 6.08,
+            "margin_pct": 9.6,
             "support_polygon": [
               [
-                -66.5,
+                -62.75,
                 0
               ],
               [
-                66.5,
+                62.75,
                 0
               ],
               [
                 0,
-                24.0
+                21.0
               ]
             ],
             "tip_angles": {
-              "forward": 17.3,
-              "backward": 0.0,
-              "left": 40.7,
-              "right": 41.3
-            }
-          },
-          "torque": {
-            "available_wheel_torque_nm": 1.0,
-            "rolling_resistance_torque_nm": 0.0056,
-            "max_incline_deg": 90.0,
-            "top_speed_ms": 0.136,
-            "top_speed_kmh": 0.49,
-            "gear_ratio": 5.0,
-            "incline_analysis": {
-              "0\u00b0": {
-                "required_torque_nm": 0.0056,
-                "can_climb": true,
-                "torque_margin_pct": 99.4
-              },
-              "5\u00b0": {
-                "required_torque_nm": 0.038,
-                "can_climb": true,
-                "torque_margin_pct": 96.2
-              },
-              "10\u00b0": {
-                "required_torque_nm": 0.0702,
-                "can_climb": true,
-                "torque_margin_pct": 93.0
-              },
-              "15\u00b0": {
-                "required_torque_nm": 0.1019,
-                "can_climb": true,
-                "torque_margin_pct": 89.8
-              },
-              "20\u00b0": {
-                "required_torque_nm": 0.1329,
-                "can_climb": true,
-                "torque_margin_pct": 86.7
-              },
-              "30\u00b0": {
-                "required_torque_nm": 0.1917,
-                "can_climb": true,
-                "torque_margin_pct": 80.8
-              }
-            },
-            "verdict": "MOBILE"
-          },
-          "collisions": {
-            "has_collisions": true,
-            "clearance_violations": 5,
-            "collision_pairs": [
-              {
-                "a": "18650 \u00d72",
-                "b": "PowerBoost",
-                "gap_mm": -3.5,
-                "overlap": true
-              },
-              {
-                "a": "Pi 5",
-                "b": "Coral",
-                "gap_mm": 0.5,
-                "overlap": false
-              },
-              {
-                "a": "Coral",
-                "b": "LSM6DSOX",
-                "gap_mm": -1.5,
-                "overlap": true
-              },
-              {
-                "a": "Coral",
-                "b": "INA219",
-                "gap_mm": -1.5,
-                "overlap": true
-              },
-              {
-                "a": "RP2040",
-                "b": "INA219",
-                "gap_mm": -1.5,
-                "overlap": true
-              }
-            ],
-            "min_clearance_mm": -3.5
-          },
-          "wiring": {
-            "routes": [
-              {
-                "from": "18650 \u00d72",
-                "to": "PowerBoost",
-                "distance_mm": 63.0
-              },
-              {
-                "from": "PowerBoost",
-                "to": "18650 \u00d72",
-                "distance_mm": 63.0
-              },
-              {
-                "from": "PowerBoost",
-                "to": "Pi 5",
-                "distance_mm": 155.0
-              },
-              {
-                "from": "Pi 5",
-                "to": "Coral",
-                "distance_mm": 37.0
-              },
-              {
-                "from": "Pi 5",
-                "to": "RP2040",
-                "distance_mm": 41.0
-              },
-              {
-                "from": "Coral",
-                "to": "Pi 5",
-                "distance_mm": 37.0
-              },
-              {
-                "from": "RP2040",
-                "to": "Pi 5",
-                "distance_mm": 41.0
-              },
-              {
-                "from": "RP2040",
-                "to": "LSM6DSOX",
-                "distance_mm": 49.0
-              },
-              {
-                "from": "RP2040",
-                "to": "INA219",
-                "distance_mm": 38.0
-              },
-              {
-                "from": "LSM6DSOX",
-                "to": "RP2040",
-                "distance_mm": 49.0
-              },
-              {
-                "from": "INA219",
-                "to": "RP2040",
-                "distance_mm": 38.0
-              },
-              {
-                "from": "INA219",
-                "to": "PowerBoost",
-                "distance_mm": 164.0
-              }
-            ],
-            "total_wire_mm": 775.0,
-            "avg_distance_mm": 64.6,
-            "routing_score": 0.677
-          }
-        },
-        "sub_scores": {
-          "spatial": 0.66,
-          "structural": 1.0,
-          "thermal": 1.0,
-          "mass": 0.606,
-          "print": 0.803
-        }
-      },
-      "print_sim": {
-        "iteration": 2,
-        "verdict": "FAIL",
-        "filament_length_m": 44.66,
-        "removal_risk": "LOW",
-        "recommendations": [
-          "Reduce wall thickness or int_z to lower mass",
-          "Safety factor 10016.8x is excessive \u2014 reduce wall to save mass"
-        ]
-      },
-      "improved": true,
-      "delta_fitness": 0.0006,
-      "changed_param": "wall",
-      "changed_by": 0.5
-    },
-    {
-      "iteration": 3,
-      "timestamp": "2026-02-26T12:45:54.462100",
-      "params": {
-        "wall": 4.5,
-        "int_x": 95.0,
-        "int_y": 68.0,
-        "int_z": 118.0,
-        "vent_w": 20.0,
-        "vent_h": 55.0,
-        "n_vents": 20,
-        "boss_od": 7.0,
-        "boss_h": 5.0,
-        "has_wheels": 1,
-        "wheel_dia": 65.0,
-        "wheel_width": 26.0,
-        "ground_clear": 15.0,
-        "gear_ratio": 5.0
-      },
-      "metrics": {
-        "fitness": 0.07433,
-        "safety_factor": 11334.8,
-        "stress_mpa": 0.0045,
-        "thermal_ratio": 0.4202,
-        "mass_g": 610.4,
-        "print_time_min": 643.3,
-        "warp_mm": 0.208,
-        "warp_risk": 0.208,
-        "bed_area_mm2": 8008.0,
-        "adhesion_score": 1.0,
-        "shell_vol_cm3": 122.394,
-        "min_clearance_mm": 5.0,
-        "clearance_score": 0.417,
-        "outer_dims_mm": [
-          104.0,
-          77.0,
-          122.5
-        ],
-        "spatial": {
-          "composite_score": 0.6577,
-          "sub_scores": {
-            "stability": 0.6,
-            "mobility": 1.0,
-            "packaging": 0.271,
-            "cog_quality": 0.543,
-            "mass": 0.814
-          },
-          "cog": {
-            "cog_x": -0.61,
-            "cog_y": 0.0,
-            "cog_z": 76.51,
-            "total_mass_g": 1186.4,
-            "cog_height_ratio": 0.457
-          },
-          "stability": {
-            "is_stable": true,
-            "margin_mm": 0.0,
-            "margin_pct": 0.0,
-            "support_polygon": [
-              [
-                -67.0,
-                0
-              ],
-              [
-                67.0,
-                0
-              ],
-              [
-                0,
-                24.0
-              ]
-            ],
-            "tip_angles": {
-              "forward": 17.3,
-              "backward": 0.0,
-              "left": 40.9,
-              "right": 41.5
+              "forward": 11.2,
+              "backward": 4.7,
+              "left": 30.6,
+              "right": 32.0
             }
           },
           "torque": {
@@ -1060,1891 +883,2266 @@
                 "torque_margin_pct": 96.1
               },
               "10\u00b0": {
-                "required_torque_nm": 0.0714,
+                "required_torque_nm": 0.0712,
                 "can_climb": true,
                 "torque_margin_pct": 92.9
               },
               "15\u00b0": {
-                "required_torque_nm": 0.1036,
+                "required_torque_nm": 0.1034,
                 "can_climb": true,
-                "torque_margin_pct": 89.6
+                "torque_margin_pct": 89.7
               },
               "20\u00b0": {
-                "required_torque_nm": 0.135,
+                "required_torque_nm": 0.1348,
                 "can_climb": true,
                 "torque_margin_pct": 86.5
               },
               "30\u00b0": {
-                "required_torque_nm": 0.1948,
+                "required_torque_nm": 0.1944,
                 "can_climb": true,
-                "torque_margin_pct": 80.5
+                "torque_margin_pct": 80.6
               }
             },
             "verdict": "MOBILE"
           },
           "collisions": {
             "has_collisions": true,
-            "clearance_violations": 5,
+            "clearance_violations": 3,
             "collision_pairs": [
               {
-                "a": "18650 \u00d72",
+                "a": "18650_x2",
                 "b": "PowerBoost",
-                "gap_mm": -3.5,
+                "gap_mm": -6.0,
+                "overlap": true
+              },
+              {
+                "a": "NEMA17",
+                "b": "Pi 5",
+                "gap_mm": -12.0,
                 "overlap": true
               },
               {
                 "a": "Pi 5",
                 "b": "Coral",
-                "gap_mm": 0.5,
-                "overlap": false
-              },
-              {
-                "a": "Coral",
-                "b": "LSM6DSOX",
-                "gap_mm": -1.5,
-                "overlap": true
-              },
-              {
-                "a": "Coral",
-                "b": "INA219",
-                "gap_mm": -1.5,
-                "overlap": true
-              },
-              {
-                "a": "RP2040",
-                "b": "INA219",
-                "gap_mm": -1.5,
+                "gap_mm": -2.0,
                 "overlap": true
               }
             ],
-            "min_clearance_mm": -3.5
+            "min_clearance_mm": -12.0
           },
           "wiring": {
             "routes": [
               {
-                "from": "18650 \u00d72",
+                "from": "18650_x2",
                 "to": "PowerBoost",
-                "distance_mm": 63.0
+                "distance_mm": 76.5
               },
               {
                 "from": "PowerBoost",
-                "to": "18650 \u00d72",
-                "distance_mm": 63.0
+                "to": "18650_x2",
+                "distance_mm": 76.5
               },
               {
                 "from": "PowerBoost",
                 "to": "Pi 5",
-                "distance_mm": 155.0
+                "distance_mm": 127.5
+              },
+              {
+                "from": "PowerBoost",
+                "to": "INA219",
+                "distance_mm": 137.5
               },
               {
                 "from": "Pi 5",
                 "to": "Coral",
-                "distance_mm": 37.0
+                "distance_mm": 29.5
               },
               {
                 "from": "Pi 5",
                 "to": "RP2040",
-                "distance_mm": 41.0
+                "distance_mm": 50.5
               },
               {
                 "from": "Coral",
                 "to": "Pi 5",
-                "distance_mm": 37.0
+                "distance_mm": 29.5
               },
               {
                 "from": "RP2040",
                 "to": "Pi 5",
-                "distance_mm": 41.0
+                "distance_mm": 50.5
               },
               {
                 "from": "RP2040",
                 "to": "LSM6DSOX",
-                "distance_mm": 49.0
+                "distance_mm": 49.5
               },
               {
                 "from": "RP2040",
                 "to": "INA219",
-                "distance_mm": 38.0
+                "distance_mm": 56.5
               },
               {
                 "from": "LSM6DSOX",
                 "to": "RP2040",
-                "distance_mm": 49.0
+                "distance_mm": 49.5
               },
               {
                 "from": "INA219",
                 "to": "RP2040",
-                "distance_mm": 38.0
+                "distance_mm": 56.5
               },
               {
                 "from": "INA219",
                 "to": "PowerBoost",
-                "distance_mm": 164.0
+                "distance_mm": 137.5
               }
             ],
-            "total_wire_mm": 775.0,
-            "avg_distance_mm": 64.6,
-            "routing_score": 0.677
+            "total_wire_mm": 927.5,
+            "avg_distance_mm": 71.3,
+            "routing_score": 0.643
           }
         },
         "sub_scores": {
-          "spatial": 0.658,
+          "spatial": 0.676,
           "structural": 1.0,
           "thermal": 1.0,
-          "mass": 0.593,
-          "print": 0.893
+          "mass": 0.595,
+          "print": 0.206
+        }
+      },
+      "print_sim": {
+        "iteration": 2,
+        "verdict": "FAIL",
+        "filament_length_m": 50.08,
+        "removal_risk": "LOW",
+        "recommendations": [
+          "Reduce wall thickness or int_z to lower mass",
+          "Safety factor 6919.5x is excessive \u2014 reduce wall to save mass"
+        ]
+      },
+      "improved": true,
+      "delta_fitness": 0.00024,
+      "changed_param": "vent_h",
+      "changed_by": 10.0
+    },
+    {
+      "iteration": 3,
+      "timestamp": "2026-02-26T14:31:25.957924",
+      "params": {
+        "wall": 3.0,
+        "int_x": 95.0,
+        "int_y": 68.0,
+        "int_z": 130.0,
+        "vent_w": 20.0,
+        "vent_h": 50.0,
+        "n_vents": 20,
+        "boss_od": 7.0,
+        "boss_h": 5.0,
+        "has_wheels": 1,
+        "wheel_dia": 65.0,
+        "wheel_width": 26.0,
+        "ground_clear": 13.0,
+        "gear_ratio": 5.0,
+        "pos_18650_x2_x": 0.0,
+        "pos_18650_x2_y": 20.0,
+        "pos_18650_x2_z": 0.0,
+        "pos_powerboost_x": -32.0,
+        "pos_powerboost_y": 5.0,
+        "pos_powerboost_z": 0.0,
+        "pos_nema17_x": 0.0,
+        "pos_nema17_y": 10.0,
+        "pos_nema17_z": 70.0,
+        "pos_pi_5_x": -10.0,
+        "pos_pi_5_y": 5.0,
+        "pos_pi_5_z": 100.0,
+        "pos_coral_x": 0.0,
+        "pos_coral_y": 14.0,
+        "pos_coral_z": 115.0,
+        "pos_rp2040_x": 0.0,
+        "pos_rp2040_y": -10.0,
+        "pos_rp2040_z": 130.0,
+        "pos_lsm6dsox_x": 20.0,
+        "pos_lsm6dsox_y": 18.0,
+        "pos_lsm6dsox_z": 130.0,
+        "pos_ina219_x": -35.0,
+        "pos_ina219_y": 10.0,
+        "pos_ina219_z": 130.0
+      },
+      "metrics": {
+        "fitness": 0.06476,
+        "safety_factor": 6919.5,
+        "stress_mpa": 0.00737,
+        "thermal_ratio": 0.3273,
+        "mass_g": 600.4,
+        "print_time_min": 571.4,
+        "warp_mm": 0.191,
+        "warp_risk": 0.191,
+        "bed_area_mm2": 6494.0,
+        "adhesion_score": 1.0,
+        "shell_vol_cm3": 114.462,
+        "min_clearance_mm": -12.0,
+        "outer_dims_mm": [
+          95.5,
+          68.0,
+          167.0
+        ],
+        "spatial": {
+          "composite_score": 0.6778,
+          "sub_scores": {
+            "stability": 0.697,
+            "mobility": 1.0,
+            "packaging": 0.257,
+            "cog_quality": 0.524,
+            "mass": 0.824
+          },
+          "cog": {
+            "cog_x": -1.22,
+            "cog_y": 6.12,
+            "cog_z": 73.36,
+            "total_mass_g": 1176.4,
+            "cog_height_ratio": 0.476
+          },
+          "stability": {
+            "is_stable": true,
+            "margin_mm": 6.12,
+            "margin_pct": 9.7,
+            "support_polygon": [
+              [
+                -62.75,
+                0
+              ],
+              [
+                62.75,
+                0
+              ],
+              [
+                0,
+                21.0
+              ]
+            ],
+            "tip_angles": {
+              "forward": 11.2,
+              "backward": 4.8,
+              "left": 30.5,
+              "right": 31.9
+            }
+          },
+          "torque": {
+            "available_wheel_torque_nm": 1.0,
+            "rolling_resistance_torque_nm": 0.0056,
+            "max_incline_deg": 90.0,
+            "top_speed_ms": 0.136,
+            "top_speed_kmh": 0.49,
+            "gear_ratio": 5.0,
+            "incline_analysis": {
+              "0\u00b0": {
+                "required_torque_nm": 0.0056,
+                "can_climb": true,
+                "torque_margin_pct": 99.4
+              },
+              "5\u00b0": {
+                "required_torque_nm": 0.0383,
+                "can_climb": true,
+                "torque_margin_pct": 96.2
+              },
+              "10\u00b0": {
+                "required_torque_nm": 0.0708,
+                "can_climb": true,
+                "torque_margin_pct": 92.9
+              },
+              "15\u00b0": {
+                "required_torque_nm": 0.1027,
+                "can_climb": true,
+                "torque_margin_pct": 89.7
+              },
+              "20\u00b0": {
+                "required_torque_nm": 0.1339,
+                "can_climb": true,
+                "torque_margin_pct": 86.6
+              },
+              "30\u00b0": {
+                "required_torque_nm": 0.1932,
+                "can_climb": true,
+                "torque_margin_pct": 80.7
+              }
+            },
+            "verdict": "MOBILE"
+          },
+          "collisions": {
+            "has_collisions": true,
+            "clearance_violations": 3,
+            "collision_pairs": [
+              {
+                "a": "18650_x2",
+                "b": "PowerBoost",
+                "gap_mm": -6.0,
+                "overlap": true
+              },
+              {
+                "a": "NEMA17",
+                "b": "Pi 5",
+                "gap_mm": -12.0,
+                "overlap": true
+              },
+              {
+                "a": "Pi 5",
+                "b": "Coral",
+                "gap_mm": -2.0,
+                "overlap": true
+              }
+            ],
+            "min_clearance_mm": -12.0
+          },
+          "wiring": {
+            "routes": [
+              {
+                "from": "18650_x2",
+                "to": "PowerBoost",
+                "distance_mm": 76.5
+              },
+              {
+                "from": "PowerBoost",
+                "to": "18650_x2",
+                "distance_mm": 76.5
+              },
+              {
+                "from": "PowerBoost",
+                "to": "Pi 5",
+                "distance_mm": 127.5
+              },
+              {
+                "from": "PowerBoost",
+                "to": "INA219",
+                "distance_mm": 137.5
+              },
+              {
+                "from": "Pi 5",
+                "to": "Coral",
+                "distance_mm": 29.5
+              },
+              {
+                "from": "Pi 5",
+                "to": "RP2040",
+                "distance_mm": 50.5
+              },
+              {
+                "from": "Coral",
+                "to": "Pi 5",
+                "distance_mm": 29.5
+              },
+              {
+                "from": "RP2040",
+                "to": "Pi 5",
+                "distance_mm": 50.5
+              },
+              {
+                "from": "RP2040",
+                "to": "LSM6DSOX",
+                "distance_mm": 49.5
+              },
+              {
+                "from": "RP2040",
+                "to": "INA219",
+                "distance_mm": 56.5
+              },
+              {
+                "from": "LSM6DSOX",
+                "to": "RP2040",
+                "distance_mm": 49.5
+              },
+              {
+                "from": "INA219",
+                "to": "RP2040",
+                "distance_mm": 56.5
+              },
+              {
+                "from": "INA219",
+                "to": "PowerBoost",
+                "distance_mm": 137.5
+              }
+            ],
+            "total_wire_mm": 927.5,
+            "avg_distance_mm": 71.3,
+            "routing_score": 0.643
+          }
+        },
+        "sub_scores": {
+          "spatial": 0.678,
+          "structural": 1.0,
+          "thermal": 1.0,
+          "mass": 0.6,
+          "print": 0.206
         }
       },
       "print_sim": {
         "iteration": 3,
         "verdict": "FAIL",
-        "filament_length_m": 50.89,
+        "filament_length_m": 47.59,
         "removal_risk": "LOW",
         "recommendations": [
           "Reduce wall thickness or int_z to lower mass",
-          "Safety factor 11334.8x is excessive \u2014 reduce wall to save mass"
+          "Safety factor 6919.5x is excessive \u2014 reduce wall to save mass"
         ]
       },
       "improved": true,
-      "delta_fitness": 0.00063,
-      "changed_param": "wall",
-      "changed_by": 0.5
+      "delta_fitness": 0.00013,
+      "changed_param": "vent_h",
+      "changed_by": 5.0
     },
     {
       "iteration": 4,
-      "timestamp": "2026-02-26T12:45:54.472518",
+      "timestamp": "2026-02-26T14:31:25.988213",
       "params": {
-        "wall": 5.0,
+        "wall": 3.0,
         "int_x": 95.0,
         "int_y": 68.0,
-        "int_z": 118.0,
+        "int_z": 130.0,
         "vent_w": 20.0,
-        "vent_h": 55.0,
+        "vent_h": 50.0,
         "n_vents": 20,
         "boss_od": 7.0,
         "boss_h": 5.0,
         "has_wheels": 1,
         "wheel_dia": 65.0,
         "wheel_width": 26.0,
-        "ground_clear": 15.0,
-        "gear_ratio": 5.0
+        "ground_clear": 13.0,
+        "gear_ratio": 5.0,
+        "pos_18650_x2_x": 0.0,
+        "pos_18650_x2_y": 20.0,
+        "pos_18650_x2_z": 0.0,
+        "pos_powerboost_x": -32.0,
+        "pos_powerboost_y": 5.0,
+        "pos_powerboost_z": 0.0,
+        "pos_nema17_x": 0.0,
+        "pos_nema17_y": 12.5,
+        "pos_nema17_z": 70.0,
+        "pos_pi_5_x": -10.0,
+        "pos_pi_5_y": 5.0,
+        "pos_pi_5_z": 100.0,
+        "pos_coral_x": 0.0,
+        "pos_coral_y": 14.0,
+        "pos_coral_z": 115.0,
+        "pos_rp2040_x": 0.0,
+        "pos_rp2040_y": -10.0,
+        "pos_rp2040_z": 130.0,
+        "pos_lsm6dsox_x": 20.0,
+        "pos_lsm6dsox_y": 18.0,
+        "pos_lsm6dsox_z": 130.0,
+        "pos_ina219_x": -35.0,
+        "pos_ina219_y": 10.0,
+        "pos_ina219_z": 130.0
       },
       "metrics": {
-        "fitness": 0.07497,
-        "safety_factor": 12667.4,
-        "stress_mpa": 0.00403,
-        "thermal_ratio": 0.4135,
-        "mass_g": 630.0,
-        "print_time_min": 710.3,
-        "warp_mm": 0.21,
-        "warp_risk": 0.21,
-        "bed_area_mm2": 8190.0,
+        "fitness": 0.0649,
+        "safety_factor": 6919.5,
+        "stress_mpa": 0.00737,
+        "thermal_ratio": 0.3273,
+        "mass_g": 600.4,
+        "print_time_min": 571.4,
+        "warp_mm": 0.191,
+        "warp_risk": 0.191,
+        "bed_area_mm2": 6494.0,
         "adhesion_score": 1.0,
-        "shell_vol_cm3": 137.784,
-        "min_clearance_mm": 5.0,
-        "clearance_score": 0.417,
+        "shell_vol_cm3": 114.462,
+        "min_clearance_mm": -12.0,
         "outer_dims_mm": [
-          105.0,
-          78.0,
-          123.0
+          95.5,
+          68.0,
+          167.0
         ],
         "spatial": {
-          "composite_score": 0.655,
+          "composite_score": 0.6801,
           "sub_scores": {
-            "stability": 0.6,
+            "stability": 0.706,
             "mobility": 1.0,
-            "packaging": 0.271,
-            "cog_quality": 0.545,
-            "mass": 0.794
+            "packaging": 0.257,
+            "cog_quality": 0.524,
+            "mass": 0.824
           },
           "cog": {
-            "cog_x": -0.6,
-            "cog_y": 0.0,
-            "cog_z": 76.48,
-            "total_mass_g": 1206.0,
-            "cog_height_ratio": 0.455
+            "cog_x": -1.22,
+            "cog_y": 6.71,
+            "cog_z": 73.36,
+            "total_mass_g": 1176.4,
+            "cog_height_ratio": 0.476
           },
           "stability": {
             "is_stable": true,
-            "margin_mm": 0.0,
-            "margin_pct": 0.0,
+            "margin_mm": 6.71,
+            "margin_pct": 10.6,
             "support_polygon": [
               [
-                -67.5,
+                -62.75,
                 0
               ],
               [
-                67.5,
+                62.75,
                 0
               ],
               [
                 0,
-                24.0
+                21.0
               ]
             ],
             "tip_angles": {
-              "forward": 17.3,
-              "backward": 0.0,
-              "left": 41.2,
-              "right": 41.7
+              "forward": 10.7,
+              "backward": 5.2,
+              "left": 29.5,
+              "right": 30.9
             }
           },
           "torque": {
             "available_wheel_torque_nm": 1.0,
-            "rolling_resistance_torque_nm": 0.0058,
+            "rolling_resistance_torque_nm": 0.0056,
             "max_incline_deg": 90.0,
             "top_speed_ms": 0.136,
             "top_speed_kmh": 0.49,
             "gear_ratio": 5.0,
             "incline_analysis": {
               "0\u00b0": {
-                "required_torque_nm": 0.0058,
+                "required_torque_nm": 0.0056,
                 "can_climb": true,
                 "torque_margin_pct": 99.4
               },
               "5\u00b0": {
-                "required_torque_nm": 0.0393,
+                "required_torque_nm": 0.0383,
                 "can_climb": true,
-                "torque_margin_pct": 96.1
+                "torque_margin_pct": 96.2
               },
               "10\u00b0": {
-                "required_torque_nm": 0.0725,
+                "required_torque_nm": 0.0708,
                 "can_climb": true,
-                "torque_margin_pct": 92.7
+                "torque_margin_pct": 92.9
               },
               "15\u00b0": {
-                "required_torque_nm": 0.1053,
+                "required_torque_nm": 0.1027,
                 "can_climb": true,
-                "torque_margin_pct": 89.5
+                "torque_margin_pct": 89.7
               },
               "20\u00b0": {
-                "required_torque_nm": 0.1373,
+                "required_torque_nm": 0.1339,
                 "can_climb": true,
-                "torque_margin_pct": 86.3
+                "torque_margin_pct": 86.6
               },
               "30\u00b0": {
-                "required_torque_nm": 0.198,
+                "required_torque_nm": 0.1932,
                 "can_climb": true,
-                "torque_margin_pct": 80.2
+                "torque_margin_pct": 80.7
               }
             },
             "verdict": "MOBILE"
           },
           "collisions": {
             "has_collisions": true,
-            "clearance_violations": 5,
+            "clearance_violations": 3,
             "collision_pairs": [
               {
-                "a": "18650 \u00d72",
+                "a": "18650_x2",
                 "b": "PowerBoost",
-                "gap_mm": -3.5,
+                "gap_mm": -6.0,
+                "overlap": true
+              },
+              {
+                "a": "NEMA17",
+                "b": "Pi 5",
+                "gap_mm": -12.0,
                 "overlap": true
               },
               {
                 "a": "Pi 5",
                 "b": "Coral",
-                "gap_mm": 0.5,
-                "overlap": false
-              },
-              {
-                "a": "Coral",
-                "b": "LSM6DSOX",
-                "gap_mm": -1.5,
-                "overlap": true
-              },
-              {
-                "a": "Coral",
-                "b": "INA219",
-                "gap_mm": -1.5,
-                "overlap": true
-              },
-              {
-                "a": "RP2040",
-                "b": "INA219",
-                "gap_mm": -1.5,
+                "gap_mm": -2.0,
                 "overlap": true
               }
             ],
-            "min_clearance_mm": -3.5
+            "min_clearance_mm": -12.0
           },
           "wiring": {
             "routes": [
               {
-                "from": "18650 \u00d72",
+                "from": "18650_x2",
                 "to": "PowerBoost",
-                "distance_mm": 63.0
+                "distance_mm": 76.5
               },
               {
                 "from": "PowerBoost",
-                "to": "18650 \u00d72",
-                "distance_mm": 63.0
+                "to": "18650_x2",
+                "distance_mm": 76.5
               },
               {
                 "from": "PowerBoost",
                 "to": "Pi 5",
-                "distance_mm": 155.0
+                "distance_mm": 127.5
+              },
+              {
+                "from": "PowerBoost",
+                "to": "INA219",
+                "distance_mm": 137.5
               },
               {
                 "from": "Pi 5",
                 "to": "Coral",
-                "distance_mm": 37.0
+                "distance_mm": 29.5
               },
               {
                 "from": "Pi 5",
                 "to": "RP2040",
-                "distance_mm": 41.0
+                "distance_mm": 50.5
               },
               {
                 "from": "Coral",
                 "to": "Pi 5",
-                "distance_mm": 37.0
+                "distance_mm": 29.5
               },
               {
                 "from": "RP2040",
                 "to": "Pi 5",
-                "distance_mm": 41.0
+                "distance_mm": 50.5
               },
               {
                 "from": "RP2040",
                 "to": "LSM6DSOX",
-                "distance_mm": 49.0
+                "distance_mm": 49.5
               },
               {
                 "from": "RP2040",
                 "to": "INA219",
-                "distance_mm": 38.0
+                "distance_mm": 56.5
               },
               {
                 "from": "LSM6DSOX",
                 "to": "RP2040",
-                "distance_mm": 49.0
+                "distance_mm": 49.5
               },
               {
                 "from": "INA219",
                 "to": "RP2040",
-                "distance_mm": 38.0
+                "distance_mm": 56.5
               },
               {
                 "from": "INA219",
                 "to": "PowerBoost",
-                "distance_mm": 164.0
+                "distance_mm": 137.5
               }
             ],
-            "total_wire_mm": 775.0,
-            "avg_distance_mm": 64.6,
-            "routing_score": 0.677
+            "total_wire_mm": 927.5,
+            "avg_distance_mm": 71.3,
+            "routing_score": 0.643
           }
         },
         "sub_scores": {
-          "spatial": 0.655,
+          "spatial": 0.68,
           "structural": 1.0,
           "thermal": 1.0,
-          "mass": 0.58,
-          "print": 0.987
+          "mass": 0.6,
+          "print": 0.206
         }
       },
       "print_sim": {
         "iteration": 4,
         "verdict": "FAIL",
-        "filament_length_m": 57.28,
+        "filament_length_m": 47.59,
         "removal_risk": "LOW",
         "recommendations": [
           "Reduce wall thickness or int_z to lower mass",
-          "Safety factor 12667.4x is excessive \u2014 reduce wall to save mass"
+          "Safety factor 6919.5x is excessive \u2014 reduce wall to save mass"
         ]
       },
       "improved": true,
-      "delta_fitness": 0.00064,
-      "changed_param": "wall",
-      "changed_by": 0.5
+      "delta_fitness": 0.00014,
+      "changed_param": "pos_nema17_y",
+      "changed_by": 2.5
     },
     {
       "iteration": 5,
-      "timestamp": "2026-02-26T12:45:54.482234",
+      "timestamp": "2026-02-26T14:31:26.018753",
       "params": {
-        "wall": 5.5,
+        "wall": 3.0,
         "int_x": 95.0,
         "int_y": 68.0,
-        "int_z": 118.0,
+        "int_z": 130.0,
         "vent_w": 20.0,
-        "vent_h": 55.0,
+        "vent_h": 50.0,
         "n_vents": 20,
         "boss_od": 7.0,
         "boss_h": 5.0,
         "has_wheels": 1,
         "wheel_dia": 65.0,
         "wheel_width": 26.0,
-        "ground_clear": 15.0,
-        "gear_ratio": 5.0
+        "ground_clear": 13.0,
+        "gear_ratio": 5.0,
+        "pos_18650_x2_x": 0.0,
+        "pos_18650_x2_y": 20.0,
+        "pos_18650_x2_z": 0.0,
+        "pos_powerboost_x": -32.0,
+        "pos_powerboost_y": 5.0,
+        "pos_powerboost_z": 0.0,
+        "pos_nema17_x": 0.0,
+        "pos_nema17_y": 12.5,
+        "pos_nema17_z": 60.0,
+        "pos_pi_5_x": -10.0,
+        "pos_pi_5_y": 5.0,
+        "pos_pi_5_z": 100.0,
+        "pos_coral_x": 0.0,
+        "pos_coral_y": 14.0,
+        "pos_coral_z": 115.0,
+        "pos_rp2040_x": 0.0,
+        "pos_rp2040_y": -10.0,
+        "pos_rp2040_z": 130.0,
+        "pos_lsm6dsox_x": 20.0,
+        "pos_lsm6dsox_y": 18.0,
+        "pos_lsm6dsox_z": 130.0,
+        "pos_ina219_x": -35.0,
+        "pos_ina219_y": 10.0,
+        "pos_ina219_z": 130.0
       },
       "metrics": {
-        "fitness": 0.07561,
-        "safety_factor": 14014.7,
-        "stress_mpa": 0.00364,
-        "thermal_ratio": 0.4069,
-        "mass_g": 650.1,
-        "print_time_min": 779.1,
-        "warp_mm": 0.212,
-        "warp_risk": 0.212,
-        "bed_area_mm2": 8374.0,
+        "fitness": 0.06503,
+        "safety_factor": 6919.5,
+        "stress_mpa": 0.00737,
+        "thermal_ratio": 0.3273,
+        "mass_g": 600.4,
+        "print_time_min": 571.4,
+        "warp_mm": 0.191,
+        "warp_risk": 0.191,
+        "bed_area_mm2": 6494.0,
         "adhesion_score": 1.0,
-        "shell_vol_cm3": 153.603,
-        "min_clearance_mm": 5.0,
-        "clearance_score": 0.417,
+        "shell_vol_cm3": 114.462,
+        "min_clearance_mm": -6.0,
         "outer_dims_mm": [
-          106.0,
-          79.0,
-          123.5
+          95.5,
+          68.0,
+          167.0
         ],
         "spatial": {
-          "composite_score": 0.6521,
+          "composite_score": 0.6823,
           "sub_scores": {
-            "stability": 0.6,
+            "stability": 0.706,
             "mobility": 1.0,
-            "packaging": 0.271,
-            "cog_quality": 0.546,
-            "mass": 0.774
+            "packaging": 0.257,
+            "cog_quality": 0.539,
+            "mass": 0.824
           },
           "cog": {
-            "cog_x": -0.59,
-            "cog_y": 0.0,
-            "cog_z": 76.45,
-            "total_mass_g": 1226.1,
-            "cog_height_ratio": 0.454
+            "cog_x": -1.22,
+            "cog_y": 6.71,
+            "cog_z": 70.98,
+            "total_mass_g": 1176.4,
+            "cog_height_ratio": 0.461
           },
           "stability": {
             "is_stable": true,
-            "margin_mm": 0.0,
-            "margin_pct": 0.0,
+            "margin_mm": 6.71,
+            "margin_pct": 10.6,
             "support_polygon": [
               [
-                -68.0,
+                -62.75,
                 0
               ],
               [
-                68.0,
+                62.75,
                 0
               ],
               [
                 0,
-                24.0
+                21.0
               ]
             ],
             "tip_angles": {
-              "forward": 17.3,
-              "backward": 0.0,
-              "left": 41.4,
-              "right": 41.9
+              "forward": 11.1,
+              "backward": 5.4,
+              "left": 30.3,
+              "right": 31.7
             }
           },
           "torque": {
             "available_wheel_torque_nm": 1.0,
-            "rolling_resistance_torque_nm": 0.0059,
+            "rolling_resistance_torque_nm": 0.0056,
             "max_incline_deg": 90.0,
             "top_speed_ms": 0.136,
             "top_speed_kmh": 0.49,
             "gear_ratio": 5.0,
             "incline_analysis": {
               "0\u00b0": {
-                "required_torque_nm": 0.0059,
+                "required_torque_nm": 0.0056,
                 "can_climb": true,
                 "torque_margin_pct": 99.4
               },
               "5\u00b0": {
-                "required_torque_nm": 0.0399,
+                "required_torque_nm": 0.0383,
                 "can_climb": true,
-                "torque_margin_pct": 96.0
+                "torque_margin_pct": 96.2
               },
               "10\u00b0": {
-                "required_torque_nm": 0.0737,
+                "required_torque_nm": 0.0708,
                 "can_climb": true,
-                "torque_margin_pct": 92.6
+                "torque_margin_pct": 92.9
               },
               "15\u00b0": {
-                "required_torque_nm": 0.107,
+                "required_torque_nm": 0.1027,
                 "can_climb": true,
-                "torque_margin_pct": 89.3
+                "torque_margin_pct": 89.7
               },
               "20\u00b0": {
-                "required_torque_nm": 0.1396,
+                "required_torque_nm": 0.1339,
                 "can_climb": true,
-                "torque_margin_pct": 86.0
+                "torque_margin_pct": 86.6
               },
               "30\u00b0": {
-                "required_torque_nm": 0.2013,
+                "required_torque_nm": 0.1932,
                 "can_climb": true,
-                "torque_margin_pct": 79.9
+                "torque_margin_pct": 80.7
               }
             },
             "verdict": "MOBILE"
           },
           "collisions": {
             "has_collisions": true,
-            "clearance_violations": 5,
+            "clearance_violations": 4,
             "collision_pairs": [
               {
-                "a": "18650 \u00d72",
+                "a": "18650_x2",
                 "b": "PowerBoost",
-                "gap_mm": -3.5,
+                "gap_mm": -6.0,
+                "overlap": true
+              },
+              {
+                "a": "18650_x2",
+                "b": "NEMA17",
+                "gap_mm": -5.0,
+                "overlap": true
+              },
+              {
+                "a": "NEMA17",
+                "b": "Pi 5",
+                "gap_mm": -2.0,
                 "overlap": true
               },
               {
                 "a": "Pi 5",
                 "b": "Coral",
-                "gap_mm": 0.5,
-                "overlap": false
-              },
-              {
-                "a": "Coral",
-                "b": "LSM6DSOX",
-                "gap_mm": -1.5,
-                "overlap": true
-              },
-              {
-                "a": "Coral",
-                "b": "INA219",
-                "gap_mm": -1.5,
-                "overlap": true
-              },
-              {
-                "a": "RP2040",
-                "b": "INA219",
-                "gap_mm": -1.5,
+                "gap_mm": -2.0,
                 "overlap": true
               }
             ],
-            "min_clearance_mm": -3.5
+            "min_clearance_mm": -6.0
           },
           "wiring": {
             "routes": [
               {
-                "from": "18650 \u00d72",
+                "from": "18650_x2",
                 "to": "PowerBoost",
-                "distance_mm": 63.0
+                "distance_mm": 76.5
               },
               {
                 "from": "PowerBoost",
-                "to": "18650 \u00d72",
-                "distance_mm": 63.0
+                "to": "18650_x2",
+                "distance_mm": 76.5
               },
               {
                 "from": "PowerBoost",
                 "to": "Pi 5",
-                "distance_mm": 155.0
+                "distance_mm": 127.5
+              },
+              {
+                "from": "PowerBoost",
+                "to": "INA219",
+                "distance_mm": 137.5
               },
               {
                 "from": "Pi 5",
                 "to": "Coral",
-                "distance_mm": 37.0
+                "distance_mm": 29.5
               },
               {
                 "from": "Pi 5",
                 "to": "RP2040",
-                "distance_mm": 41.0
+                "distance_mm": 50.5
               },
               {
                 "from": "Coral",
                 "to": "Pi 5",
-                "distance_mm": 37.0
+                "distance_mm": 29.5
               },
               {
                 "from": "RP2040",
                 "to": "Pi 5",
-                "distance_mm": 41.0
+                "distance_mm": 50.5
               },
               {
                 "from": "RP2040",
                 "to": "LSM6DSOX",
-                "distance_mm": 49.0
+                "distance_mm": 49.5
               },
               {
                 "from": "RP2040",
                 "to": "INA219",
-                "distance_mm": 38.0
+                "distance_mm": 56.5
               },
               {
                 "from": "LSM6DSOX",
                 "to": "RP2040",
-                "distance_mm": 49.0
+                "distance_mm": 49.5
               },
               {
                 "from": "INA219",
                 "to": "RP2040",
-                "distance_mm": 38.0
+                "distance_mm": 56.5
               },
               {
                 "from": "INA219",
                 "to": "PowerBoost",
-                "distance_mm": 164.0
+                "distance_mm": 137.5
               }
             ],
-            "total_wire_mm": 775.0,
-            "avg_distance_mm": 64.6,
-            "routing_score": 0.677
+            "total_wire_mm": 927.5,
+            "avg_distance_mm": 71.3,
+            "routing_score": 0.643
           }
         },
         "sub_scores": {
-          "spatial": 0.652,
+          "spatial": 0.682,
           "structural": 1.0,
           "thermal": 1.0,
-          "mass": 0.567,
-          "print": 1.082
+          "mass": 0.6,
+          "print": 0.206
         }
       },
       "print_sim": {
         "iteration": 5,
         "verdict": "FAIL",
-        "filament_length_m": 63.86,
+        "filament_length_m": 47.59,
         "removal_risk": "LOW",
         "recommendations": [
           "Reduce wall thickness or int_z to lower mass",
-          "Safety factor 14014.7x is excessive \u2014 reduce wall to save mass"
+          "Safety factor 6919.5x is excessive \u2014 reduce wall to save mass"
         ]
       },
       "improved": true,
-      "delta_fitness": 0.00064,
-      "changed_param": "wall",
-      "changed_by": 0.5
+      "delta_fitness": 0.00013,
+      "changed_param": "pos_nema17_z",
+      "changed_by": -10.0
     },
     {
       "iteration": 6,
-      "timestamp": "2026-02-26T12:45:54.492333",
+      "timestamp": "2026-02-26T14:31:26.049145",
       "params": {
-        "wall": 5.5,
+        "wall": 3.0,
         "int_x": 95.0,
         "int_y": 68.0,
-        "int_z": 128.0,
+        "int_z": 130.0,
         "vent_w": 20.0,
-        "vent_h": 55.0,
+        "vent_h": 50.0,
         "n_vents": 20,
         "boss_od": 7.0,
         "boss_h": 5.0,
         "has_wheels": 1,
         "wheel_dia": 65.0,
         "wheel_width": 26.0,
-        "ground_clear": 15.0,
-        "gear_ratio": 5.0
+        "ground_clear": 13.0,
+        "gear_ratio": 5.0,
+        "pos_18650_x2_x": 0.0,
+        "pos_18650_x2_y": 20.0,
+        "pos_18650_x2_z": 0.0,
+        "pos_powerboost_x": -32.0,
+        "pos_powerboost_y": 5.0,
+        "pos_powerboost_z": 0.0,
+        "pos_nema17_x": 0.0,
+        "pos_nema17_y": 12.5,
+        "pos_nema17_z": 50.0,
+        "pos_pi_5_x": -10.0,
+        "pos_pi_5_y": 5.0,
+        "pos_pi_5_z": 100.0,
+        "pos_coral_x": 0.0,
+        "pos_coral_y": 14.0,
+        "pos_coral_z": 115.0,
+        "pos_rp2040_x": 0.0,
+        "pos_rp2040_y": -10.0,
+        "pos_rp2040_z": 130.0,
+        "pos_lsm6dsox_x": 20.0,
+        "pos_lsm6dsox_y": 18.0,
+        "pos_lsm6dsox_z": 130.0,
+        "pos_ina219_x": -35.0,
+        "pos_ina219_y": 10.0,
+        "pos_ina219_z": 130.0
       },
       "metrics": {
-        "fitness": 0.07613,
-        "safety_factor": 14014.7,
-        "stress_mpa": 0.00364,
-        "thermal_ratio": 0.3808,
-        "mass_g": 674.4,
-        "print_time_min": 842.2,
-        "warp_mm": 0.212,
-        "warp_risk": 0.212,
-        "bed_area_mm2": 8374.0,
+        "fitness": 0.06517,
+        "safety_factor": 6919.5,
+        "stress_mpa": 0.00737,
+        "thermal_ratio": 0.3273,
+        "mass_g": 600.4,
+        "print_time_min": 571.4,
+        "warp_mm": 0.191,
+        "warp_risk": 0.191,
+        "bed_area_mm2": 6494.0,
         "adhesion_score": 1.0,
-        "shell_vol_cm3": 172.743,
-        "min_clearance_mm": 5.0,
-        "clearance_score": 0.417,
+        "shell_vol_cm3": 114.462,
+        "min_clearance_mm": -15.0,
         "outer_dims_mm": [
-          106.0,
-          79.0,
-          133.5
+          95.5,
+          68.0,
+          167.0
         ],
         "spatial": {
-          "composite_score": 0.6488,
+          "composite_score": 0.6847,
           "sub_scores": {
-            "stability": 0.6,
+            "stability": 0.706,
             "mobility": 1.0,
-            "packaging": 0.271,
-            "cog_quality": 0.548,
-            "mass": 0.75
+            "packaging": 0.257,
+            "cog_quality": 0.555,
+            "mass": 0.824
           },
           "cog": {
-            "cog_x": -0.58,
-            "cog_y": 0.0,
-            "cog_z": 76.13,
-            "total_mass_g": 1250.4,
-            "cog_height_ratio": 0.452
+            "cog_x": -1.22,
+            "cog_y": 6.71,
+            "cog_z": 68.6,
+            "total_mass_g": 1176.4,
+            "cog_height_ratio": 0.445
           },
           "stability": {
             "is_stable": true,
-            "margin_mm": 0.0,
-            "margin_pct": 0.0,
+            "margin_mm": 6.71,
+            "margin_pct": 10.6,
             "support_polygon": [
               [
-                -68.0,
+                -62.75,
                 0
               ],
               [
-                68.0,
+                62.75,
                 0
               ],
               [
                 0,
-                24.0
+                21.0
               ]
             ],
             "tip_angles": {
-              "forward": 17.4,
-              "backward": 0.0,
-              "left": 41.5,
-              "right": 42.0
+              "forward": 11.4,
+              "backward": 5.6,
+              "left": 31.2,
+              "right": 32.6
             }
           },
           "torque": {
             "available_wheel_torque_nm": 1.0,
-            "rolling_resistance_torque_nm": 0.006,
+            "rolling_resistance_torque_nm": 0.0056,
             "max_incline_deg": 90.0,
             "top_speed_ms": 0.136,
             "top_speed_kmh": 0.49,
             "gear_ratio": 5.0,
             "incline_analysis": {
               "0\u00b0": {
-                "required_torque_nm": 0.006,
+                "required_torque_nm": 0.0056,
                 "can_climb": true,
                 "torque_margin_pct": 99.4
               },
               "5\u00b0": {
-                "required_torque_nm": 0.0407,
+                "required_torque_nm": 0.0383,
                 "can_climb": true,
-                "torque_margin_pct": 95.9
+                "torque_margin_pct": 96.2
               },
               "10\u00b0": {
-                "required_torque_nm": 0.0752,
+                "required_torque_nm": 0.0708,
                 "can_climb": true,
-                "torque_margin_pct": 92.5
+                "torque_margin_pct": 92.9
               },
               "15\u00b0": {
-                "required_torque_nm": 0.1092,
+                "required_torque_nm": 0.1027,
                 "can_climb": true,
-                "torque_margin_pct": 89.1
+                "torque_margin_pct": 89.7
               },
               "20\u00b0": {
-                "required_torque_nm": 0.1423,
+                "required_torque_nm": 0.1339,
                 "can_climb": true,
-                "torque_margin_pct": 85.8
+                "torque_margin_pct": 86.6
               },
               "30\u00b0": {
-                "required_torque_nm": 0.2053,
+                "required_torque_nm": 0.1932,
                 "can_climb": true,
-                "torque_margin_pct": 79.5
+                "torque_margin_pct": 80.7
               }
             },
             "verdict": "MOBILE"
           },
           "collisions": {
             "has_collisions": true,
-            "clearance_violations": 5,
+            "clearance_violations": 3,
             "collision_pairs": [
               {
-                "a": "18650 \u00d72",
+                "a": "18650_x2",
                 "b": "PowerBoost",
-                "gap_mm": -3.5,
+                "gap_mm": -6.0,
+                "overlap": true
+              },
+              {
+                "a": "18650_x2",
+                "b": "NEMA17",
+                "gap_mm": -15.0,
                 "overlap": true
               },
               {
                 "a": "Pi 5",
                 "b": "Coral",
-                "gap_mm": 0.5,
-                "overlap": false
-              },
-              {
-                "a": "Coral",
-                "b": "LSM6DSOX",
-                "gap_mm": -1.5,
-                "overlap": true
-              },
-              {
-                "a": "Coral",
-                "b": "INA219",
-                "gap_mm": -1.5,
-                "overlap": true
-              },
-              {
-                "a": "RP2040",
-                "b": "INA219",
-                "gap_mm": -1.5,
+                "gap_mm": -2.0,
                 "overlap": true
               }
             ],
-            "min_clearance_mm": -3.5
+            "min_clearance_mm": -15.0
           },
           "wiring": {
             "routes": [
               {
-                "from": "18650 \u00d72",
+                "from": "18650_x2",
                 "to": "PowerBoost",
-                "distance_mm": 63.0
+                "distance_mm": 76.5
               },
               {
                 "from": "PowerBoost",
-                "to": "18650 \u00d72",
-                "distance_mm": 63.0
+                "to": "18650_x2",
+                "distance_mm": 76.5
               },
               {
                 "from": "PowerBoost",
                 "to": "Pi 5",
-                "distance_mm": 155.0
+                "distance_mm": 127.5
+              },
+              {
+                "from": "PowerBoost",
+                "to": "INA219",
+                "distance_mm": 137.5
               },
               {
                 "from": "Pi 5",
                 "to": "Coral",
-                "distance_mm": 37.0
+                "distance_mm": 29.5
               },
               {
                 "from": "Pi 5",
                 "to": "RP2040",
-                "distance_mm": 41.0
+                "distance_mm": 50.5
               },
               {
                 "from": "Coral",
                 "to": "Pi 5",
-                "distance_mm": 37.0
+                "distance_mm": 29.5
               },
               {
                 "from": "RP2040",
                 "to": "Pi 5",
-                "distance_mm": 41.0
+                "distance_mm": 50.5
               },
               {
                 "from": "RP2040",
                 "to": "LSM6DSOX",
-                "distance_mm": 49.0
+                "distance_mm": 49.5
               },
               {
                 "from": "RP2040",
                 "to": "INA219",
-                "distance_mm": 38.0
+                "distance_mm": 56.5
               },
               {
                 "from": "LSM6DSOX",
                 "to": "RP2040",
-                "distance_mm": 49.0
+                "distance_mm": 49.5
               },
               {
                 "from": "INA219",
                 "to": "RP2040",
-                "distance_mm": 38.0
+                "distance_mm": 56.5
               },
               {
                 "from": "INA219",
                 "to": "PowerBoost",
-                "distance_mm": 164.0
+                "distance_mm": 137.5
               }
             ],
-            "total_wire_mm": 775.0,
-            "avg_distance_mm": 64.6,
-            "routing_score": 0.677
+            "total_wire_mm": 927.5,
+            "avg_distance_mm": 71.3,
+            "routing_score": 0.643
           }
         },
         "sub_scores": {
-          "spatial": 0.649,
+          "spatial": 0.685,
           "structural": 1.0,
           "thermal": 1.0,
-          "mass": 0.55,
-          "print": 1.17
+          "mass": 0.6,
+          "print": 0.206
         }
       },
       "print_sim": {
         "iteration": 6,
         "verdict": "FAIL",
-        "filament_length_m": 71.82,
+        "filament_length_m": 47.59,
         "removal_risk": "LOW",
         "recommendations": [
           "Reduce wall thickness or int_z to lower mass",
-          "Safety factor 14014.7x is excessive \u2014 reduce wall to save mass"
+          "Safety factor 6919.5x is excessive \u2014 reduce wall to save mass"
         ]
       },
       "improved": true,
-      "delta_fitness": 0.00052,
-      "changed_param": "int_z",
-      "changed_by": 10.0
+      "delta_fitness": 0.00014,
+      "changed_param": "pos_nema17_z",
+      "changed_by": -10.0
     },
     {
       "iteration": 7,
-      "timestamp": "2026-02-26T12:45:54.502161",
+      "timestamp": "2026-02-26T14:31:26.079698",
       "params": {
-        "wall": 5.5,
+        "wall": 3.0,
         "int_x": 95.0,
         "int_y": 68.0,
-        "int_z": 138.0,
+        "int_z": 130.0,
         "vent_w": 20.0,
-        "vent_h": 55.0,
+        "vent_h": 50.0,
         "n_vents": 20,
         "boss_od": 7.0,
         "boss_h": 5.0,
         "has_wheels": 1,
         "wheel_dia": 65.0,
         "wheel_width": 26.0,
-        "ground_clear": 15.0,
-        "gear_ratio": 5.0
+        "ground_clear": 13.0,
+        "gear_ratio": 5.0,
+        "pos_18650_x2_x": 0.0,
+        "pos_18650_x2_y": 20.0,
+        "pos_18650_x2_z": 0.0,
+        "pos_powerboost_x": -32.0,
+        "pos_powerboost_y": 5.0,
+        "pos_powerboost_z": 0.0,
+        "pos_nema17_x": 0.0,
+        "pos_nema17_y": 12.5,
+        "pos_nema17_z": 40.0,
+        "pos_pi_5_x": -10.0,
+        "pos_pi_5_y": 5.0,
+        "pos_pi_5_z": 100.0,
+        "pos_coral_x": 0.0,
+        "pos_coral_y": 14.0,
+        "pos_coral_z": 115.0,
+        "pos_rp2040_x": 0.0,
+        "pos_rp2040_y": -10.0,
+        "pos_rp2040_z": 130.0,
+        "pos_lsm6dsox_x": 20.0,
+        "pos_lsm6dsox_y": 18.0,
+        "pos_lsm6dsox_z": 130.0,
+        "pos_ina219_x": -35.0,
+        "pos_ina219_y": 10.0,
+        "pos_ina219_z": 130.0
       },
       "metrics": {
-        "fitness": 0.07665,
-        "safety_factor": 14014.7,
-        "stress_mpa": 0.00364,
-        "thermal_ratio": 0.3579,
-        "mass_g": 698.7,
-        "print_time_min": 905.3,
-        "warp_mm": 0.212,
-        "warp_risk": 0.212,
-        "bed_area_mm2": 8374.0,
+        "fitness": 0.06531,
+        "safety_factor": 6919.5,
+        "stress_mpa": 0.00737,
+        "thermal_ratio": 0.3273,
+        "mass_g": 600.4,
+        "print_time_min": 571.4,
+        "warp_mm": 0.191,
+        "warp_risk": 0.191,
+        "bed_area_mm2": 6494.0,
         "adhesion_score": 1.0,
-        "shell_vol_cm3": 191.883,
-        "min_clearance_mm": 5.0,
-        "clearance_score": 0.417,
+        "shell_vol_cm3": 114.462,
+        "min_clearance_mm": -23.5,
         "outer_dims_mm": [
-          106.0,
-          79.0,
-          143.5
+          95.5,
+          68.0,
+          167.0
         ],
         "spatial": {
-          "composite_score": 0.6455,
+          "composite_score": 0.687,
           "sub_scores": {
-            "stability": 0.6,
+            "stability": 0.706,
             "mobility": 1.0,
-            "packaging": 0.271,
-            "cog_quality": 0.55,
-            "mass": 0.725
+            "packaging": 0.257,
+            "cog_quality": 0.57,
+            "mass": 0.824
           },
           "cog": {
-            "cog_x": -0.57,
-            "cog_y": 0.0,
-            "cog_z": 75.82,
-            "total_mass_g": 1274.7,
-            "cog_height_ratio": 0.45
+            "cog_x": -1.22,
+            "cog_y": 6.71,
+            "cog_z": 66.22,
+            "total_mass_g": 1176.4,
+            "cog_height_ratio": 0.43
           },
           "stability": {
             "is_stable": true,
-            "margin_mm": 0.0,
-            "margin_pct": 0.0,
+            "margin_mm": 6.71,
+            "margin_pct": 10.6,
             "support_polygon": [
               [
-                -68.0,
+                -62.75,
                 0
               ],
               [
-                68.0,
+                62.75,
                 0
               ],
               [
                 0,
-                24.0
+                21.0
               ]
             ],
             "tip_angles": {
-              "forward": 17.4,
-              "backward": 0.0,
-              "left": 41.6,
-              "right": 42.1
+              "forward": 11.8,
+              "backward": 5.8,
+              "left": 32.1,
+              "right": 33.6
             }
           },
           "torque": {
             "available_wheel_torque_nm": 1.0,
-            "rolling_resistance_torque_nm": 0.0061,
+            "rolling_resistance_torque_nm": 0.0056,
             "max_incline_deg": 90.0,
             "top_speed_ms": 0.136,
             "top_speed_kmh": 0.49,
             "gear_ratio": 5.0,
             "incline_analysis": {
               "0\u00b0": {
-                "required_torque_nm": 0.0061,
+                "required_torque_nm": 0.0056,
                 "can_climb": true,
                 "torque_margin_pct": 99.4
               },
               "5\u00b0": {
-                "required_torque_nm": 0.0415,
+                "required_torque_nm": 0.0383,
                 "can_climb": true,
-                "torque_margin_pct": 95.8
+                "torque_margin_pct": 96.2
               },
               "10\u00b0": {
-                "required_torque_nm": 0.0767,
+                "required_torque_nm": 0.0708,
                 "can_climb": true,
-                "torque_margin_pct": 92.3
+                "torque_margin_pct": 92.9
               },
               "15\u00b0": {
-                "required_torque_nm": 0.1113,
+                "required_torque_nm": 0.1027,
                 "can_climb": true,
-                "torque_margin_pct": 88.9
+                "torque_margin_pct": 89.7
               },
               "20\u00b0": {
-                "required_torque_nm": 0.1451,
+                "required_torque_nm": 0.1339,
                 "can_climb": true,
-                "torque_margin_pct": 85.5
+                "torque_margin_pct": 86.6
               },
               "30\u00b0": {
-                "required_torque_nm": 0.2093,
+                "required_torque_nm": 0.1932,
                 "can_climb": true,
-                "torque_margin_pct": 79.1
+                "torque_margin_pct": 80.7
               }
             },
             "verdict": "MOBILE"
           },
           "collisions": {
             "has_collisions": true,
-            "clearance_violations": 5,
+            "clearance_violations": 3,
             "collision_pairs": [
               {
-                "a": "18650 \u00d72",
+                "a": "18650_x2",
                 "b": "PowerBoost",
-                "gap_mm": -3.5,
+                "gap_mm": -6.0,
+                "overlap": true
+              },
+              {
+                "a": "18650_x2",
+                "b": "NEMA17",
+                "gap_mm": -23.5,
                 "overlap": true
               },
               {
                 "a": "Pi 5",
                 "b": "Coral",
-                "gap_mm": 0.5,
-                "overlap": false
-              },
-              {
-                "a": "Coral",
-                "b": "LSM6DSOX",
-                "gap_mm": -1.5,
-                "overlap": true
-              },
-              {
-                "a": "Coral",
-                "b": "INA219",
-                "gap_mm": -1.5,
-                "overlap": true
-              },
-              {
-                "a": "RP2040",
-                "b": "INA219",
-                "gap_mm": -1.5,
+                "gap_mm": -2.0,
                 "overlap": true
               }
             ],
-            "min_clearance_mm": -3.5
+            "min_clearance_mm": -23.5
           },
           "wiring": {
             "routes": [
               {
-                "from": "18650 \u00d72",
+                "from": "18650_x2",
                 "to": "PowerBoost",
-                "distance_mm": 63.0
+                "distance_mm": 76.5
               },
               {
                 "from": "PowerBoost",
-                "to": "18650 \u00d72",
-                "distance_mm": 63.0
+                "to": "18650_x2",
+                "distance_mm": 76.5
               },
               {
                 "from": "PowerBoost",
                 "to": "Pi 5",
-                "distance_mm": 155.0
+                "distance_mm": 127.5
+              },
+              {
+                "from": "PowerBoost",
+                "to": "INA219",
+                "distance_mm": 137.5
               },
               {
                 "from": "Pi 5",
                 "to": "Coral",
-                "distance_mm": 37.0
+                "distance_mm": 29.5
               },
               {
                 "from": "Pi 5",
                 "to": "RP2040",
-                "distance_mm": 41.0
+                "distance_mm": 50.5
               },
               {
                 "from": "Coral",
                 "to": "Pi 5",
-                "distance_mm": 37.0
+                "distance_mm": 29.5
               },
               {
                 "from": "RP2040",
                 "to": "Pi 5",
-                "distance_mm": 41.0
+                "distance_mm": 50.5
               },
               {
                 "from": "RP2040",
                 "to": "LSM6DSOX",
-                "distance_mm": 49.0
+                "distance_mm": 49.5
               },
               {
                 "from": "RP2040",
                 "to": "INA219",
-                "distance_mm": 38.0
+                "distance_mm": 56.5
               },
               {
                 "from": "LSM6DSOX",
                 "to": "RP2040",
-                "distance_mm": 49.0
+                "distance_mm": 49.5
               },
               {
                 "from": "INA219",
                 "to": "RP2040",
-                "distance_mm": 38.0
+                "distance_mm": 56.5
               },
               {
                 "from": "INA219",
                 "to": "PowerBoost",
-                "distance_mm": 164.0
+                "distance_mm": 137.5
               }
             ],
-            "total_wire_mm": 775.0,
-            "avg_distance_mm": 64.6,
-            "routing_score": 0.677
+            "total_wire_mm": 927.5,
+            "avg_distance_mm": 71.3,
+            "routing_score": 0.643
           }
         },
         "sub_scores": {
-          "spatial": 0.645,
+          "spatial": 0.687,
           "structural": 1.0,
           "thermal": 1.0,
-          "mass": 0.534,
-          "print": 1.257
+          "mass": 0.6,
+          "print": 0.206
         }
       },
       "print_sim": {
         "iteration": 7,
         "verdict": "FAIL",
-        "filament_length_m": 79.78,
+        "filament_length_m": 47.59,
         "removal_risk": "LOW",
         "recommendations": [
           "Reduce wall thickness or int_z to lower mass",
-          "Safety factor 14014.7x is excessive \u2014 reduce wall to save mass"
+          "Safety factor 6919.5x is excessive \u2014 reduce wall to save mass"
         ]
       },
       "improved": true,
-      "delta_fitness": 0.00052,
-      "changed_param": "int_z",
-      "changed_by": 10.0
+      "delta_fitness": 0.00014,
+      "changed_param": "pos_nema17_z",
+      "changed_by": -10.0
     },
     {
       "iteration": 8,
-      "timestamp": "2026-02-26T12:45:54.511779",
+      "timestamp": "2026-02-26T14:31:26.110206",
       "params": {
-        "wall": 5.5,
+        "wall": 3.0,
         "int_x": 95.0,
         "int_y": 68.0,
-        "int_z": 148.0,
+        "int_z": 130.0,
         "vent_w": 20.0,
-        "vent_h": 55.0,
+        "vent_h": 50.0,
         "n_vents": 20,
         "boss_od": 7.0,
         "boss_h": 5.0,
         "has_wheels": 1,
         "wheel_dia": 65.0,
         "wheel_width": 26.0,
-        "ground_clear": 15.0,
-        "gear_ratio": 5.0
+        "ground_clear": 13.0,
+        "gear_ratio": 5.0,
+        "pos_18650_x2_x": 0.0,
+        "pos_18650_x2_y": 20.0,
+        "pos_18650_x2_z": 0.0,
+        "pos_powerboost_x": -32.0,
+        "pos_powerboost_y": 5.0,
+        "pos_powerboost_z": 0.0,
+        "pos_nema17_x": 0.0,
+        "pos_nema17_y": 12.5,
+        "pos_nema17_z": 30.0,
+        "pos_pi_5_x": -10.0,
+        "pos_pi_5_y": 5.0,
+        "pos_pi_5_z": 100.0,
+        "pos_coral_x": 0.0,
+        "pos_coral_y": 14.0,
+        "pos_coral_z": 115.0,
+        "pos_rp2040_x": 0.0,
+        "pos_rp2040_y": -10.0,
+        "pos_rp2040_z": 130.0,
+        "pos_lsm6dsox_x": 20.0,
+        "pos_lsm6dsox_y": 18.0,
+        "pos_lsm6dsox_z": 130.0,
+        "pos_ina219_x": -35.0,
+        "pos_ina219_y": 10.0,
+        "pos_ina219_z": 130.0
       },
       "metrics": {
-        "fitness": 0.07716,
-        "safety_factor": 14014.7,
-        "stress_mpa": 0.00364,
-        "thermal_ratio": 0.3376,
-        "mass_g": 723.0,
-        "print_time_min": 968.4,
-        "warp_mm": 0.212,
-        "warp_risk": 0.212,
-        "bed_area_mm2": 8374.0,
+        "fitness": 0.06544,
+        "safety_factor": 6919.5,
+        "stress_mpa": 0.00737,
+        "thermal_ratio": 0.3273,
+        "mass_g": 600.4,
+        "print_time_min": 571.4,
+        "warp_mm": 0.191,
+        "warp_risk": 0.191,
+        "bed_area_mm2": 6494.0,
         "adhesion_score": 1.0,
-        "shell_vol_cm3": 211.023,
-        "min_clearance_mm": 5.0,
-        "clearance_score": 0.417,
+        "shell_vol_cm3": 114.462,
+        "min_clearance_mm": -23.5,
         "outer_dims_mm": [
-          106.0,
-          79.0,
-          153.5
+          95.5,
+          68.0,
+          167.0
         ],
         "spatial": {
-          "composite_score": 0.6421,
+          "composite_score": 0.6892,
           "sub_scores": {
-            "stability": 0.6,
+            "stability": 0.706,
             "mobility": 1.0,
-            "packaging": 0.271,
-            "cog_quality": 0.552,
-            "mass": 0.701
+            "packaging": 0.257,
+            "cog_quality": 0.585,
+            "mass": 0.824
           },
           "cog": {
-            "cog_x": -0.56,
-            "cog_y": 0.0,
-            "cog_z": 75.52,
-            "total_mass_g": 1299.0,
-            "cog_height_ratio": 0.448
+            "cog_x": -1.22,
+            "cog_y": 6.71,
+            "cog_z": 63.84,
+            "total_mass_g": 1176.4,
+            "cog_height_ratio": 0.415
           },
           "stability": {
             "is_stable": true,
-            "margin_mm": 0.0,
-            "margin_pct": 0.0,
+            "margin_mm": 6.71,
+            "margin_pct": 10.6,
             "support_polygon": [
               [
-                -68.0,
+                -62.75,
                 0
               ],
               [
-                68.0,
+                62.75,
                 0
               ],
               [
                 0,
-                24.0
+                21.0
               ]
             ],
             "tip_angles": {
-              "forward": 17.5,
-              "backward": 0.0,
-              "left": 41.8,
-              "right": 42.2
+              "forward": 12.3,
+              "backward": 6.0,
+              "left": 33.0,
+              "right": 34.5
             }
           },
           "torque": {
             "available_wheel_torque_nm": 1.0,
-            "rolling_resistance_torque_nm": 0.0062,
+            "rolling_resistance_torque_nm": 0.0056,
             "max_incline_deg": 90.0,
             "top_speed_ms": 0.136,
             "top_speed_kmh": 0.49,
             "gear_ratio": 5.0,
             "incline_analysis": {
               "0\u00b0": {
-                "required_torque_nm": 0.0062,
+                "required_torque_nm": 0.0056,
                 "can_climb": true,
                 "torque_margin_pct": 99.4
               },
               "5\u00b0": {
-                "required_torque_nm": 0.0423,
+                "required_torque_nm": 0.0383,
                 "can_climb": true,
-                "torque_margin_pct": 95.8
+                "torque_margin_pct": 96.2
               },
               "10\u00b0": {
-                "required_torque_nm": 0.0781,
+                "required_torque_nm": 0.0708,
                 "can_climb": true,
-                "torque_margin_pct": 92.2
+                "torque_margin_pct": 92.9
               },
               "15\u00b0": {
-                "required_torque_nm": 0.1134,
+                "required_torque_nm": 0.1027,
                 "can_climb": true,
-                "torque_margin_pct": 88.7
+                "torque_margin_pct": 89.7
               },
               "20\u00b0": {
-                "required_torque_nm": 0.1479,
+                "required_torque_nm": 0.1339,
                 "can_climb": true,
-                "torque_margin_pct": 85.2
+                "torque_margin_pct": 86.6
               },
               "30\u00b0": {
-                "required_torque_nm": 0.2133,
+                "required_torque_nm": 0.1932,
                 "can_climb": true,
-                "torque_margin_pct": 78.7
+                "torque_margin_pct": 80.7
               }
             },
             "verdict": "MOBILE"
           },
           "collisions": {
             "has_collisions": true,
-            "clearance_violations": 5,
+            "clearance_violations": 3,
             "collision_pairs": [
               {
-                "a": "18650 \u00d72",
+                "a": "18650_x2",
                 "b": "PowerBoost",
-                "gap_mm": -3.5,
+                "gap_mm": -6.0,
+                "overlap": true
+              },
+              {
+                "a": "18650_x2",
+                "b": "NEMA17",
+                "gap_mm": -23.5,
                 "overlap": true
               },
               {
                 "a": "Pi 5",
                 "b": "Coral",
-                "gap_mm": 0.5,
-                "overlap": false
-              },
-              {
-                "a": "Coral",
-                "b": "LSM6DSOX",
-                "gap_mm": -1.5,
-                "overlap": true
-              },
-              {
-                "a": "Coral",
-                "b": "INA219",
-                "gap_mm": -1.5,
-                "overlap": true
-              },
-              {
-                "a": "RP2040",
-                "b": "INA219",
-                "gap_mm": -1.5,
+                "gap_mm": -2.0,
                 "overlap": true
               }
             ],
-            "min_clearance_mm": -3.5
+            "min_clearance_mm": -23.5
           },
           "wiring": {
             "routes": [
               {
-                "from": "18650 \u00d72",
+                "from": "18650_x2",
                 "to": "PowerBoost",
-                "distance_mm": 63.0
+                "distance_mm": 76.5
               },
               {
                 "from": "PowerBoost",
-                "to": "18650 \u00d72",
-                "distance_mm": 63.0
+                "to": "18650_x2",
+                "distance_mm": 76.5
               },
               {
                 "from": "PowerBoost",
                 "to": "Pi 5",
-                "distance_mm": 155.0
+                "distance_mm": 127.5
+              },
+              {
+                "from": "PowerBoost",
+                "to": "INA219",
+                "distance_mm": 137.5
               },
               {
                 "from": "Pi 5",
                 "to": "Coral",
-                "distance_mm": 37.0
+                "distance_mm": 29.5
               },
               {
                 "from": "Pi 5",
                 "to": "RP2040",
-                "distance_mm": 41.0
+                "distance_mm": 50.5
               },
               {
                 "from": "Coral",
                 "to": "Pi 5",
-                "distance_mm": 37.0
+                "distance_mm": 29.5
               },
               {
                 "from": "RP2040",
                 "to": "Pi 5",
-                "distance_mm": 41.0
+                "distance_mm": 50.5
               },
               {
                 "from": "RP2040",
                 "to": "LSM6DSOX",
-                "distance_mm": 49.0
+                "distance_mm": 49.5
               },
               {
                 "from": "RP2040",
                 "to": "INA219",
-                "distance_mm": 38.0
+                "distance_mm": 56.5
               },
               {
                 "from": "LSM6DSOX",
                 "to": "RP2040",
-                "distance_mm": 49.0
+                "distance_mm": 49.5
               },
               {
                 "from": "INA219",
                 "to": "RP2040",
-                "distance_mm": 38.0
+                "distance_mm": 56.5
               },
               {
                 "from": "INA219",
                 "to": "PowerBoost",
-                "distance_mm": 164.0
+                "distance_mm": 137.5
               }
             ],
-            "total_wire_mm": 775.0,
-            "avg_distance_mm": 64.6,
-            "routing_score": 0.677
+            "total_wire_mm": 927.5,
+            "avg_distance_mm": 71.3,
+            "routing_score": 0.643
           }
         },
         "sub_scores": {
-          "spatial": 0.642,
+          "spatial": 0.689,
           "structural": 1.0,
           "thermal": 1.0,
-          "mass": 0.518,
-          "print": 1.345
+          "mass": 0.6,
+          "print": 0.206
         }
       },
       "print_sim": {
         "iteration": 8,
         "verdict": "FAIL",
-        "filament_length_m": 87.73,
+        "filament_length_m": 47.59,
         "removal_risk": "LOW",
         "recommendations": [
           "Reduce wall thickness or int_z to lower mass",
-          "Safety factor 14014.7x is excessive \u2014 reduce wall to save mass"
+          "Safety factor 6919.5x is excessive \u2014 reduce wall to save mass"
         ]
       },
       "improved": true,
-      "delta_fitness": 0.00051,
-      "changed_param": "int_z",
-      "changed_by": 10.0
+      "delta_fitness": 0.00013,
+      "changed_param": "pos_nema17_z",
+      "changed_by": -10.0
     },
     {
       "iteration": 9,
-      "timestamp": "2026-02-26T12:45:54.521596",
+      "timestamp": "2026-02-26T14:31:26.140379",
       "params": {
-        "wall": 5.5,
+        "wall": 3.0,
         "int_x": 95.0,
         "int_y": 68.0,
-        "int_z": 158.0,
+        "int_z": 130.0,
         "vent_w": 20.0,
-        "vent_h": 55.0,
+        "vent_h": 50.0,
         "n_vents": 20,
         "boss_od": 7.0,
         "boss_h": 5.0,
         "has_wheels": 1,
         "wheel_dia": 65.0,
         "wheel_width": 26.0,
-        "ground_clear": 15.0,
-        "gear_ratio": 5.0
+        "ground_clear": 13.0,
+        "gear_ratio": 5.0,
+        "pos_18650_x2_x": 0.0,
+        "pos_18650_x2_y": 20.0,
+        "pos_18650_x2_z": 0.0,
+        "pos_powerboost_x": -32.0,
+        "pos_powerboost_y": 5.0,
+        "pos_powerboost_z": 0.0,
+        "pos_nema17_x": 0.0,
+        "pos_nema17_y": 12.5,
+        "pos_nema17_z": 30.0,
+        "pos_pi_5_x": -10.0,
+        "pos_pi_5_y": 5.0,
+        "pos_pi_5_z": 100.0,
+        "pos_coral_x": 0.0,
+        "pos_coral_y": 14.0,
+        "pos_coral_z": 115.0,
+        "pos_rp2040_x": 0.0,
+        "pos_rp2040_y": -10.0,
+        "pos_rp2040_z": 125.0,
+        "pos_lsm6dsox_x": 20.0,
+        "pos_lsm6dsox_y": 18.0,
+        "pos_lsm6dsox_z": 130.0,
+        "pos_ina219_x": -35.0,
+        "pos_ina219_y": 10.0,
+        "pos_ina219_z": 130.0
       },
       "metrics": {
-        "fitness": 0.07766,
-        "safety_factor": 14014.7,
-        "stress_mpa": 0.00364,
-        "thermal_ratio": 0.3194,
-        "mass_g": 747.3,
-        "print_time_min": 1031.5,
-        "warp_mm": 0.212,
-        "warp_risk": 0.212,
-        "bed_area_mm2": 8374.0,
+        "fitness": 0.06566,
+        "safety_factor": 6919.5,
+        "stress_mpa": 0.00737,
+        "thermal_ratio": 0.3327,
+        "mass_g": 596.8,
+        "print_time_min": 561.2,
+        "warp_mm": 0.191,
+        "warp_risk": 0.191,
+        "bed_area_mm2": 6494.0,
         "adhesion_score": 1.0,
-        "shell_vol_cm3": 230.163,
-        "min_clearance_mm": 5.0,
-        "clearance_score": 0.417,
+        "shell_vol_cm3": 111.627,
+        "min_clearance_mm": -23.5,
         "outer_dims_mm": [
-          106.0,
-          79.0,
-          163.5
+          95.5,
+          68.0,
+          164.0
         ],
         "spatial": {
-          "composite_score": 0.6386,
+          "composite_score": 0.6889,
           "sub_scores": {
-            "stability": 0.6,
+            "stability": 0.707,
             "mobility": 1.0,
-            "packaging": 0.271,
-            "cog_quality": 0.553,
-            "mass": 0.677
+            "packaging": 0.258,
+            "cog_quality": 0.577,
+            "mass": 0.827
           },
           "cog": {
-            "cog_x": -0.55,
-            "cog_y": 0.0,
-            "cog_z": 75.24,
-            "total_mass_g": 1323.3,
-            "cog_height_ratio": 0.447
+            "cog_x": -1.22,
+            "cog_y": 6.74,
+            "cog_z": 63.81,
+            "total_mass_g": 1172.8,
+            "cog_height_ratio": 0.423
           },
           "stability": {
             "is_stable": true,
-            "margin_mm": 0.0,
-            "margin_pct": 0.0,
+            "margin_mm": 6.74,
+            "margin_pct": 10.7,
             "support_polygon": [
               [
-                -68.0,
+                -62.75,
                 0
               ],
               [
-                68.0,
+                62.75,
                 0
               ],
               [
                 0,
-                24.0
+                21.0
               ]
             ],
             "tip_angles": {
-              "forward": 17.6,
-              "backward": 0.0,
-              "left": 41.9,
-              "right": 42.3
+              "forward": 12.2,
+              "backward": 6.0,
+              "left": 33.0,
+              "right": 34.5
             }
           },
           "torque": {
             "available_wheel_torque_nm": 1.0,
-            "rolling_resistance_torque_nm": 0.0063,
+            "rolling_resistance_torque_nm": 0.0056,
             "max_incline_deg": 90.0,
             "top_speed_ms": 0.136,
             "top_speed_kmh": 0.49,
             "gear_ratio": 5.0,
             "incline_analysis": {
               "0\u00b0": {
-                "required_torque_nm": 0.0063,
+                "required_torque_nm": 0.0056,
                 "can_climb": true,
                 "torque_margin_pct": 99.4
               },
               "5\u00b0": {
-                "required_torque_nm": 0.0431,
+                "required_torque_nm": 0.0382,
                 "can_climb": true,
-                "torque_margin_pct": 95.7
+                "torque_margin_pct": 96.2
               },
               "10\u00b0": {
-                "required_torque_nm": 0.0796,
+                "required_torque_nm": 0.0705,
                 "can_climb": true,
-                "torque_margin_pct": 92.0
+                "torque_margin_pct": 92.9
               },
               "15\u00b0": {
-                "required_torque_nm": 0.1155,
+                "required_torque_nm": 0.1024,
                 "can_climb": true,
-                "torque_margin_pct": 88.4
+                "torque_margin_pct": 89.8
               },
               "20\u00b0": {
-                "required_torque_nm": 0.1506,
+                "required_torque_nm": 0.1335,
                 "can_climb": true,
-                "torque_margin_pct": 84.9
+                "torque_margin_pct": 86.7
               },
               "30\u00b0": {
-                "required_torque_nm": 0.2173,
+                "required_torque_nm": 0.1926,
                 "can_climb": true,
-                "torque_margin_pct": 78.3
+                "torque_margin_pct": 80.7
               }
             },
             "verdict": "MOBILE"
           },
           "collisions": {
             "has_collisions": true,
-            "clearance_violations": 5,
+            "clearance_violations": 3,
             "collision_pairs": [
               {
-                "a": "18650 \u00d72",
+                "a": "18650_x2",
                 "b": "PowerBoost",
-                "gap_mm": -3.5,
+                "gap_mm": -6.0,
+                "overlap": true
+              },
+              {
+                "a": "18650_x2",
+                "b": "NEMA17",
+                "gap_mm": -23.5,
                 "overlap": true
               },
               {
                 "a": "Pi 5",
                 "b": "Coral",
-                "gap_mm": 0.5,
-                "overlap": false
-              },
-              {
-                "a": "Coral",
-                "b": "LSM6DSOX",
-                "gap_mm": -1.5,
-                "overlap": true
-              },
-              {
-                "a": "Coral",
-                "b": "INA219",
-                "gap_mm": -1.5,
-                "overlap": true
-              },
-              {
-                "a": "RP2040",
-                "b": "INA219",
-                "gap_mm": -1.5,
+                "gap_mm": -2.0,
                 "overlap": true
               }
             ],
-            "min_clearance_mm": -3.5
+            "min_clearance_mm": -23.5
           },
           "wiring": {
             "routes": [
               {
-                "from": "18650 \u00d72",
+                "from": "18650_x2",
                 "to": "PowerBoost",
-                "distance_mm": 63.0
+                "distance_mm": 76.5
               },
               {
                 "from": "PowerBoost",
-                "to": "18650 \u00d72",
-                "distance_mm": 63.0
+                "to": "18650_x2",
+                "distance_mm": 76.5
               },
               {
                 "from": "PowerBoost",
                 "to": "Pi 5",
-                "distance_mm": 155.0
+                "distance_mm": 127.5
+              },
+              {
+                "from": "PowerBoost",
+                "to": "INA219",
+                "distance_mm": 137.5
               },
               {
                 "from": "Pi 5",
                 "to": "Coral",
-                "distance_mm": 37.0
+                "distance_mm": 29.5
               },
               {
                 "from": "Pi 5",
                 "to": "RP2040",
-                "distance_mm": 41.0
+                "distance_mm": 45.5
               },
               {
                 "from": "Coral",
                 "to": "Pi 5",
-                "distance_mm": 37.0
+                "distance_mm": 29.5
               },
               {
                 "from": "RP2040",
                 "to": "Pi 5",
-                "distance_mm": 41.0
+                "distance_mm": 45.5
               },
               {
                 "from": "RP2040",
                 "to": "LSM6DSOX",
-                "distance_mm": 49.0
+                "distance_mm": 51.5
               },
               {
                 "from": "RP2040",
                 "to": "INA219",
-                "distance_mm": 38.0
+                "distance_mm": 58.5
               },
               {
                 "from": "LSM6DSOX",
                 "to": "RP2040",
-                "distance_mm": 49.0
+                "distance_mm": 51.5
               },
               {
                 "from": "INA219",
                 "to": "RP2040",
-                "distance_mm": 38.0
+                "distance_mm": 58.5
               },
               {
                 "from": "INA219",
                 "to": "PowerBoost",
-                "distance_mm": 164.0
+                "distance_mm": 137.5
               }
             ],
-            "total_wire_mm": 775.0,
-            "avg_distance_mm": 64.6,
-            "routing_score": 0.677
+            "total_wire_mm": 925.5,
+            "avg_distance_mm": 71.2,
+            "routing_score": 0.644
           }
         },
         "sub_scores": {
-          "spatial": 0.639,
+          "spatial": 0.689,
           "structural": 1.0,
           "thermal": 1.0,
-          "mass": 0.502,
-          "print": 1.433
+          "mass": 0.602,
+          "print": 0.221
         }
       },
       "print_sim": {
         "iteration": 9,
         "verdict": "FAIL",
-        "filament_length_m": 95.69,
+        "filament_length_m": 46.41,
         "removal_risk": "LOW",
         "recommendations": [
           "Reduce wall thickness or int_z to lower mass",
-          "Safety factor 14014.7x is excessive \u2014 reduce wall to save mass"
+          "Safety factor 6919.5x is excessive \u2014 reduce wall to save mass"
         ]
       },
       "improved": true,
-      "delta_fitness": 0.0005,
-      "changed_param": "int_z",
-      "changed_by": 10.0
+      "delta_fitness": 0.00022,
+      "changed_param": "pos_rp2040_z",
+      "changed_by": -5.0
     },
     {
       "iteration": 10,
-      "timestamp": "2026-02-26T12:45:54.531367",
+      "timestamp": "2026-02-26T14:31:26.170463",
       "params": {
-        "wall": 5.5,
+        "wall": 3.0,
         "int_x": 95.0,
         "int_y": 68.0,
-        "int_z": 165.0,
+        "int_z": 130.0,
         "vent_w": 20.0,
-        "vent_h": 55.0,
+        "vent_h": 50.0,
         "n_vents": 20,
         "boss_od": 7.0,
         "boss_h": 5.0,
         "has_wheels": 1,
         "wheel_dia": 65.0,
         "wheel_width": 26.0,
-        "ground_clear": 15.0,
-        "gear_ratio": 5.0
+        "ground_clear": 13.0,
+        "gear_ratio": 5.0,
+        "pos_18650_x2_x": 0.0,
+        "pos_18650_x2_y": 20.0,
+        "pos_18650_x2_z": 0.0,
+        "pos_powerboost_x": -32.0,
+        "pos_powerboost_y": 5.0,
+        "pos_powerboost_z": 0.0,
+        "pos_nema17_x": 0.0,
+        "pos_nema17_y": 12.5,
+        "pos_nema17_z": 20.0,
+        "pos_pi_5_x": -10.0,
+        "pos_pi_5_y": 5.0,
+        "pos_pi_5_z": 100.0,
+        "pos_coral_x": 0.0,
+        "pos_coral_y": 14.0,
+        "pos_coral_z": 115.0,
+        "pos_rp2040_x": 0.0,
+        "pos_rp2040_y": -10.0,
+        "pos_rp2040_z": 125.0,
+        "pos_lsm6dsox_x": 20.0,
+        "pos_lsm6dsox_y": 18.0,
+        "pos_lsm6dsox_z": 130.0,
+        "pos_ina219_x": -35.0,
+        "pos_ina219_y": 10.0,
+        "pos_ina219_z": 130.0
       },
       "metrics": {
-        "fitness": 0.07803,
-        "safety_factor": 14014.7,
-        "stress_mpa": 0.00364,
-        "thermal_ratio": 0.3079,
-        "mass_g": 764.3,
-        "print_time_min": 1075.7,
-        "warp_mm": 0.212,
-        "warp_risk": 0.212,
-        "bed_area_mm2": 8374.0,
+        "fitness": 0.06581,
+        "safety_factor": 6919.5,
+        "stress_mpa": 0.00737,
+        "thermal_ratio": 0.3327,
+        "mass_g": 596.8,
+        "print_time_min": 561.2,
+        "warp_mm": 0.191,
+        "warp_risk": 0.191,
+        "bed_area_mm2": 6494.0,
         "adhesion_score": 1.0,
-        "shell_vol_cm3": 243.561,
-        "min_clearance_mm": 5.0,
-        "clearance_score": 0.417,
+        "shell_vol_cm3": 111.627,
+        "min_clearance_mm": -23.5,
         "outer_dims_mm": [
-          106.0,
-          79.0,
-          170.5
+          95.5,
+          68.0,
+          164.0
         ],
         "spatial": {
-          "composite_score": 0.6364,
+          "composite_score": 0.6913,
           "sub_scores": {
-            "stability": 0.6,
+            "stability": 0.707,
             "mobility": 1.0,
-            "packaging": 0.271,
-            "cog_quality": 0.555,
-            "mass": 0.66
+            "packaging": 0.258,
+            "cog_quality": 0.593,
+            "mass": 0.827
           },
           "cog": {
-            "cog_x": -0.54,
-            "cog_y": 0.0,
-            "cog_z": 75.04,
-            "total_mass_g": 1340.3,
-            "cog_height_ratio": 0.445
+            "cog_x": -1.22,
+            "cog_y": 6.74,
+            "cog_z": 61.43,
+            "total_mass_g": 1172.8,
+            "cog_height_ratio": 0.407
           },
           "stability": {
             "is_stable": true,
-            "margin_mm": 0.0,
-            "margin_pct": 0.0,
+            "margin_mm": 6.74,
+            "margin_pct": 10.7,
             "support_polygon": [
               [
-                -68.0,
+                -62.75,
                 0
               ],
               [
-                68.0,
+                62.75,
                 0
               ],
               [
                 0,
-                24.0
+                21.0
               ]
             ],
             "tip_angles": {
-              "forward": 17.6,
-              "backward": 0.0,
-              "left": 42.0,
-              "right": 42.4
+              "forward": 12.7,
+              "backward": 6.3,
+              "left": 34.0,
+              "right": 35.5
             }
           },
           "torque": {
             "available_wheel_torque_nm": 1.0,
-            "rolling_resistance_torque_nm": 0.0064,
+            "rolling_resistance_torque_nm": 0.0056,
             "max_incline_deg": 90.0,
             "top_speed_ms": 0.136,
             "top_speed_kmh": 0.49,
             "gear_ratio": 5.0,
             "incline_analysis": {
               "0\u00b0": {
-                "required_torque_nm": 0.0064,
+                "required_torque_nm": 0.0056,
                 "can_climb": true,
                 "torque_margin_pct": 99.4
               },
               "5\u00b0": {
-                "required_torque_nm": 0.0437,
+                "required_torque_nm": 0.0382,
                 "can_climb": true,
-                "torque_margin_pct": 95.6
+                "torque_margin_pct": 96.2
               },
               "10\u00b0": {
-                "required_torque_nm": 0.0806,
+                "required_torque_nm": 0.0705,
                 "can_climb": true,
-                "torque_margin_pct": 91.9
+                "torque_margin_pct": 92.9
               },
               "15\u00b0": {
-                "required_torque_nm": 0.117,
+                "required_torque_nm": 0.1024,
                 "can_climb": true,
-                "torque_margin_pct": 88.3
+                "torque_margin_pct": 89.8
               },
               "20\u00b0": {
-                "required_torque_nm": 0.1526,
+                "required_torque_nm": 0.1335,
                 "can_climb": true,
-                "torque_margin_pct": 84.7
+                "torque_margin_pct": 86.7
               },
               "30\u00b0": {
-                "required_torque_nm": 0.2201,
+                "required_torque_nm": 0.1926,
                 "can_climb": true,
-                "torque_margin_pct": 78.0
+                "torque_margin_pct": 80.7
               }
             },
             "verdict": "MOBILE"
           },
           "collisions": {
             "has_collisions": true,
-            "clearance_violations": 5,
+            "clearance_violations": 3,
             "collision_pairs": [
               {
-                "a": "18650 \u00d72",
+                "a": "18650_x2",
                 "b": "PowerBoost",
-                "gap_mm": -3.5,
+                "gap_mm": -6.0,
+                "overlap": true
+              },
+              {
+                "a": "18650_x2",
+                "b": "NEMA17",
+                "gap_mm": -23.5,
                 "overlap": true
               },
               {
                 "a": "Pi 5",
                 "b": "Coral",
-                "gap_mm": 0.5,
-                "overlap": false
-              },
-              {
-                "a": "Coral",
-                "b": "LSM6DSOX",
-                "gap_mm": -1.5,
-                "overlap": true
-              },
-              {
-                "a": "Coral",
-                "b": "INA219",
-                "gap_mm": -1.5,
-                "overlap": true
-              },
-              {
-                "a": "RP2040",
-                "b": "INA219",
-                "gap_mm": -1.5,
+                "gap_mm": -2.0,
                 "overlap": true
               }
             ],
-            "min_clearance_mm": -3.5
+            "min_clearance_mm": -23.5
           },
           "wiring": {
             "routes": [
               {
-                "from": "18650 \u00d72",
+                "from": "18650_x2",
                 "to": "PowerBoost",
-                "distance_mm": 63.0
+                "distance_mm": 76.5
               },
               {
                 "from": "PowerBoost",
-                "to": "18650 \u00d72",
-                "distance_mm": 63.0
+                "to": "18650_x2",
+                "distance_mm": 76.5
               },
               {
                 "from": "PowerBoost",
                 "to": "Pi 5",
-                "distance_mm": 155.0
+                "distance_mm": 127.5
+              },
+              {
+                "from": "PowerBoost",
+                "to": "INA219",
+                "distance_mm": 137.5
               },
               {
                 "from": "Pi 5",
                 "to": "Coral",
-                "distance_mm": 37.0
+                "distance_mm": 29.5
               },
               {
                 "from": "Pi 5",
                 "to": "RP2040",
-                "distance_mm": 41.0
+                "distance_mm": 45.5
               },
               {
                 "from": "Coral",
                 "to": "Pi 5",
-                "distance_mm": 37.0
+                "distance_mm": 29.5
               },
               {
                 "from": "RP2040",
                 "to": "Pi 5",
-                "distance_mm": 41.0
+                "distance_mm": 45.5
               },
               {
                 "from": "RP2040",
                 "to": "LSM6DSOX",
-                "distance_mm": 49.0
+                "distance_mm": 51.5
               },
               {
                 "from": "RP2040",
                 "to": "INA219",
-                "distance_mm": 38.0
+                "distance_mm": 58.5
               },
               {
                 "from": "LSM6DSOX",
                 "to": "RP2040",
-                "distance_mm": 49.0
+                "distance_mm": 51.5
               },
               {
                 "from": "INA219",
                 "to": "RP2040",
-                "distance_mm": 38.0
+                "distance_mm": 58.5
               },
               {
                 "from": "INA219",
                 "to": "PowerBoost",
-                "distance_mm": 164.0
+                "distance_mm": 137.5
               }
             ],
-            "total_wire_mm": 775.0,
-            "avg_distance_mm": 64.6,
-            "routing_score": 0.677
+            "total_wire_mm": 925.5,
+            "avg_distance_mm": 71.2,
+            "routing_score": 0.644
           }
         },
         "sub_scores": {
-          "spatial": 0.636,
+          "spatial": 0.691,
           "structural": 1.0,
           "thermal": 1.0,
-          "mass": 0.49,
-          "print": 1.494
+          "mass": 0.602,
+          "print": 0.221
         }
       },
       "print_sim": {
         "iteration": 10,
         "verdict": "FAIL",
-        "filament_length_m": 101.26,
+        "filament_length_m": 46.41,
         "removal_risk": "LOW",
         "recommendations": [
           "Reduce wall thickness or int_z to lower mass",
-          "Safety factor 14014.7x is excessive \u2014 reduce wall to save mass"
+          "Safety factor 6919.5x is excessive \u2014 reduce wall to save mass"
         ]
       },
       "improved": true,
-      "delta_fitness": 0.00037,
-      "changed_param": "int_z",
-      "changed_by": 10.0
+      "delta_fitness": 0.00015,
+      "changed_param": "pos_nema17_z",
+      "changed_by": -10.0
     }
   ],
   "payload_summary": {

@@ -147,125 +147,124 @@ PI5_MIN_Y    = 58.0
 NEMA17_FACE  = 42.0
 
 # Tunable parameter search space: {name: (min, max, step)}
+# Tunable parameter search space: {name: (min, max, step)}
+# The "DNA" now includes the 3D position of every internal organ.
 SEARCH_SPACE = {
-    "wall":    (MIN_WALL, 5.5,  0.25),
-    "int_x":  (PI5_MIN_X + MIN_CLEARANCE*2, 115.0, 2.0),
-    "int_y":  (PI5_MIN_Y + MIN_CLEARANCE*2, 88.0,  2.0),
-    "int_z":  (118.0, 165.0, 5.0),
-    "vent_w": (8.0,   20.0,  2.0),
-    "vent_h": (25.0,  55.0,  5.0),
-    "n_vents":(8,     20,    2),
-    "wheel_dia": (40.0, 90.0, 5.0),
-    "ground_clear": (10.0, 30.0, 2.0),
-    "gear_ratio": (1.0, 15.0, 1.0),
+    "wall":    (MIN_WALL, 5.0,  0.5),
+    "ground_clear": (12.0, 30.0, 2.0),
+    "gear_ratio": (1.0, 10.0, 1.0),
+    # Cooling
+    "vent_w": (8.0, 20.0, 4.0),
+    "vent_h": (25.0, 50.0, 5.0),
+    "n_vents": (8, 20, 4),
 }
 
+# Add Genetic DNA for each organ (positional mutation)
+# Format: pos_<organ_id>: [x_min, x_max, y_min, y_max, z_min, z_max]
+# Since the hill climber works on scalar params, we'll flatten these
+from physics_engine import ORGANS
+for organ_name in ORGANS.keys():
+    key = organ_name.replace(" ", "_").lower()
+    # We allow organs to move within a ±60mm box, and up to 150mm high
+    SEARCH_SPACE[f"pos_{key}_x"] = (-60.0, 60.0, 5.0)
+    SEARCH_SPACE[f"pos_{key}_y"] = (-60.0, 60.0, 5.0)
+    SEARCH_SPACE[f"pos_{key}_z"] = (0.0, 130.0, 5.0)
+
+# Legacy clamp loop needs to handle the new flattened keys
+for _k, _bounds in SEARCH_SPACE.items():
+    _min, _max, _step = _bounds
+    if _k in INITIAL_PARAMS:
+        INITIAL_PARAMS[_k] = max(_min, min(_max, INITIAL_PARAMS[_k]))
+
+# Initialize organ positions in INITIAL_PARAMS to the legacy stack
+def _init_dna(p):
+    p["pos_18650_x2_x"] = 0.0;     p["pos_18650_x2_y"] = 0.0;     p["pos_18650_x2_z"] = 0.0
+    p["pos_powerboost_x"] = -42.0; p["pos_powerboost_y"] = 5.0;   p["pos_powerboost_z"] = 0.0
+    p["pos_nema17_x"] = 0.0;       p["pos_nema17_y"] = 0.0;       p["pos_nema17_z"] = 70.0
+    p["pos_pi_5_x"] = 0.0;         p["pos_pi_5_y"] = 0.0;         p["pos_pi_5_z"] = 100.0
+    p["pos_coral_x"] = 0.0;        p["pos_coral_y"] = 24.0;      p["pos_coral_z"] = 115.0
+    p["pos_rp2040_x"] = 0.0;       p["pos_rp2040_y"] = -10.0;     p["pos_rp2040_z"] = 130.0
+    p["pos_lsm6dsox_x"] = 20.0;    p["pos_lsm6dsox_y"] = 18.0;    p["pos_lsm6dsox_z"] = 130.0
+    p["pos_ina219_x"] = -35.0;     p["pos_ina219_y"] = 10.0;      p["pos_ina219_z"] = 130.0
+
+_init_dna(INITIAL_PARAMS)
 
 # ─────────────────────────────────────────────────────────────────────────────
 # PHYSICS FITNESS FUNCTION
 # ─────────────────────────────────────────────────────────────────────────────
 def compute_fitness(p: dict) -> dict:
     """
-    Evaluate a parameter set using real material physics.
-    Returns a dict with all sub-scores and a composite fitness (0–1).
+    Evaluate a parameter set using real material physics and dynamic layout DNA.
     """
-    wall   = p["wall"]
-    int_x  = p["int_x"];  int_y = p["int_y"];  int_z = p["int_z"]
-    vent_w = p["vent_w"]; vent_h = p["vent_h"]; n_vents = p["n_vents"]
-    boss_od = p.get("boss_od", 7.0)
-    boss_h  = p.get("boss_h",  5.0)
+    # 1. Standard Physical Params
+    wall    = float(p.get("wall", 3.0))
+    vent_w  = float(p.get("vent_w", 12.0))
+    vent_h  = float(p.get("vent_h", 35.0))
+    n_vents = int(p.get("n_vents", 12))
+    boss_od = float(p.get("boss_od", 7.0))
+    boss_h  = float(p.get("boss_h", 5.0))
 
-    out_x = int_x + 2 * wall
-    out_y = int_y + 2 * wall
-    out_z = int_z + wall        # open top for lid
+    # 2. Convert DNA to Layout
+    dna_params = copy.deepcopy(p)
+    from physics_engine import ORGANS, generate_dynamic_layout, evaluate_design
+    for name in ORGANS.keys():
+        key = name.replace(" ", "_").lower()
+        dna_params[f"pos_{key}"] = [
+            p.get(f"pos_{key}_x", 0.0),
+            p.get(f"pos_{key}_y", 0.0),
+            p.get(f"pos_{key}_z", 0.0)
+        ]
 
-    # ── 1. STRUCTURAL SAFETY FACTOR ──────────────────────────────────────────
-    # Payload compresses the 4 outer walls in the Z axis.
-    # Treat as uniform axial compression: σ = F / A_walls
-    # A_walls = perimeter of shell cross-section × wall thickness
-    perimeter = 2 * (out_x + out_y)                    # mm
-    A_walls_mm2 = perimeter * wall - 4 * wall**2        # subtract corners (counted twice)
-    A_walls_m2  = A_walls_mm2 * 1e-6                   # m²
-    stress_Pa   = TOTAL_PAYLOAD_N / A_walls_m2          # Pa
-    stress_MPa  = stress_Pa * 1e-6                      # MPa
-    safety_factor = PETG_YIELD_MPa / stress_MPa         # dimensionless (higher = safer)
-    ssf_score     = min(1.0, safety_factor / 20.0)      # safety factor of 20 = 1.0
+    layout = generate_dynamic_layout(dna_params)
+    
+    # Deriving Internal Dimensions from Organ Packing
+    int_x = float(layout["int_x"])
+    int_y = float(layout["int_y"])
+    int_z = max(c.z + c.h/2 for c in layout["components"]) + 10.0
+    
+    out_x = int_x + 2.0 * wall
+    out_y = int_y + 2.0 * wall
+    out_z = int_z + wall
 
-    # ── 2. THERMAL VENT RATIO ─────────────────────────────────────────────────
-    # Vent slots cut through all 4 walls. We have n_vents split across 4 sides.
-    total_vent_area_mm2  = n_vents * vent_w * vent_h    # total vent open area mm²
-    chassis_surface_mm2  = (                            # all exterior faces
-        2 * (out_x * out_z) +
-        2 * (out_y * out_z) +
-        out_x * out_y                                   # bottom (top is open/lid)
-    )
+    # 3. Structural Safety Factor
+    perimeter = 2.0 * (out_x + out_y)
+    A_walls_mm2 = perimeter * wall - 4.0 * wall**2
+    A_walls_m2  = A_walls_mm2 * 1e-6
+    stress_Pa   = TOTAL_PAYLOAD_N / A_walls_m2
+    stress_MPa  = stress_Pa * 1e-6
+    safety_factor = PETG_YIELD_MPa / stress_MPa
+    ssf_score     = min(1.0, safety_factor / 20.0)
+
+    # 4. Thermal Score
+    total_vent_area_mm2  = n_vents * vent_w * vent_h
+    chassis_surface_mm2  = (2 * (out_x * out_z) + 2 * (out_y * out_z) + out_x * out_y)
     thermal_ratio = total_vent_area_mm2 / chassis_surface_mm2
-    thermal_score = min(1.0, thermal_ratio / 0.15)  # 15% vent-to-surface ratio = 1.0
+    thermal_score = min(1.0, thermal_ratio / 0.15)
 
-    # ── 3. PETG MASS ──────────────────────────────────────────────────────────
-    # Shell volume = outer box − inner cavity − vent volumes + boss volumes
-    outer_vol_mm3  = out_x * out_y * out_z
-    inner_vol_mm3  = int_x * int_y * int_z
-    vent_vol_mm3   = n_vents * vent_w * vent_h * wall   # through-wall cutouts
-    n_bosses       = 14                                  # counted in SCAD (Pi4 + camera2 + sensor6 + NEMA4-holes≈not material)
-    boss_vol_mm3   = n_bosses * math.pi * (boss_od/2)**2 * boss_h
-    shell_vol_mm3  = outer_vol_mm3 - inner_vol_mm3 - vent_vol_mm3 + boss_vol_mm3
-    shell_vol_cm3  = max(0, shell_vol_mm3) / 1000.0
-    mass_g         = shell_vol_cm3 * PETG_DENSITY       # grams
-    if p.get("has_wheels", 0):
-        # 2 rubber wheels + caster + motors estimate
-        mass_g += 80 * 2 + 15 + 280   # 160g wheels + 15g caster + 280g NEMA17(base)
-    mass_score = max(0.0, 1.0 - mass_g / 1500.0)  # 1.5kg = zero score
+    # 5. PETG Mass
+    shell_vol_mm3 = (out_x * out_y * out_z) - (int_x * int_y * int_z) - (total_vent_area_mm2 * wall)
+    shell_vol_cm3 = max(0.0, shell_vol_mm3) / 1000.0
+    mass_g = shell_vol_cm3 * PETG_DENSITY
+    if p.get("has_wheels", 1):
+        mass_g += 160 + 15 + 280 # wheels + caster + motor base
+    mass_score = max(0.0, 1.0 - mass_g / 1500.0)
 
-    # ── 4. PRINT TIME ─────────────────────────────────────────────────────────
-    # Prusa XL: perimeter passes + top/bottom solid layers + sparse infill (15%)
-    perimeters_per_layer = wall / NOZZLE_DIA_MM           # number of perimeter loops
-    n_layers             = out_z / LAYER_HEIGHT_MM
-    # Path length per layer: perimeter loop × number of perimeters + infill estimate
-    path_per_layer_mm    = (2 * (out_x + out_y)) * perimeters_per_layer + 0.15 * int_x * int_y
-    total_path_mm        = n_layers * path_per_layer_mm
-    print_time_s         = total_path_mm / PRINT_SPEED_MM_S
-    print_time_min       = print_time_s / 60.0
+    # 6. Print Time
+    perimeters_per_layer = wall / NOZZLE_DIA_MM
+    n_layers = out_z / LAYER_HEIGHT_MM
+    path_per_layer_mm = (2.0 * (out_x + out_y)) * perimeters_per_layer + 0.15 * int_x * int_y
+    total_path_mm = n_layers * path_per_layer_mm
+    print_time_min = (total_path_mm / PRINT_SPEED_MM_S) / 60.0
+    print_score = max(0.0, 1.0 - print_time_min / 720.0)
 
-    # ── 5. PETG WARP RISK ─────────────────────────────────────────────────────
-    # Linear shrinkage formula: δ = α × ΔT × L
-    # PETG: α = 5×10⁻⁵ /°C, ΔT = 40°C (glass→ambient for residual stress zone)
-    max_span      = max(out_x, out_y)                   # mm — longest unsupported span
-    warp_mm       = PETG_ALPHA * PETG_DELTA_T * max_span  # mm displacement at corners
-    # Risk score 0–1: 0.1mm acceptable, 1.0mm = serious problem
-    warp_risk     = min(1.0, warp_mm / 1.0)
+    # 7. PETG Warp & Bed Adhesion
+    max_span = max(out_x, out_y)
+    warp_mm = PETG_ALPHA * PETG_DELTA_T * max_span
+    warp_risk = min(1.0, warp_mm / 1.0)
+    bed_area_mm2 = out_x * out_y
+    adhesion_score = min(1.0, bed_area_mm2 / 4000.0)
 
-    # ── 6. BED ADHESION ───────────────────────────────────────────────────────
-    # PETG bonds well to PEI sheet. First-layer footprint must be >4000mm² for
-    # good adhesion without brim. Formula: adhesion_score based on footprint area.
-    bed_area_mm2  = out_x * out_y                       # first-layer footprint
-    adhesion_score = min(1.0, bed_area_mm2 / 4000.0)   # normalised (4000mm² = 1.0)
-
-    # ── 7. COMPONENT CLEARANCE MARGINS ────────────────────────────────────────
-    # Margin = (cavity − component) / 2 per side
-    pi5_margin_x  = (int_x - PI5_MIN_X) / 2.0
-    pi5_margin_y  = (int_y - PI5_MIN_Y) / 2.0
-    nema_margin_x = (int_x - NEMA17_FACE) / 2.0
-    nema_margin_y = (int_y - NEMA17_FACE) / 2.0
-    min_margin    = min(pi5_margin_x, pi5_margin_y, nema_margin_x, nema_margin_y)
-    clearance_score = min(1.0, max(0.0, min_margin / 12.0))  # 12mm = perfect score
-
-    # ── 8. OVERHANG RISK ──────────────────────────────────────────────────────
-    # Standoff bosses: horizontal ratio = (boss_od/2) / boss_h
-    # At 45° rule: ratio ≤ 1.0 is safe (tan45° = 1)
-    boss_overhang_ratio = (boss_od / 2.0) / boss_h     # ≤ 1.0 = safe
-    overhang_risk       = max(0.0, boss_overhang_ratio - 1.0)  # 0 = safe
-
-    # ── 9. SPATIAL REASONING SCORE (v2.0 Logic) ──────────────────────────────
-    # Initialize component layout with current params
-    layout = default_v2_layout(
-        ground_clear=p.get("ground_clear", 15.0),
-        wall=wall,
-        int_x=int_x,
-        int_y=int_y,
-        gear_ratio=p.get("gear_ratio", 5.0)
-    )
-
+    # 8. Spatial & Stability Score (Evaluated with final dimensions)
     spatial = evaluate_design(
         layout["components"],
         layout["contacts"],
@@ -273,44 +272,41 @@ def compute_fitness(p: dict) -> dict:
         chassis_mass_g=mass_g
     )
 
-    # ── 10. COMPOSITE FITNESS ──────────────────────────────────────────────────
-    # Weights re-balanced for engineering intelligence
-    # Spatial score (includes stability, mobility, packaging, CoG) accounts for 60%
+    # 9. Composite Fitness
     fitness = (
         0.60 * spatial["composite_score"] +
         0.10 * ssf_score +
-        0.10 * thermal_score +
+        0.05 * thermal_score +
         0.10 * mass_score +
-        0.10 * print_time_min / 720.0 # printability weight
+        0.15 * print_score
     )
-
-    # Penetration penalty: massive hit for overlapping components
+    
+    # Penalize violations
     if spatial["collisions"]["has_collisions"]:
         fitness *= 0.1
 
     return {
-        "fitness":        round(fitness, 5),
-        "safety_factor":  round(safety_factor, 1),
-        "stress_mpa":     round(stress_MPa, 5),
-        "thermal_ratio":  round(thermal_ratio, 4),
-        "mass_g":         round(mass_g, 1),
-        "print_time_min": round(print_time_min, 1),
-        "warp_mm":        round(warp_mm, 3),
-        "warp_risk":      round(warp_risk, 4),
-        "bed_area_mm2":   round(bed_area_mm2, 1),
-        "adhesion_score": round(adhesion_score, 3),
-        "shell_vol_cm3":  round(shell_vol_cm3, 3), # Needed for simulate_print_pull
-        "min_clearance_mm": round(min_margin, 2),  # Needed for simulate_print_pull
-        "clearance_score":  round(clearance_score, 3),
-        "outer_dims_mm":  [round(out_x, 1), round(out_y, 1), round(out_z, 1)],
-        "spatial":        spatial, # Full physics breakdown
+        "fitness":        round(float(fitness), 5),
+        "safety_factor":  round(float(safety_factor), 1),
+        "stress_mpa":     round(float(stress_MPa), 5),
+        "thermal_ratio":  round(float(thermal_ratio), 4),
+        "mass_g":         round(float(mass_g), 1),
+        "print_time_min": round(float(print_time_min), 1),
+        "warp_mm":        round(float(warp_mm), 3),
+        "warp_risk":      round(float(warp_risk), 4),
+        "bed_area_mm2":   round(float(bed_area_mm2), 1),
+        "adhesion_score": round(float(adhesion_score), 3),
+        "shell_vol_cm3":  round(float(shell_vol_cm3), 3),
+        "min_clearance_mm": round(float(spatial["collisions"]["min_clearance_mm"]), 2),
+        "outer_dims_mm":  [round(float(out_x), 1), round(float(out_y), 1), round(float(out_z), 1)],
+        "spatial":        spatial,
         "sub_scores": {
-            "spatial":     round(spatial["composite_score"], 3),
-            "structural":  round(ssf_score, 3),
-            "thermal":     round(thermal_score, 3),
-            "mass":        round(mass_score, 3),
-            "print":       round(print_time_min / 720.0, 3)
-        },
+            "spatial":     round(float(spatial["composite_score"]), 3),
+            "structural":  round(float(ssf_score), 3),
+            "thermal":     round(float(thermal_score), 3),
+            "mass":        round(float(mass_score), 3),
+            "print":       round(float(print_score), 3)
+        }
     }
 
 
@@ -319,12 +315,7 @@ def compute_fitness(p: dict) -> dict:
 # ─────────────────────────────────────────────────────────────────────────────
 def is_valid(p: dict) -> bool:
     """Enforce hard physical constraints."""
-    if p["wall"]  < MIN_WALL:                       return False
-    if p["int_x"] < PI5_MIN_X + MIN_CLEARANCE * 2: return False
-    if p["int_y"] < PI5_MIN_Y + MIN_CLEARANCE * 2: return False
-    if p["int_z"] < 118.0:                          return False
-    if p["vent_w"] <= 0 or p["vent_h"] <= 0:       return False
-    if p["n_vents"] < 4:                            return False
+    if p.get("wall", 0) < MIN_WALL: return False
     return True
 
 
@@ -541,6 +532,15 @@ def run(iterations: int = 10):
 
     # For local scope visibility in reasoning_engine log call later
     globals()["start_iter"] = start_iter
+
+    # Clamp INITIAL_PARAMS to SEARCH_SPACE bounds before we start
+    for _k, (_min, _max, _step) in SEARCH_SPACE.items():
+        if _k in INITIAL_PARAMS:
+            # Coerce to int if necessary
+            val = max(_min, min(_max, INITIAL_PARAMS[_k]))
+            if _k == "n_vents":
+                val = int(round(val))
+            INITIAL_PARAMS[_k] = val
 
     # Baseline
     baseline = compute_fitness(INITIAL_PARAMS)

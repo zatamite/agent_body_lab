@@ -1,5 +1,5 @@
-# Design Rationale — Body v1.0-creative
+# Design Rationale — Body v1.0-evolved-iter20
 
-**Timestamp:** 2026-02-26T12:45:54.573461
+**Timestamp:** 2026-02-26T14:31:26.171410
 
-Creative design exploration over 2 assemblies. Winner: 'Raspberry Pi 5 8GB + No external accelerator | MG996R Standard Servo | 4× Panasonic NCR18650B'. Fitness 0.6290, $279, 0 TOPS, 13.9h runtime.
+Chassis further optimized from Iter 10 to 20. Fitness improved +0.0016 to 0.0658. Mass: 597g, Safety: 6920x, Thermal: 33.3%.

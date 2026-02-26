@@ -547,62 +547,62 @@ def _ray_segment_intersect(origin: Tuple[float, float],
 # DEFAULT LAYOUT — v2.0 Physics-Based Component Arrangement
 # =============================================================================
 
-def default_v2_layout(ground_clear: float = 15.0,
-                      wall: float = 3.0,
-                      int_x: float = 95.0,
-                      int_y: float = 68.0,
-                      gear_ratio: float = 5.0) -> Dict:
+# Default Component Meta-Data (Internal Organs)
+# These are used as defaults when not overridden by DNA
+ORGANS = {
+    "18650_x2":    {"mass_g": 184, "dims": [40, 20, 65], "conn": ["PowerBoost"]},
+    "PowerBoost":  {"mass_g": 30,  "dims": [37, 23, 6],  "conn": ["18650_x2", "Pi 5", "INA219"]},
+    "NEMA17":      {"mass_g": 280, "dims": [42, 42, 42], "conn": ["Motor Driver"]},
+    "Pi 5":        {"mass_g": 43,  "dims": [85, 58, 17], "conn": ["Coral", "RP2040", "Camera"]},
+    "Coral":       {"mass_g": 25,  "dims": [65, 30, 8],  "conn": ["Pi 5"]},
+    "RP2040":      {"mass_g": 8,   "dims": [33, 18, 8],  "conn": ["Pi 5", "LSM6DSOX", "INA219"]},
+    "LSM6DSOX":    {"mass_g": 3,   "dims": [26, 18, 5],  "conn": ["RP2040"]},
+    "INA219":      {"mass_g": 3,   "dims": [26, 21, 5],  "conn": ["RP2040", "PowerBoost"]}
+}
+
+def generate_dynamic_layout(params: Dict) -> Dict:
     """
-    Generate a physically-correct component layout:
-      Layer 0 (bottom): Batteries (heaviest, lowest CoG)
-      Layer 1 (mid-low): NEMA17 motor (horizontal, drives gear)
-      Layer 2 (mid):     SBC + Accelerator
-      Layer 3 (top):     Sensor hub + Camera (needs line-of-sight)
+    Generates a layout where each organ's position is determined by params.
+    DNA format in params:
+      'pos_<organ_name>': [x, y, relative_z]
     """
-    # Z coordinates relative to chassis bottom (z=0 = floor panel top)
-    z_base = ground_clear + wall  # Bottom of internal cavity
-
-    # Layer 0: Batteries (184g combined) — LOWEST
-    batt_z = z_base + 34   # center of 65mm-tall battery stack
-
-    # Layer 1: Motor (280g) — slightly above batteries
-    motor_z = z_base + 65 + 5 + 21   # above batteries + clearance + half motor height
-
-    # Layer 2: SBC + accelerator
-    sbc_z = motor_z + 21 + 5 + 9    # above motor + clearance + half SBC height
-
-    # Layer 3: Sensor hub (top)
-    sensor_z = sbc_z + 9 + 5 + 4    # above SBC + clearance
-
-    components = [
-        # Batteries — bottom (heaviest = lowest CoG)
-        Component("18650 ×2", 184, 0, 0, batt_z, 40, 20, 65,
-                  connections=["PowerBoost"]),
-        Component("PowerBoost", 30, -20, -18, batt_z - 25, 37, 23, 6,
-                  connections=["18650 ×2", "Pi 5"]),
-
-        # Motor — mid-low (horizontal orientation)
-        Component("NEMA17", 280, 0, 0, motor_z, 42, 42, 42,
-                  connections=["Motor Driver"]),
-
-        # Compute — mid
-        Component("Pi 5", 43, 0, 0, sbc_z, 85, 58, 17,
-                  connections=["Coral", "RP2040", "Camera"]),
-        Component("Coral", 25, 0, 24, sbc_z + 13, 65, 30, 8,
-                  connections=["Pi 5"]),
-
-        # Sensors — top (line-of-sight)
-        Component("RP2040", 8, -8, -15, sensor_z, 33, 18, 8,
-                  connections=["Pi 5", "LSM6DSOX", "INA219"]),
-        Component("LSM6DSOX", 3, 8, 18, sensor_z, 26, 18, 5,
-                  connections=["RP2040"]),
-        Component("INA219", 3, -28, 3, sensor_z, 26, 21, 5,
-                  connections=["RP2040", "PowerBoost"]),
-    ]
-
+    ground_clear = float(params.get("ground_clear", 15.0))
+    wall = float(params.get("wall", 3.0))
+    z_base = ground_clear + wall
+    
+    components = []
+    for name, spec in ORGANS.items():
+        # Get position from DNA or fall back to 0,0,0
+        pos_key = f"pos_{name.replace(' ', '_').lower()}"
+        pos_list = params.get(pos_key, [0.0, 0.0, 0.0])
+        
+        # Ensure they are floats
+        dna_pos = [float(p) for p in pos_list]
+        
+        comp_x = dna_pos[0]
+        comp_y = dna_pos[1]
+        comp_h = float(spec["dims"][2])
+        comp_z = z_base + dna_pos[2] + comp_h / 2.0
+        
+        components.append(Component(
+            name, 
+            float(spec["mass_g"]),
+            comp_x, comp_y, comp_z,
+            float(spec["dims"][0]), float(spec["dims"][1]), comp_h,
+            connections=list(spec["conn"])
+        ))
+    
+    # Calculate required int_x/int_y to enclose these
+    all_min_x = min(c.bbox_min[0] for c in components)
+    all_max_x = max(c.bbox_max[0] for c in components)
+    all_min_y = min(c.bbox_min[1] for c in components)
+    all_max_y = max(c.bbox_max[1] for c in components)
+    
+    int_x = (all_max_x - all_min_x) + 4.0 # padding
+    int_y = (all_max_y - all_min_y) + 4.0 # padding
     out_x = int_x + 2 * wall
-    wheel_offset = out_x / 2 + 15  # wheels outside chassis
-
+    
+    wheel_offset = out_x / 2 + 15
     contacts = [
         WheelContact("Wheel R", wheel_offset, 0, 32.5),
         WheelContact("Wheel L", -wheel_offset, 0, 32.5),
@@ -612,7 +612,7 @@ def default_v2_layout(ground_clear: float = 15.0,
     drivetrain = DrivetrainConfig(
         motor_torque_nm=NEMA17_TORQUE_NM,
         motor_rpm=NEMA17_RPM,
-        gear_ratio=gear_ratio,
+        gear_ratio=float(params.get("gear_ratio", 5.0)),
         wheel_radius_mm=32.5,
         num_drive_wheels=2,
     )
@@ -621,7 +621,45 @@ def default_v2_layout(ground_clear: float = 15.0,
         "components": components,
         "contacts": contacts,
         "drivetrain": drivetrain,
+        "int_x": int_x,
+        "int_y": int_y
     }
+
+
+def default_v2_layout(ground_clear: float = 15.0,
+                      wall: float = 3.0,
+                      int_x: float = 95.0,
+                      int_y: float = 68.0,
+                      gear_ratio: float = 5.0) -> Dict:
+    """Legacy layout wrapper for backward compatibility."""
+    # Convert legacy vertical stack to the new param format
+    z_base = ground_clear + wall
+    
+    # Re-using the manual logic for now to ensure exact same behavior
+    batt_z = z_base + 34
+    motor_z = z_base + 65 + 5 + 21
+    sbc_z = motor_z + 21 + 5 + 9
+    sensor_z = sbc_z + 17 + 5 + 4
+
+    components = [
+        Component("18650 ×2", 184, 0, 0, batt_z, 40, 20, 65, connections=["PowerBoost"]),
+        Component("PowerBoost", 30, -42, 5, batt_z - 25, 37, 23, 6, connections=["18650 ×2", "Pi 5"]),
+        Component("NEMA17", 280, 0, 0, motor_z, 42, 42, 42, connections=["Motor Driver"]),
+        Component("Pi 5", 43, 0, 0, sbc_z, 85, 58, 17, connections=["Coral", "RP2040", "Camera"]),
+        Component("Coral", 25, 0, 24, sbc_z + 15, 65, 30, 8, connections=["Pi 5"]),
+        Component("RP2040", 8, 0, -10, sensor_z + 5, 33, 18, 8, connections=["Pi 5", "LSM6DSOX", "INA219"]),
+        Component("LSM6DSOX", 3, 20, 18, sensor_z + 5, 26, 18, 5, connections=["RP2040"]),
+        Component("INA219", 3, -35, 10, sensor_z + 5, 26, 21, 5, connections=["RP2040", "PowerBoost"]),
+    ]
+    out_x = int_x + 2 * wall
+    wheel_offset = out_x / 2 + 15
+    contacts = [
+        WheelContact("Wheel R", wheel_offset, 0, 32.5),
+        WheelContact("Wheel L", -wheel_offset, 0, 32.5),
+        WheelContact("Caster", 0, int_y / 2 - 10, 10),
+    ]
+    drivetrain = DrivetrainConfig(gear_ratio=gear_ratio)
+    return {"components": components, "contacts": contacts, "drivetrain": drivetrain}
 
 
 # =============================================================================
