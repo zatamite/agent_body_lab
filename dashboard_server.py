@@ -254,6 +254,55 @@ def api_run_evolution():
     return jsonify({"ok": True, "message": "Evolution started in background."})
 
 
+_creative_running = False
+
+@app.route("/api/creative-report")
+def api_creative_report():
+    """Return creative_report.json (top-3 competing body designs)."""
+    report = _load_json(ROOT / "creative_report.json")
+    if not report:
+        return jsonify({"ok": False, "message": "No creative report yet. Click 🎨 Explore Designs."}), 404
+    return jsonify(report)
+
+
+@app.route("/api/components-db")
+def api_components_db():
+    """Return the full components database."""
+    db = _load_json(ROOT / "components_db.json")
+    return jsonify(db)
+
+
+@app.route("/api/run-creative", methods=["POST"])
+def api_run_creative():
+    """Trigger creative_evolver.py in a background thread."""
+    global _creative_running
+    if _creative_running:
+        return jsonify({"ok": False, "message": "Creative exploration already running."}), 409
+
+    import flask
+    data   = flask.request.get_json(silent=True) or {}
+    pop    = int(data.get("population", 40))
+    budget = float(data.get("budget", 400.0))
+
+    def _run():
+        global _creative_running
+        _creative_running = True
+        try:
+            subprocess.run(
+                [sys.executable, str(ROOT / "creative_evolver.py"),
+                 "--pop", str(pop), "--budget", str(budget)],
+                cwd=ROOT, capture_output=False
+            )
+        finally:
+            _creative_running = False
+
+    threading.Thread(target=_run, daemon=True).start()
+    return jsonify({
+        "ok": True,
+        "message": f"Creative exploration started ({pop} assemblies, ${budget:.0f} budget). Refresh in ~5s."
+    })
+
+
 if __name__ == "__main__":
     print("\n  🌐  agent_body_lab Dashboard")
     print("  Open: http://localhost:5050\n")

@@ -1,0 +1,1095 @@
+{
+  "generated": "2026-02-26T11:33:21.018469",
+  "population": 40,
+  "budget_usd": 400.0,
+  "total_scored": 40,
+  "top3": [
+    {
+      "rank": 1,
+      "name": "Jetson Orin Nano 4GB Module + No external accelerator | MG996R Standard Servo | 2\u00d7 Panasonic NCR18650B",
+      "assembly": {
+        "sbc": {
+          "id": "jetson_orin_nano_4gb",
+          "name": "Jetson Orin Nano 4GB Module",
+          "cost": 199,
+          "dims_mm": [
+            70,
+            45,
+            14
+          ],
+          "mass_g": 50,
+          "power_idle_w": 3.0,
+          "power_max_w": 7.0,
+          "ram_gb": 4,
+          "cpu_ghz": 1.5,
+          "ai_tops": 20,
+          "interfaces": [
+            "usb3",
+            "pcie",
+            "csi",
+            "gpio"
+          ],
+          "mount": "M3_SO-DIMM_260pin",
+          "notes": "Built-in 20 TOPS GPU \u2014 no external accelerator needed",
+          "url": "https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/"
+        },
+        "accelerator": {
+          "id": "none",
+          "name": "No external accelerator",
+          "cost": 0,
+          "dims_mm": [
+            0,
+            0,
+            0
+          ],
+          "mass_g": 0,
+          "power_idle_w": 0,
+          "power_max_w": 0,
+          "ai_tops": 0,
+          "interface": "none",
+          "notes": "Use SBC's built-in NPU/GPU for inference",
+          "url": ""
+        },
+        "camera": {
+          "id": "ov9782_global",
+          "name": "Arducam OV9782 Global Shutter",
+          "cost": 40,
+          "dims_mm": [
+            25,
+            25,
+            10
+          ],
+          "mass_g": 6,
+          "power_max_w": 0.4,
+          "resolution_mp": 1.0,
+          "fov_deg": 90,
+          "interface": "CSI",
+          "mount": "M2_approx",
+          "notes": "Global shutter ideal for fast motion tracking",
+          "url": "https://www.arducam.com/product/arducam-1mp-ov9782-color-global-shutter-camera/"
+        },
+        "microphone": {
+          "id": "respeaker_2mic",
+          "name": "ReSpeaker 2-Mic Pi HAT",
+          "cost": 12,
+          "dims_mm": [
+            65,
+            30,
+            12
+          ],
+          "mass_g": 15,
+          "power_max_w": 0.15,
+          "channels": 2,
+          "snr_db": 61,
+          "interface": "HAT_GPIO",
+          "notes": "Stereo array with APA102 LEDs; larger footprint",
+          "url": "https://wiki.seeedstudio.com/ReSpeaker_2_Mics_Pi_HAT/"
+        },
+        "motor": {
+          "id": "servo_mg996r",
+          "name": "MG996R Standard Servo",
+          "cost": 6,
+          "dims_mm": [
+            40,
+            20,
+            37
+          ],
+          "mass_g": 55,
+          "power_max_w": 6.6,
+          "torque_ncm": 100,
+          "steps_per_rev": 0,
+          "interface": "PWM",
+          "mount": "standard_servo_horn",
+          "notes": "High torque, no driver needed. Not for precision positioning",
+          "url": "https://www.towerpro.com.tw/product/mg996r/"
+        },
+        "motor_driver": {
+          "id": "none_servo",
+          "name": "No driver (servo direct PWM)",
+          "cost": 0,
+          "dims_mm": [
+            0,
+            0,
+            0
+          ],
+          "mass_g": 0,
+          "power_max_w": 0,
+          "interface": "PWM_direct",
+          "notes": "Servos connect direct to GPIO, no driver board needed",
+          "url": ""
+        },
+        "sensor_hub": {
+          "id": "arduino_nano_esp32",
+          "name": "Arduino Nano ESP32",
+          "cost": 18,
+          "dims_mm": [
+            45,
+            18,
+            5
+          ],
+          "mass_g": 5,
+          "power_max_w": 1.0,
+          "interface": "USB_I2C_WIFI_BT",
+          "notes": "WiFi/BT built-in, useful for wireless sensor stream",
+          "url": "https://store.arduino.cc/products/nano-esp32"
+        },
+        "battery": {
+          "id": "18650_x2",
+          "name": "2\u00d7 Panasonic NCR18650B",
+          "cost": 18,
+          "dims_mm": [
+            39,
+            19,
+            65
+          ],
+          "mass_g": 184,
+          "capacity_mah": 6800,
+          "voltage_v": 7.4,
+          "energy_wh": 50.3,
+          "cells": 2,
+          "notes": "Good 3hr runtime at 12W average draw",
+          "url": "https://www.liionwholesale.com/products/panasonic-ncr18650b"
+        },
+        "power_mgmt": {
+          "id": "powerboost_1000c",
+          "name": "Adafruit PowerBoost 1000C",
+          "cost": 20,
+          "dims_mm": [
+            37,
+            23,
+            6
+          ],
+          "mass_g": 5,
+          "power_max_w": 5.0,
+          "notes": "1A charge + 1A boost. Best for Pi4/Pi5 with Coral at light load",
+          "url": "https://www.adafruit.com/product/2465"
+        },
+        "fixed_sensors": [
+          {
+            "name": "LSM6DSOX IMU",
+            "cost": 12,
+            "dims_mm": [
+              26,
+              18,
+              5
+            ],
+            "mass_g": 3,
+            "power_max_w": 0.01
+          },
+          {
+            "name": "BME688 Env Sensor",
+            "cost": 20,
+            "dims_mm": [
+              23,
+              18,
+              5
+            ],
+            "mass_g": 3,
+            "power_max_w": 0.01
+          },
+          {
+            "name": "INA219 Monitor",
+            "cost": 10,
+            "dims_mm": [
+              26,
+              21,
+              5
+            ],
+            "mass_g": 3,
+            "power_max_w": 0.01
+          },
+          {
+            "name": "LM2596 Buck 12V",
+            "cost": 8,
+            "dims_mm": [
+              43,
+              21,
+              14
+            ],
+            "mass_g": 15,
+            "power_max_w": 2.0
+          }
+        ]
+      },
+      "metrics": {
+        "fitness": 0.77666,
+        "bom_cost": 363,
+        "total_mass_g": 503.0,
+        "chassis_mass_g": 159.0,
+        "total_tops": 20,
+        "runtime_h": 7.04,
+        "idle_w": 7.14,
+        "safety_factor": 10295.0,
+        "thermal_ratio": 0.1478,
+        "warp_mm": 0.216,
+        "fits_printer": true,
+        "print_time_min": 432.8,
+        "chassis": {
+          "wall": 3.0,
+          "int_x": 102.0,
+          "int_y": 58.0,
+          "int_z": 128,
+          "out_x": 108.0,
+          "out_y": 64.0,
+          "out_z": 131.0,
+          "n_vents": 12,
+          "vent_w": 16,
+          "vent_h": 40
+        },
+        "sub_scores": {
+          "structural": 1.0,
+          "runtime": 1.0,
+          "ai_tops": 1.0,
+          "cost": 0.093,
+          "mass": 0.581,
+          "thermal": 0.739,
+          "warp": 0.784
+        }
+      }
+    },
+    {
+      "rank": 2,
+      "name": "Jetson Orin Nano 4GB Module + Google Coral USB Accelerator | NEMA11 Stepper 11HS20-0674S | 2\u00d7 Panasonic NCR18650B",
+      "assembly": {
+        "sbc": {
+          "id": "jetson_orin_nano_4gb",
+          "name": "Jetson Orin Nano 4GB Module",
+          "cost": 199,
+          "dims_mm": [
+            70,
+            45,
+            14
+          ],
+          "mass_g": 50,
+          "power_idle_w": 3.0,
+          "power_max_w": 7.0,
+          "ram_gb": 4,
+          "cpu_ghz": 1.5,
+          "ai_tops": 20,
+          "interfaces": [
+            "usb3",
+            "pcie",
+            "csi",
+            "gpio"
+          ],
+          "mount": "M3_SO-DIMM_260pin",
+          "notes": "Built-in 20 TOPS GPU \u2014 no external accelerator needed",
+          "url": "https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/"
+        },
+        "accelerator": {
+          "id": "coral_usb",
+          "name": "Google Coral USB Accelerator",
+          "cost": 60,
+          "dims_mm": [
+            65,
+            30,
+            8
+          ],
+          "mass_g": 25,
+          "power_idle_w": 0.5,
+          "power_max_w": 2.0,
+          "ai_tops": 4,
+          "interface": "USB3",
+          "notes": "Plug-and-play. Best for Pi5/Pi4",
+          "url": "https://coral.ai/products/accelerator"
+        },
+        "camera": {
+          "id": "cam3_wide",
+          "name": "Pi Camera Module 3 Wide",
+          "cost": 35,
+          "dims_mm": [
+            25,
+            24,
+            12
+          ],
+          "mass_g": 8,
+          "power_max_w": 0.5,
+          "resolution_mp": 12,
+          "fov_deg": 102,
+          "interface": "CSI",
+          "mount": "M2_21x12mm",
+          "url": "https://www.raspberrypi.com/products/camera-module-3/"
+        },
+        "microphone": {
+          "id": "mems_i2s",
+          "name": "Adafruit I2S MEMS SPH0645",
+          "cost": 7,
+          "dims_mm": [
+            19,
+            12,
+            3
+          ],
+          "mass_g": 2,
+          "power_max_w": 0.01,
+          "channels": 1,
+          "snr_db": 65,
+          "interface": "I2S",
+          "url": "https://www.adafruit.com/product/3421"
+        },
+        "motor": {
+          "id": "nema11_22mm",
+          "name": "NEMA11 Stepper 11HS20-0674S",
+          "cost": 10,
+          "dims_mm": [
+            28,
+            28,
+            22
+          ],
+          "mass_g": 66,
+          "power_max_w": 2.5,
+          "torque_ncm": 7,
+          "steps_per_rev": 200,
+          "interface": "stepper_4wire",
+          "mount": "M2.5_22x22mm",
+          "notes": "Ultra-compact. Low torque but saves 214g",
+          "url": "https://www.omc-stepperonline.com/nema-11-stepper-motor"
+        },
+        "motor_driver": {
+          "id": "none_servo",
+          "name": "No driver (servo direct PWM)",
+          "cost": 0,
+          "dims_mm": [
+            0,
+            0,
+            0
+          ],
+          "mass_g": 0,
+          "power_max_w": 0,
+          "interface": "PWM_direct",
+          "notes": "Servos connect direct to GPIO, no driver board needed",
+          "url": ""
+        },
+        "sensor_hub": {
+          "id": "qwiic_rp2040",
+          "name": "SparkFun QWIIC Pro Micro RP2040",
+          "cost": 12,
+          "dims_mm": [
+            33,
+            18,
+            4
+          ],
+          "mass_g": 4,
+          "power_max_w": 0.5,
+          "interface": "USB_QWIIC",
+          "notes": "Daisy-chain all I2C sensors, no soldering",
+          "url": "https://www.sparkfun.com/products/18288"
+        },
+        "battery": {
+          "id": "18650_x2",
+          "name": "2\u00d7 Panasonic NCR18650B",
+          "cost": 18,
+          "dims_mm": [
+            39,
+            19,
+            65
+          ],
+          "mass_g": 184,
+          "capacity_mah": 6800,
+          "voltage_v": 7.4,
+          "energy_wh": 50.3,
+          "cells": 2,
+          "notes": "Good 3hr runtime at 12W average draw",
+          "url": "https://www.liionwholesale.com/products/panasonic-ncr18650b"
+        },
+        "power_mgmt": {
+          "id": "waveshare_ups_c",
+          "name": "Waveshare UPS Module 3S",
+          "cost": 25,
+          "dims_mm": [
+            57,
+            25,
+            10
+          ],
+          "mass_g": 20,
+          "power_max_w": 15.0,
+          "notes": "Supports 3S LiPo. Higher current output than PowerBoost",
+          "url": "https://www.waveshare.com/ups-module-3s.htm"
+        },
+        "fixed_sensors": [
+          {
+            "name": "LSM6DSOX IMU",
+            "cost": 12,
+            "dims_mm": [
+              26,
+              18,
+              5
+            ],
+            "mass_g": 3,
+            "power_max_w": 0.01
+          },
+          {
+            "name": "BME688 Env Sensor",
+            "cost": 20,
+            "dims_mm": [
+              23,
+              18,
+              5
+            ],
+            "mass_g": 3,
+            "power_max_w": 0.01
+          },
+          {
+            "name": "INA219 Monitor",
+            "cost": 10,
+            "dims_mm": [
+              26,
+              21,
+              5
+            ],
+            "mass_g": 3,
+            "power_max_w": 0.01
+          },
+          {
+            "name": "LM2596 Buck 12V",
+            "cost": 8,
+            "dims_mm": [
+              43,
+              21,
+              14
+            ],
+            "mass_g": 15,
+            "power_max_w": 2.0
+          }
+        ]
+      },
+      "metrics": {
+        "fitness": 0.75967,
+        "bom_cost": 416,
+        "total_mass_g": 542.6,
+        "chassis_mass_g": 159.6,
+        "total_tops": 24,
+        "runtime_h": 7.86,
+        "idle_w": 6.4,
+        "safety_factor": 8853.0,
+        "thermal_ratio": 0.1471,
+        "warp_mm": 0.192,
+        "fits_printer": true,
+        "print_time_min": 438.3,
+        "chassis": {
+          "wall": 3.0,
+          "int_x": 90.0,
+          "int_y": 58.0,
+          "int_z": 141,
+          "out_x": 96.0,
+          "out_y": 64.0,
+          "out_z": 144.0,
+          "n_vents": 12,
+          "vent_w": 16,
+          "vent_h": 40
+        },
+        "sub_scores": {
+          "structural": 1.0,
+          "runtime": 1.0,
+          "ai_tops": 1.0,
+          "cost": 0.0,
+          "mass": 0.548,
+          "thermal": 0.735,
+          "warp": 0.808
+        }
+      }
+    },
+    {
+      "rank": 3,
+      "name": "Jetson Orin Nano 4GB Module + Google Coral USB Accelerator | NEMA11 Stepper 11HS20-0674S | 2\u00d7 Panasonic NCR18650B",
+      "assembly": {
+        "sbc": {
+          "id": "jetson_orin_nano_4gb",
+          "name": "Jetson Orin Nano 4GB Module",
+          "cost": 199,
+          "dims_mm": [
+            70,
+            45,
+            14
+          ],
+          "mass_g": 50,
+          "power_idle_w": 3.0,
+          "power_max_w": 7.0,
+          "ram_gb": 4,
+          "cpu_ghz": 1.5,
+          "ai_tops": 20,
+          "interfaces": [
+            "usb3",
+            "pcie",
+            "csi",
+            "gpio"
+          ],
+          "mount": "M3_SO-DIMM_260pin",
+          "notes": "Built-in 20 TOPS GPU \u2014 no external accelerator needed",
+          "url": "https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/"
+        },
+        "accelerator": {
+          "id": "coral_usb",
+          "name": "Google Coral USB Accelerator",
+          "cost": 60,
+          "dims_mm": [
+            65,
+            30,
+            8
+          ],
+          "mass_g": 25,
+          "power_idle_w": 0.5,
+          "power_max_w": 2.0,
+          "ai_tops": 4,
+          "interface": "USB3",
+          "notes": "Plug-and-play. Best for Pi5/Pi4",
+          "url": "https://coral.ai/products/accelerator"
+        },
+        "camera": {
+          "id": "cam3_wide",
+          "name": "Pi Camera Module 3 Wide",
+          "cost": 35,
+          "dims_mm": [
+            25,
+            24,
+            12
+          ],
+          "mass_g": 8,
+          "power_max_w": 0.5,
+          "resolution_mp": 12,
+          "fov_deg": 102,
+          "interface": "CSI",
+          "mount": "M2_21x12mm",
+          "url": "https://www.raspberrypi.com/products/camera-module-3/"
+        },
+        "microphone": {
+          "id": "mems_i2s",
+          "name": "Adafruit I2S MEMS SPH0645",
+          "cost": 7,
+          "dims_mm": [
+            19,
+            12,
+            3
+          ],
+          "mass_g": 2,
+          "power_max_w": 0.01,
+          "channels": 1,
+          "snr_db": 65,
+          "interface": "I2S",
+          "url": "https://www.adafruit.com/product/3421"
+        },
+        "motor": {
+          "id": "nema11_22mm",
+          "name": "NEMA11 Stepper 11HS20-0674S",
+          "cost": 10,
+          "dims_mm": [
+            28,
+            28,
+            22
+          ],
+          "mass_g": 66,
+          "power_max_w": 2.5,
+          "torque_ncm": 7,
+          "steps_per_rev": 200,
+          "interface": "stepper_4wire",
+          "mount": "M2.5_22x22mm",
+          "notes": "Ultra-compact. Low torque but saves 214g",
+          "url": "https://www.omc-stepperonline.com/nema-11-stepper-motor"
+        },
+        "motor_driver": {
+          "id": "tmc2209",
+          "name": "BigTreeTech TMC2209 v1.3",
+          "cost": 8,
+          "dims_mm": [
+            20,
+            15,
+            10
+          ],
+          "mass_g": 5,
+          "power_max_w": 14.0,
+          "interface": "UART_stepper",
+          "notes": "Silent stepping, stall detection",
+          "url": "https://www.biqu.equipment/products/bigtreetech-tmc2209-stepper-driver"
+        },
+        "sensor_hub": {
+          "id": "arduino_nano_esp32",
+          "name": "Arduino Nano ESP32",
+          "cost": 18,
+          "dims_mm": [
+            45,
+            18,
+            5
+          ],
+          "mass_g": 5,
+          "power_max_w": 1.0,
+          "interface": "USB_I2C_WIFI_BT",
+          "notes": "WiFi/BT built-in, useful for wireless sensor stream",
+          "url": "https://store.arduino.cc/products/nano-esp32"
+        },
+        "battery": {
+          "id": "18650_x2",
+          "name": "2\u00d7 Panasonic NCR18650B",
+          "cost": 18,
+          "dims_mm": [
+            39,
+            19,
+            65
+          ],
+          "mass_g": 184,
+          "capacity_mah": 6800,
+          "voltage_v": 7.4,
+          "energy_wh": 50.3,
+          "cells": 2,
+          "notes": "Good 3hr runtime at 12W average draw",
+          "url": "https://www.liionwholesale.com/products/panasonic-ncr18650b"
+        },
+        "power_mgmt": {
+          "id": "waveshare_ups_c",
+          "name": "Waveshare UPS Module 3S",
+          "cost": 25,
+          "dims_mm": [
+            57,
+            25,
+            10
+          ],
+          "mass_g": 20,
+          "power_max_w": 15.0,
+          "notes": "Supports 3S LiPo. Higher current output than PowerBoost",
+          "url": "https://www.waveshare.com/ups-module-3s.htm"
+        },
+        "fixed_sensors": [
+          {
+            "name": "LSM6DSOX IMU",
+            "cost": 12,
+            "dims_mm": [
+              26,
+              18,
+              5
+            ],
+            "mass_g": 3,
+            "power_max_w": 0.01
+          },
+          {
+            "name": "BME688 Env Sensor",
+            "cost": 20,
+            "dims_mm": [
+              23,
+              18,
+              5
+            ],
+            "mass_g": 3,
+            "power_max_w": 0.01
+          },
+          {
+            "name": "INA219 Monitor",
+            "cost": 10,
+            "dims_mm": [
+              26,
+              21,
+              5
+            ],
+            "mass_g": 3,
+            "power_max_w": 0.01
+          },
+          {
+            "name": "LM2596 Buck 12V",
+            "cost": 8,
+            "dims_mm": [
+              43,
+              21,
+              14
+            ],
+            "mass_g": 15,
+            "power_max_w": 2.0
+          }
+        ]
+      },
+      "metrics": {
+        "fitness": 0.75025,
+        "bom_cost": 430,
+        "total_mass_g": 565.7,
+        "chassis_mass_g": 176.7,
+        "total_tops": 24,
+        "runtime_h": 7.86,
+        "idle_w": 6.4,
+        "safety_factor": 9153.0,
+        "thermal_ratio": 0.1352,
+        "warp_mm": 0.216,
+        "fits_printer": true,
+        "print_time_min": 479.0,
+        "chassis": {
+          "wall": 3.0,
+          "int_x": 102.0,
+          "int_y": 58.0,
+          "int_z": 142,
+          "out_x": 108.0,
+          "out_y": 64.0,
+          "out_z": 145.0,
+          "n_vents": 12,
+          "vent_w": 16,
+          "vent_h": 40
+        },
+        "sub_scores": {
+          "structural": 1.0,
+          "runtime": 1.0,
+          "ai_tops": 1.0,
+          "cost": 0.0,
+          "mass": 0.529,
+          "thermal": 0.676,
+          "warp": 0.784
+        }
+      }
+    }
+  ],
+  "all_summary": [
+    {
+      "rank": 1,
+      "name": "Jetson Orin Nano 4GB Module + No external accelerator | MG996R Standard Servo | 2\u00d7 Panasonic NCR18650B",
+      "fitness": 0.77666,
+      "cost": 363,
+      "tops": 20,
+      "runtime_h": 7.04,
+      "mass_g": 503.0
+    },
+    {
+      "rank": 2,
+      "name": "Jetson Orin Nano 4GB Module + Google Coral USB Accelerator | NEMA11 Stepper 11HS20-0674S | 2\u00d7 Panasonic NCR18650B",
+      "fitness": 0.75967,
+      "cost": 416,
+      "tops": 24,
+      "runtime_h": 7.86,
+      "mass_g": 542.6
+    },
+    {
+      "rank": 3,
+      "name": "Jetson Orin Nano 4GB Module + Google Coral USB Accelerator | NEMA11 Stepper 11HS20-0674S | 2\u00d7 Panasonic NCR18650B",
+      "fitness": 0.75025,
+      "cost": 430,
+      "tops": 24,
+      "runtime_h": 7.86,
+      "mass_g": 565.7
+    },
+    {
+      "rank": 4,
+      "name": "Jetson Orin Nano 4GB Module + Google Coral USB Accelerator | MG996R Standard Servo | 4\u00d7 Panasonic NCR18650B",
+      "fitness": 0.73487,
+      "cost": 441,
+      "tops": 24,
+      "runtime_h": 13.11,
+      "mass_g": 730.9
+    },
+    {
+      "rank": 5,
+      "name": "Orange Pi 5 8GB + Hailo-8L M.2 (13 TOPS) | NEMA11 Stepper 11HS20-0674S | 2\u00d7 Panasonic NCR18650B",
+      "fitness": 0.72301,
+      "cost": 307,
+      "tops": 13,
+      "runtime_h": 8.54,
+      "mass_g": 560.3
+    },
+    {
+      "rank": 6,
+      "name": "Jetson Orin Nano 4GB Module + Google Coral USB Accelerator | NEMA17 Stepper 17HS19-2004S (60mm) | 4\u00d7 Panasonic NCR18650B",
+      "fitness": 0.7089,
+      "cost": 455,
+      "tops": 24,
+      "runtime_h": 9.62,
+      "mass_g": 1050.8
+    },
+    {
+      "rank": 7,
+      "name": "Orange Pi 5 8GB + Hailo-8L M.2 (13 TOPS) | NEMA17 Stepper 17HS4401 (40mm) | 2\u00d7 Panasonic NCR18650B",
+      "fitness": 0.70374,
+      "cost": 299,
+      "tops": 13,
+      "runtime_h": 5.8,
+      "mass_g": 750.4
+    },
+    {
+      "rank": 8,
+      "name": "Rock 5B 16GB + Hailo-8L M.2 (13 TOPS) | MG996R Standard Servo | 2\u00d7 Panasonic NCR18650B",
+      "fitness": 0.69818,
+      "cost": 353,
+      "tops": 13,
+      "runtime_h": 6.25,
+      "mass_g": 577.5
+    },
+    {
+      "rank": 9,
+      "name": "Orange Pi 5 8GB + Hailo-8L M.2 (13 TOPS) | NEMA17 Stepper 17HS4401 (40mm) | 2\u00d7 Panasonic NCR18650B",
+      "fitness": 0.69234,
+      "cost": 317,
+      "tops": 13,
+      "runtime_h": 5.81,
+      "mass_g": 771.0
+    },
+    {
+      "rank": 10,
+      "name": "Orange Pi 5 8GB + Hailo-8L M.2 (13 TOPS) | MG996R Standard Servo | 4\u00d7 Panasonic NCR18650B",
+      "fitness": 0.69125,
+      "cost": 343,
+      "tops": 13,
+      "runtime_h": 14.28,
+      "mass_g": 738.7
+    },
+    {
+      "rank": 11,
+      "name": "Orange Pi 5 8GB + Hailo-8L M.2 (13 TOPS) | NEMA11 Stepper 11HS20-0674S | LiPo 5000mAh 2S 7.4V",
+      "fitness": 0.68967,
+      "cost": 318,
+      "tops": 13,
+      "runtime_h": 6.36,
+      "mass_g": 646.3
+    },
+    {
+      "rank": 12,
+      "name": "Jetson Orin Nano 4GB Module + No external accelerator | MG996R Standard Servo | LiPo 3000mAh 2S 7.4V",
+      "fitness": 0.6711,
+      "cost": 374,
+      "tops": 20,
+      "runtime_h": 3.07,
+      "mass_g": 485.6
+    },
+    {
+      "rank": 13,
+      "name": "Rock 5B 16GB + Hailo-8L M.2 (13 TOPS) | NEMA17 Stepper 17HS4401 (40mm) | 4\u00d7 Panasonic NCR18650B",
+      "fitness": 0.66571,
+      "cost": 354,
+      "tops": 13,
+      "runtime_h": 10.33,
+      "mass_g": 950.6
+    },
+    {
+      "rank": 14,
+      "name": "Jetson Orin Nano 4GB Module + Hailo-8L M.2 (13 TOPS) | NEMA11 Stepper 11HS20-0674S | LiPo 3000mAh 2S 7.4V",
+      "fitness": 0.65979,
+      "cost": 462,
+      "tops": 33,
+      "runtime_h": 3.5,
+      "mass_g": 554.5
+    },
+    {
+      "rank": 15,
+      "name": "Raspberry Pi 5 8GB + Hailo-8L M.2 (13 TOPS) | NEMA17 Stepper 17HS4401 (40mm) | 4\u00d7 Panasonic NCR18650B",
+      "fitness": 0.65977,
+      "cost": 357,
+      "tops": 13,
+      "runtime_h": 10.94,
+      "mass_g": 978.4
+    },
+    {
+      "rank": 16,
+      "name": "Orange Pi 5 8GB + Hailo-8L M.2 (13 TOPS) | MG996R Standard Servo | LiPo 5000mAh 2S 7.4V",
+      "fitness": 0.65807,
+      "cost": 325,
+      "tops": 13,
+      "runtime_h": 5.16,
+      "mass_g": 659.8
+    },
+    {
+      "rank": 17,
+      "name": "Jetson Orin Nano 4GB Module + Hailo-8L M.2 (13 TOPS) | MG996R Standard Servo | LiPo 3000mAh 2S 7.4V",
+      "fitness": 0.65108,
+      "cost": 442,
+      "tops": 33,
+      "runtime_h": 2.95,
+      "mass_g": 513.2
+    },
+    {
+      "rank": 18,
+      "name": "Jetson Orin Nano 4GB Module + Google Coral USB Accelerator | MG996R Standard Servo | LiPo 3000mAh 2S 7.4V",
+      "fitness": 0.64321,
+      "cost": 436,
+      "tops": 24,
+      "runtime_h": 2.9,
+      "mass_g": 537.6
+    },
+    {
+      "rank": 19,
+      "name": "Raspberry Pi 4 8GB + Google Coral USB Accelerator | NEMA11 Stepper 11HS20-0674S | 2\u00d7 Panasonic NCR18650B",
+      "fitness": 0.63999,
+      "cost": 303,
+      "tops": 4,
+      "runtime_h": 9.36,
+      "mass_g": 555.1
+    },
+    {
+      "rank": 20,
+      "name": "Raspberry Pi 4 8GB + Google Coral USB Accelerator | NEMA11 Stepper 11HS20-0674S | 2\u00d7 Panasonic NCR18650B",
+      "fitness": 0.63914,
+      "cost": 309,
+      "tops": 4,
+      "runtime_h": 9.31,
+      "mass_g": 566.4
+    },
+    {
+      "rank": 21,
+      "name": "Orange Pi 5 8GB + Hailo-8L M.2 (13 TOPS) | NEMA11 Stepper 11HS20-0674S | LiPo 3000mAh 2S 7.4V",
+      "fitness": 0.63523,
+      "cost": 315,
+      "tops": 13,
+      "runtime_h": 3.74,
+      "mass_g": 557.6
+    },
+    {
+      "rank": 22,
+      "name": "Jetson Orin Nano 4GB Module + No external accelerator | NEMA17 Stepper 17HS4401 (40mm) | LiPo 3000mAh 2S 7.4V",
+      "fitness": 0.62408,
+      "cost": 388,
+      "tops": 20,
+      "runtime_h": 2.51,
+      "mass_g": 715.6
+    },
+    {
+      "rank": 23,
+      "name": "Raspberry Pi 5 8GB + No external accelerator | MG996R Standard Servo | 2\u00d7 Panasonic NCR18650B",
+      "fitness": 0.62386,
+      "cost": 258,
+      "tops": 0,
+      "runtime_h": 7.01,
+      "mass_g": 553.4
+    },
+    {
+      "rank": 24,
+      "name": "Raspberry Pi 4 8GB + No external accelerator | MG996R Standard Servo | 2\u00d7 Panasonic NCR18650B",
+      "fitness": 0.61218,
+      "cost": 276,
+      "tops": 0,
+      "runtime_h": 8.03,
+      "mass_g": 588.2
+    },
+    {
+      "rank": 25,
+      "name": "Jetson Orin Nano 4GB Module + Google Coral USB Accelerator | NEMA17 Stepper 17HS4401 (40mm) | LiPo 3000mAh 2S 7.4V",
+      "fitness": 0.60389,
+      "cost": 443,
+      "tops": 24,
+      "runtime_h": 2.39,
+      "mass_g": 775.2
+    },
+    {
+      "rank": 26,
+      "name": "Raspberry Pi 4 8GB + Google Coral USB Accelerator | NEMA17 Stepper 17HS4401 (40mm) | 2\u00d7 Panasonic NCR18650B",
+      "fitness": 0.6013,
+      "cost": 320,
+      "tops": 4,
+      "runtime_h": 6.0,
+      "mass_g": 834.3
+    },
+    {
+      "rank": 27,
+      "name": "Rock 5B 16GB + Google Coral USB Accelerator | MG996R Standard Servo | 4\u00d7 Panasonic NCR18650B",
+      "fitness": 0.60121,
+      "cost": 357,
+      "tops": 4,
+      "runtime_h": 12.42,
+      "mass_g": 754.2
+    },
+    {
+      "rank": 28,
+      "name": "Raspberry Pi 5 8GB + No external accelerator | NEMA11 Stepper 11HS20-0674S | 2\u00d7 Panasonic NCR18650B",
+      "fitness": 0.5998,
+      "cost": 288,
+      "tops": 0,
+      "runtime_h": 8.33,
+      "mass_g": 612.3
+    },
+    {
+      "rank": 29,
+      "name": "Rock 5B 16GB + Google Coral USB Accelerator | NEMA11 Stepper 11HS20-0674S | LiPo 5000mAh 2S 7.4V",
+      "fitness": 0.58559,
+      "cost": 328,
+      "tops": 4,
+      "runtime_h": 5.33,
+      "mass_g": 643.5
+    },
+    {
+      "rank": 30,
+      "name": "Raspberry Pi 5 8GB + No external accelerator | NEMA17 Stepper 17HS4401 (40mm) | 2\u00d7 Panasonic NCR18650B",
+      "fitness": 0.58436,
+      "cost": 260,
+      "tops": 0,
+      "runtime_h": 5.69,
+      "mass_g": 785.5
+    },
+    {
+      "rank": 31,
+      "name": "Rock 5B 16GB + Google Coral USB Accelerator | NEMA17 Stepper 17HS4401 (40mm) | 2\u00d7 Panasonic NCR18650B",
+      "fitness": 0.57028,
+      "cost": 345,
+      "tops": 4,
+      "runtime_h": 5.14,
+      "mass_g": 812.8
+    },
+    {
+      "rank": 32,
+      "name": "Raspberry Pi 4 8GB + Hailo-8L M.2 (13 TOPS) | NEMA17 Stepper 17HS19-2004S (60mm) | LiPo 5000mAh 2S 7.4V",
+      "fitness": 0.56835,
+      "cost": 363,
+      "tops": 13,
+      "runtime_h": 3.94,
+      "mass_g": 1009.9
+    },
+    {
+      "rank": 33,
+      "name": "Raspberry Pi 4 8GB + Google Coral USB Accelerator | NEMA17 Stepper 17HS19-2004S (60mm) | 2\u00d7 Panasonic NCR18650B",
+      "fitness": 0.56439,
+      "cost": 335,
+      "tops": 4,
+      "runtime_h": 5.25,
+      "mass_g": 943.1
+    },
+    {
+      "rank": 34,
+      "name": "Rock 5B 16GB + No external accelerator | NEMA11 Stepper 11HS20-0674S | LiPo 5000mAh 2S 7.4V",
+      "fitness": 0.56257,
+      "cost": 297,
+      "tops": 0,
+      "runtime_h": 5.7,
+      "mass_g": 686.9
+    },
+    {
+      "rank": 35,
+      "name": "Orange Pi 5 8GB + No external accelerator | NEMA11 Stepper 11HS20-0674S | LiPo 3000mAh 2S 7.4V",
+      "fitness": 0.56014,
+      "cost": 252,
+      "tops": 0,
+      "runtime_h": 4.1,
+      "mass_g": 529.9
+    },
+    {
+      "rank": 36,
+      "name": "Orange Pi 5 8GB + Google Coral USB Accelerator | NEMA11 Stepper 11HS20-0674S | LiPo 3000mAh 2S 7.4V",
+      "fitness": 0.54591,
+      "cost": 317,
+      "tops": 4,
+      "runtime_h": 3.68,
+      "mass_g": 585.1
+    },
+    {
+      "rank": 37,
+      "name": "Rock 5B 16GB + Google Coral USB Accelerator | NEMA17 Stepper 17HS19-2004S (60mm) | LiPo 5000mAh 2S 7.4V",
+      "fitness": 0.47592,
+      "cost": 333,
+      "tops": 4,
+      "runtime_h": 3.37,
+      "mass_g": 1012.8
+    },
+    {
+      "rank": 38,
+      "name": "Orange Pi 5 8GB + No external accelerator | NEMA17 Stepper 17HS19-2004S (60mm) | LiPo 3000mAh 2S 7.4V",
+      "fitness": 0.47548,
+      "cost": 240,
+      "tops": 0,
+      "runtime_h": 2.34,
+      "mass_g": 842.6
+    },
+    {
+      "rank": 39,
+      "name": "Orange Pi 5 8GB + No external accelerator | NEMA17 Stepper 17HS19-2004S (60mm) | LiPo 3000mAh 2S 7.4V",
+      "fitness": 0.47206,
+      "cost": 253,
+      "tops": 0,
+      "runtime_h": 2.35,
+      "mass_g": 842.2
+    },
+    {
+      "rank": 40,
+      "name": "Raspberry Pi 4 8GB + Google Coral USB Accelerator | NEMA17 Stepper 17HS19-2004S (60mm) | LiPo 3000mAh 2S 7.4V",
+      "fitness": 0.4655,
+      "cost": 325,
+      "tops": 4,
+      "runtime_h": 2.33,
+      "mass_g": 907.5
+    }
+  ]
+}

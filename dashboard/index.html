@@ -626,7 +626,10 @@
       <div class="sidebar-section" style="display:flex;flex-direction:column;gap:8px;">
         <h3>Actions</h3>
         <button class="btn btn-green" onclick="approveDesign()">✅ Approve Design</button>
-        <button class="btn btn-primary" onclick="runEvolution()">🧬 Re-run Evolution</button>
+        <button class="btn btn-primary" onclick="runEvolution()">🧬 Re-run 10 Iterations</button>
+        <button class="btn"
+          style="background:linear-gradient(135deg,#9c64ff,#00c8ff);color:#fff;border:none;cursor:pointer;padding:10px 16px;border-radius:8px;font-size:12px;font-weight:700"
+          onclick="runCreative()">🎨 Explore New Designs</button>
         <button class="btn btn-ghost" onclick="fetchAll()">🔄 Refresh</button>
       </div>
     </aside>
@@ -722,6 +725,23 @@
           position:absolute;top:12px;left:14px;font-size:10px;color:var(--text-dim);
           display:flex;flex-wrap:wrap;gap:10px
         " id="threeLegend"></div>
+        </div>
+      </div>
+
+      <!-- CREATIVE EXPLORER PANEL -->
+      <div class="panel" id="creativePanel" style="display:none">
+        <div class="panel-header">
+          <span class="panel-title">🎨 Generative Design Explorer — Top 3 Competing Bodies</span>
+          <div style="display:flex;gap:8px;align-items:center">
+            <span style="font-size:10px;color:var(--text-dim)" id="creativeMeta"></span>
+            <button class="btn btn-ghost" style="padding:4px 10px;font-size:11px" onclick="runCreative()">↺
+              Re-explore</button>
+          </div>
+        </div>
+        <div class="panel-body" id="creativeBody" style="padding:0">
+          <div style="padding:24px;color:var(--text-dim);text-align:center;font-size:12px">
+            Click <strong>🎨 Explore New Designs</strong> in the sidebar to run the generative explorer.
+          </div>
         </div>
       </div>
 
@@ -1163,11 +1183,132 @@
     }
 
     async function runEvolution() {
-      if (!confirm('Re-run 10-iteration evolution? This will overwrite current results.')) return;
+      if (!confirm('Re-run 10-iteration geometry evolution? This will overwrite current results.')) return;
       const r = await fetch('/api/run-evolution', { method: 'POST' });
       const j = await r.json();
       alert(j.message);
       setTimeout(fetchAll, 3000);
+    }
+
+    async function runCreative() {
+      const pop = 40;
+      if (!confirm(`Run generative design explorer?\n\n• Evaluates ${pop} random hardware assemblies\n• From ${pop > 1 ? pop : '?'} components across 9 categories\n• Returns top 3 competing body designs\n\nTakes ~5 seconds.`)) return;
+      const r = await fetch('/api/run-creative', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ population: pop, budget: 400 })
+      });
+      const j = await r.json();
+      if (!j.ok) { alert(j.message); return; }
+      alert(j.message + '\n\nDashboard will auto-refresh.');
+      setTimeout(() => { fetchCreative(); }, 6000);
+    }
+
+    // ── CREATIVE REPORT ───────────────────────────────────────────────────────────
+    async function fetchCreative() {
+      const r = await fetch('/api/creative-report').catch(() => null);
+      if (!r || !r.ok) return;
+      const report = await r.json();
+      renderCreative(report);
+    }
+
+    const CATEGORY_LABELS = {
+      sbc: '🧠 Brain (SBC)', accelerator: '🔮 Accelerator',
+      camera: '👁 Vision', microphone: '👂 Hearing',
+      motor: '⚙️ Motion', motor_driver: '🎛 Motor Driver',
+      sensor_hub: '🔗 Nerve Hub', battery: '🔋 Energy',
+      power_mgmt: '⚡ Power Mgmt'
+    };
+
+    const MEDAL = ['🥇', '🥈', '🥉'];
+
+    function renderCreative(report) {
+      document.getElementById('creativePanel').style.display = '';
+      document.getElementById('creativeMeta').textContent =
+        `${report.total_scored} assemblies scored · ${new Date(report.generated).toLocaleTimeString()}`;
+
+      const body = document.getElementById('creativeBody');
+      body.innerHTML = '';
+
+      // 3-column comparison header
+      const grid = document.createElement('div');
+      grid.style.cssText = 'display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border)';
+
+      report.top3.forEach((design, idx) => {
+        const m = design.metrics;
+        const asm = design.assembly;
+        const col = document.createElement('div');
+        col.style.cssText = 'background:var(--panel);padding:16px;display:flex;flex-direction:column;gap:10px';
+
+        // Header
+        col.innerHTML = `
+          <div style="font-size:13px;font-weight:700;color:var(--cyan)">
+            ${MEDAL[idx]} Design #${idx + 1}
+          </div>
+          <div style="font-size:10px;color:var(--text-dim);line-height:1.5;min-height:40px">${design.name}</div>
+
+          <!-- Key metrics row -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+            <div style="background:#0d1a2a;border-radius:6px;padding:8px;text-align:center">
+              <div style="font-size:18px;font-weight:700;color:var(--cyan)">${m.fitness.toFixed(4)}</div>
+              <div style="font-size:9px;color:var(--text-dim);text-transform:uppercase">Fitness</div>
+            </div>
+            <div style="background:#0d1a2a;border-radius:6px;padding:8px;text-align:center">
+              <div style="font-size:18px;font-weight:700;color:var(--amber)">$${m.bom_cost.toFixed(0)}</div>
+              <div style="font-size:9px;color:var(--text-dim);text-transform:uppercase">BOM Cost</div>
+            </div>
+            <div style="background:#0d1a2a;border-radius:6px;padding:8px;text-align:center">
+              <div style="font-size:18px;font-weight:700;color:#9c64ff">${m.total_tops}T</div>
+              <div style="font-size:9px;color:var(--text-dim);text-transform:uppercase">AI TOPS</div>
+            </div>
+            <div style="background:#0d1a2a;border-radius:6px;padding:8px;text-align:center">
+              <div style="font-size:18px;font-weight:700;color:var(--green)">${m.runtime_h.toFixed(1)}h</div>
+              <div style="font-size:9px;color:var(--text-dim);text-transform:uppercase">Runtime</div>
+            </div>
+          </div>
+
+          <!-- Sub-scores mini bar chart -->
+          <div style="font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;margin-top:4px">Score Breakdown</div>
+          ${Object.entries(m.sub_scores || {}).map(([k, v]) => `
+            <div style="display:flex;align-items:center;gap:6px;margin:1px 0">
+              <span style="font-size:9px;color:var(--text-dim);width:60px;flex-shrink:0">${k}</span>
+              <div style="flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden">
+                <div style="height:100%;width:${(v * 100).toFixed(0)}%;background:var(--cyan);border-radius:2px"></div>
+              </div>
+              <span style="font-size:9px;color:var(--text);width:28px;text-align:right">${(v * 100).toFixed(0)}%</span>
+            </div>`).join('')}
+
+          <!-- Chassis dims -->
+          <div style="font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;margin-top:4px">Chassis</div>
+          <div style="font-size:10px;color:var(--amber);font-feature-settings:'tnum'">
+            ${m.chassis.int_x}×${m.chassis.int_y}×${m.chassis.int_z}mm internal
+            — ${m.total_mass_g.toFixed(0)}g total — ${m.fits_printer ? '✅ fits XL' : '❌ oversized'}
+          </div>
+
+          <!-- Component list -->
+          <div style="font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;margin-top:6px">Components</div>
+        `;
+
+        // Component rows
+        const compTable = document.createElement('div');
+        compTable.style.cssText = 'display:flex;flex-direction:column;gap:3px';
+        Object.entries(asm).forEach(([cat, comp]) => {
+          if (cat === 'fixed_sensors' || !comp || typeof comp !== 'object') return;
+          if (!comp.name) return;
+          const label = CATEGORY_LABELS[cat] || cat;
+          const row = document.createElement('div');
+          row.style.cssText = 'display:flex;gap:6px;font-size:9px;border-bottom:1px solid rgba(255,255,255,.04);padding:3px 0';
+          row.innerHTML = `
+            <span style="color:var(--text-dim);flex-shrink:0;width:90px">${label}</span>
+            <span style="color:var(--text)">${comp.name}</span>
+          `;
+          compTable.appendChild(row);
+        });
+        col.appendChild(compTable);
+        grid.appendChild(col);
+      });
+
+      body.appendChild(grid);
     }
 
     // ── UTILITIES ────────────────────────────────────────────────────────────────
@@ -1183,6 +1324,7 @@
 
     // ── INIT ──────────────────────────────────────────────────────────────────────
     fetchAll();
+    fetchCreative();                // Load previous creative report if exists
     setInterval(fetchAll, 15000);  // Auto-refresh every 15s
   </script>
 
