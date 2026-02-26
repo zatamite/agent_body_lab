@@ -1,749 +1,1133 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>agent_body_lab — Design Console</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<style>
-  :root {
-    --bg:       #080c14;
-    --panel:    #0d1420;
-    --border:   #1a2a40;
-    --cyan:     #00c8ff;
-    --cyan-dim: #00789a;
-    --amber:    #ff8c00;
-    --green:    #00e676;
-    --red:      #ff3d57;
-    --purple:   #9c64ff;
-    --text:     #c8d8e8;
-    --text-dim: #5a7090;
-    --font:     'Inter', 'Segoe UI', system-ui, sans-serif;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>agent_body_lab — Design Console</title>
+  <!-- Three.js import map — must appear before any module scripts -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    }
   }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  <style>
+    :root {
+      --bg: #080c14;
+      --panel: #0d1420;
+      --border: #1a2a40;
+      --cyan: #00c8ff;
+      --cyan-dim: #00789a;
+      --amber: #ff8c00;
+      --green: #00e676;
+      --red: #ff3d57;
+      --purple: #9c64ff;
+      --text: #c8d8e8;
+      --text-dim: #5a7090;
+      --font: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--font);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-  /* ── HEADER ──────────────────────────────────────────── */
-  header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 28px;
-    background: var(--panel);
-    border-bottom: 1px solid var(--border);
-    position: sticky; top: 0; z-index: 100;
-  }
-  .logo { display: flex; align-items: center; gap: 12px; }
-  .logo-icon {
-    width: 36px; height: 36px; border-radius: 8px;
-    background: linear-gradient(135deg, var(--cyan), var(--purple));
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px;
-  }
-  .logo h1 { font-size: 16px; font-weight: 700; color: var(--cyan); letter-spacing: 0.05em; }
-  .logo sub { font-size: 10px; color: var(--text-dim); display: block; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
 
-  .header-right { display: flex; align-items: center; gap: 16px; }
-  #clock { font-size: 12px; color: var(--text-dim); font-feature-settings: 'tnum'; }
+    /* ── HEADER ──────────────────────────────────────────── */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 28px;
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
 
-  .badge {
-    padding: 4px 10px; border-radius: 20px;
-    font-size: 11px; font-weight: 600; letter-spacing: 0.05em;
-  }
-  .badge-cyan  { background: rgba(0,200,255,.15); color: var(--cyan); border: 1px solid var(--cyan-dim); }
-  .badge-green { background: rgba(0,230,118,.15); color: var(--green); border: 1px solid #00804a; }
-  .badge-red   { background: rgba(255,61,87,.15);  color: var(--red);   border: 1px solid #8b0000; }
-  .badge-amber { background: rgba(255,140,0,.15);  color: var(--amber); border: 1px solid #7a4400; }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
 
-  /* ── LAYOUT ──────────────────────────────────────────── */
-  .main { display: grid; grid-template-columns: 240px 1fr 320px; gap: 0; height: calc(100vh - 57px); }
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--cyan), var(--purple));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
 
-  /* ── SIDEBAR ─────────────────────────────────────────── */
-  .sidebar {
-    background: var(--panel);
-    border-right: 1px solid var(--border);
-    padding: 20px 16px;
-    display: flex; flex-direction: column; gap: 20px;
-    overflow-y: auto;
-  }
-  .sidebar-section h3 {
-    font-size: 9px; font-weight: 700; letter-spacing: 0.12em;
-    color: var(--text-dim); text-transform: uppercase;
-    margin-bottom: 10px; padding-bottom: 6px;
-    border-bottom: 1px solid var(--border);
-  }
-  .stat-row {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,.04);
-  }
-  .stat-label { font-size: 11px; color: var(--text-dim); }
-  .stat-value { font-size: 12px; font-weight: 600; font-feature-settings: 'tnum'; }
-  .stat-value.cyan   { color: var(--cyan); }
-  .stat-value.green  { color: var(--green); }
-  .stat-value.amber  { color: var(--amber); }
-  .stat-value.red    { color: var(--red); }
+    .logo h1 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--cyan);
+      letter-spacing: 0.05em;
+    }
 
-  .btn {
-    width: 100%; padding: 9px; border-radius: 8px;
-    border: 1px solid var(--border); cursor: pointer;
-    font-size: 12px; font-weight: 600; font-family: var(--font);
-    transition: all .15s; text-align: center;
-  }
-  .btn-primary { background: var(--cyan); color: #000; border-color: var(--cyan); }
-  .btn-primary:hover { background: #00a0c8; }
-  .btn-ghost { background: transparent; color: var(--text); }
-  .btn-ghost:hover { background: var(--border); }
-  .btn-green { background: rgba(0,230,118,.15); color: var(--green); border-color: #00804a; }
-  .btn-green:hover { background: rgba(0,230,118,.25); }
+    .logo sub {
+      font-size: 10px;
+      color: var(--text-dim);
+      display: block;
+    }
 
-  /* ── CENTER PANEL ────────────────────────────────────── */
-  .center {
-    display: flex; flex-direction: column; gap: 0;
-    overflow-y: auto;
-    background: var(--bg);
-  }
-  .panel {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    margin: 16px;
-    overflow: hidden;
-  }
-  .panel-header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 14px 18px;
-    border-bottom: 1px solid var(--border);
-  }
-  .panel-title { font-size: 13px; font-weight: 700; color: var(--cyan); }
-  .panel-body { padding: 18px; }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
 
-  /* ── METRIC CARDS ────────────────────────────────────── */
-  .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-  .metric-card {
-    background: rgba(0,200,255,.04);
-    border: 1px solid var(--border);
-    border-radius: 10px; padding: 14px;
-    display: flex; flex-direction: column; gap: 4px;
-    transition: border-color .2s;
-  }
-  .metric-card:hover { border-color: var(--cyan-dim); }
-  .metric-label { font-size: 9px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; }
-  .metric-value { font-size: 24px; font-weight: 800; font-feature-settings: 'tnum'; }
-  .metric-value.cyan   { color: var(--cyan); }
-  .metric-value.green  { color: var(--green); }
-  .metric-value.amber  { color: var(--amber); }
-  .metric-value.purple { color: var(--purple); }
-  .metric-delta { font-size: 10px; color: var(--text-dim); margin-top: 2px; }
-  .metric-delta.pos { color: var(--green); }
-  .metric-delta.neg { color: var(--red); }
+    #clock {
+      font-size: 12px;
+      color: var(--text-dim);
+      font-feature-settings: 'tnum';
+    }
 
-  /* ── CHART ───────────────────────────────────────────── */
-  .chart-wrap { height: 220px; position: relative; }
+    .badge {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
 
-  /* ── SLICE CANVAS ────────────────────────────────────── */
-  #sliceCanvas { display: block; margin: 0 auto; }
-  .slice-wrap { text-align: center; position: relative; }
-  .slice-legend {
-    display: flex; flex-wrap: wrap; gap: 10px;
-    justify-content: center; margin-top: 12px;
-  }
-  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 10px; color: var(--text-dim); }
-  .legend-dot { width: 10px; height: 10px; border-radius: 2px; }
+    .badge-cyan {
+      background: rgba(0, 200, 255, .15);
+      color: var(--cyan);
+      border: 1px solid var(--cyan-dim);
+    }
 
-  /* ── ITERATION LOG ────────────────────────────────────── */
-  .iter-log { display: flex; flex-direction: column; gap: 0; }
-  .iter-row {
-    display: grid;
-    grid-template-columns: 32px 1fr 80px 70px 70px 70px 80px;
-    gap: 8px; align-items: center;
-    padding: 8px 12px;
-    border-bottom: 1px solid rgba(255,255,255,.04);
-    font-size: 11px; transition: background .1s;
-  }
-  .iter-row:hover { background: rgba(255,255,255,.02); }
-  .iter-num { color: var(--cyan); font-weight: 700; font-feature-settings: 'tnum'; }
-  .iter-changed { color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .iter-fitness { font-weight: 700; font-feature-settings: 'tnum'; }
-  .iter-log-header {
-    display: grid;
-    grid-template-columns: 32px 1fr 80px 70px 70px 70px 80px;
-    gap: 8px; padding: 8px 12px;
-    font-size: 9px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em;
-    border-bottom: 1px solid var(--border);
-  }
+    .badge-green {
+      background: rgba(0, 230, 118, .15);
+      color: var(--green);
+      border: 1px solid #00804a;
+    }
 
-  /* ── RIGHT PANEL ─────────────────────────────────────── */
-  .right-panel {
-    background: var(--panel);
-    border-left: 1px solid var(--border);
-    display: flex; flex-direction: column;
-    overflow-y: auto;
-  }
-  .right-section {
-    padding: 16px;
-    border-bottom: 1px solid var(--border);
-  }
-  .right-section h3 {
-    font-size: 9px; font-weight: 700; letter-spacing: 0.12em;
-    color: var(--text-dim); text-transform: uppercase;
-    margin-bottom: 12px;
-  }
+    .badge-red {
+      background: rgba(255, 61, 87, .15);
+      color: var(--red);
+      border: 1px solid #8b0000;
+    }
 
-  /* ── PARTS TABLE ─────────────────────────────────────── */
-  .parts-table { width: 100%; border-collapse: collapse; font-size: 10px; }
-  .parts-table th {
-    text-align: left; padding: 5px 6px;
-    font-size: 9px; color: var(--text-dim); font-weight: 600;
-    border-bottom: 1px solid var(--border);
-  }
-  .parts-table td { padding: 5px 6px; border-bottom: 1px solid rgba(255,255,255,.03); }
-  .parts-table tr:hover td { background: rgba(255,255,255,.02); }
-  .organ-badge {
-    font-size: 8px; padding: 2px 5px; border-radius: 3px;
-    background: rgba(0,200,255,.1); color: var(--cyan);
-    font-weight: 700; white-space: nowrap;
-  }
-  .cost { font-feature-settings: 'tnum'; color: var(--amber); }
+    .badge-amber {
+      background: rgba(255, 140, 0, .15);
+      color: var(--amber);
+      border: 1px solid #7a4400;
+    }
 
-  /* ── SCORE BAR ───────────────────────────────────────── */
-  .score-bar-row { display: flex; align-items: center; gap: 8px; margin: 5px 0; }
-  .score-bar-label { font-size: 10px; color: var(--text-dim); width: 70px; flex-shrink: 0; }
-  .score-bar-track {
-    flex: 1; height: 5px; background: var(--border); border-radius: 3px; overflow: hidden;
-  }
-  .score-bar-fill { height: 100%; border-radius: 3px; transition: width .4s; }
-  .score-bar-val { font-size: 10px; color: var(--text); width: 36px; text-align: right; font-feature-settings: 'tnum'; }
+    /* ── LAYOUT ──────────────────────────────────────────── */
+    .main {
+      display: grid;
+      grid-template-columns: 240px 1fr 320px;
+      gap: 0;
+      height: calc(100vh - 57px);
+    }
 
-  /* ── GLOW PULSE ──────────────────────────────────────── */
-  @keyframes pulse-glow {
-    0%, 100% { box-shadow: 0 0 8px rgba(0,200,255,.3); }
-    50%       { box-shadow: 0 0 18px rgba(0,200,255,.6); }
-  }
-  .glow { animation: pulse-glow 2s ease-in-out infinite; }
+    /* ── SIDEBAR ─────────────────────────────────────────── */
+    .sidebar {
+      background: var(--panel);
+      border-right: 1px solid var(--border);
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      overflow-y: auto;
+    }
 
-  /* ── SCROLLBARS ──────────────────────────────────────── */
-  ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-</style>
-</head>
-<body>
+    .sidebar-section h3 {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border);
+    }
 
-<!-- ── HEADER ──────────────────────────────────────────────────────── -->
-<header>
-  <div class="logo">
-    <div class="logo-icon">🦾</div>
-    <div>
-      <h1>AGENT BODY LAB</h1>
-      <sub>Design Console v1.0</sub>
-    </div>
-  </div>
-  <div class="header-right">
-    <span id="clock">--:--:--</span>
-    <span class="badge badge-cyan" id="versionBadge">v—</span>
-    <span class="badge badge-amber" id="modeBadge">DRY RUN</span>
-    <span class="badge badge-red"   id="gateBadge">GATE: LOCKED</span>
-  </div>
-</header>
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, .04);
+    }
 
-<!-- ── MAIN ────────────────────────────────────────────────────────── -->
-<div class="main">
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-dim);
+    }
 
-  <!-- LEFT SIDEBAR -->
-  <aside class="sidebar">
-    <div class="sidebar-section">
-      <h3>Pipeline Status</h3>
-      <div class="stat-row"><span class="stat-label">Printer</span><span class="stat-value red">OFFLINE</span></div>
-      <div class="stat-row"><span class="stat-label">Gate</span><span class="stat-value" id="sGate">LOCKED</span></div>
-      <div class="stat-row"><span class="stat-label">Evolution</span><span class="stat-value green" id="sEvol">DONE</span></div>
-      <div class="stat-row"><span class="stat-label">Version</span><span class="stat-value cyan" id="sVer">—</span></div>
-    </div>
+    .stat-value {
+      font-size: 12px;
+      font-weight: 600;
+      font-feature-settings: 'tnum';
+    }
 
-    <div class="sidebar-section">
-      <h3>Winning Metrics</h3>
-      <div class="stat-row"><span class="stat-label">Fitness</span><span class="stat-value cyan" id="sFitness">—</span></div>
-      <div class="stat-row"><span class="stat-label">Safety</span><span class="stat-value green" id="sSafety">—</span></div>
-      <div class="stat-row"><span class="stat-label">Mass</span><span class="stat-value amber" id="sMass">—</span></div>
-      <div class="stat-row"><span class="stat-label">Thermal</span><span class="stat-value cyan" id="sThermal">—</span></div>
-      <div class="stat-row"><span class="stat-label">Warp δ</span><span class="stat-value" id="sWarp">—</span></div>
-      <div class="stat-row"><span class="stat-label">Print time</span><span class="stat-value" id="sPrint">—</span></div>
-    </div>
+    .stat-value.cyan {
+      color: var(--cyan);
+    }
 
-    <div class="sidebar-section">
-      <h3>Chassis Dims</h3>
-      <div class="stat-row"><span class="stat-label">Internal</span><span class="stat-value amber" id="sDimsInt">—</span></div>
-      <div class="stat-row"><span class="stat-label">Outer</span><span class="stat-value" id="sDimsOut">—</span></div>
-      <div class="stat-row"><span class="stat-label">Wall</span><span class="stat-value" id="sWall">—</span></div>
-      <div class="stat-row"><span class="stat-label">Vents</span><span class="stat-value" id="sVents">—</span></div>
-    </div>
+    .stat-value.green {
+      color: var(--green);
+    }
 
-    <div class="sidebar-section" style="display:flex;flex-direction:column;gap:8px;">
-      <h3>Actions</h3>
-      <button class="btn btn-green" onclick="approveDesign()">✅ Approve Design</button>
-      <button class="btn btn-primary" onclick="runEvolution()">🧬 Re-run Evolution</button>
-      <button class="btn btn-ghost" onclick="fetchAll()">🔄 Refresh</button>
-    </div>
-  </aside>
+    .stat-value.amber {
+      color: var(--amber);
+    }
 
-  <!-- CENTER -->
-  <main class="center">
+    .stat-value.red {
+      color: var(--red);
+    }
 
-    <!-- METRIC CARDS -->
-    <div class="panel" style="margin-bottom:0">
-      <div class="panel-header">
-        <span class="panel-title">📊 Design Metrics — Baseline vs Winner</span>
-        <span class="badge badge-cyan" id="iterCount">10 iterations</span>
-      </div>
-      <div class="panel-body">
-        <div class="metrics-grid">
-          <div class="metric-card glow">
-            <div class="metric-label">Composite Fitness</div>
-            <div class="metric-value cyan" id="mFitness">—</div>
-            <div class="metric-delta pos" id="mFitnessDelta">—</div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-label">Safety Factor</div>
-            <div class="metric-value green" id="mSafety">—</div>
-            <div class="metric-delta" id="mSafetyDelta">vs <span id="mSafetyBase">—</span> baseline</div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-label">PETG Mass</div>
-            <div class="metric-value amber" id="mMass">—</div>
-            <div class="metric-delta" id="mMassDelta">—</div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-label">Thermal Venting</div>
-            <div class="metric-value purple" id="mThermal">—</div>
-            <div class="metric-delta pos" id="mThermalDelta">—</div>
-          </div>
-        </div>
-      </div>
-    </div>
+    .btn {
+      width: 100%;
+      padding: 9px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: var(--font);
+      transition: all .15s;
+      text-align: center;
+    }
 
-    <!-- EVOLUTION CHART -->
-    <div class="panel">
-      <div class="panel-header">
-        <span class="panel-title">📈 Fitness Evolution — 10 Iterations</span>
-        <span style="font-size:10px;color:var(--text-dim)">Hill-climbing coordinate descent</span>
-      </div>
-      <div class="panel-body">
-        <div class="chart-wrap"><canvas id="evolutionChart"></canvas></div>
-      </div>
-    </div>
+    .btn-primary {
+      background: var(--cyan);
+      color: #000;
+      border-color: var(--cyan);
+    }
 
-    <!-- 2D SLICE VIEW + SCORE BARS -->
-    <div class="panel">
-      <div class="panel-header">
-        <span class="panel-title">✂️ 2D Chassis Slice — XY Cross Section at Z=80mm (Pi 5 Layer)</span>
-        <span style="font-size:10px;color:var(--text-dim)" id="sliceDims">—</span>
-      </div>
-      <div class="panel-body" style="display:grid;grid-template-columns:1fr 200px;gap:24px;align-items:start">
-        <div class="slice-wrap">
-          <canvas id="sliceCanvas" width="480" height="320"></canvas>
-          <div class="slice-legend" id="sliceLegend"></div>
-        </div>
-        <div>
-          <div style="font-size:10px;color:var(--text-dim);margin-bottom:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;">Sub-Scores</div>
-          <div id="scoreBarContainer"></div>
-        </div>
-      </div>
-    </div>
+    .btn-primary:hover {
+      background: #00a0c8;
+    }
 
-    <!-- ITERATION LOG -->
-    <div class="panel">
-      <div class="panel-header">
-        <span class="panel-title">🔬 Iteration Log — Print Simulation Results</span>
-      </div>
-      <div class="panel-body" style="padding:0">
-        <div class="iter-log-header">
-          <div>#</div><div>Changed</div><div>Fitness</div>
-          <div>Mass</div><div>Thermal</div><div>Safety</div><div>Verdict</div>
-        </div>
-        <div class="iter-log" id="iterLog"></div>
-      </div>
-    </div>
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+    }
 
-  </main>
+    .btn-ghost:hover {
+      background: var(--border);
+    }
 
-  <!-- RIGHT PANEL -->
-  <aside class="right-panel">
+    .btn-green {
+      background: rgba(0, 230, 118, .15);
+      color: var(--green);
+      border-color: #00804a;
+    }
 
-    <div class="right-section">
-      <h3>Parts DOM — 13 Organs</h3>
-      <table class="parts-table">
-        <thead><tr><th>#</th><th>Organ</th><th>Component</th><th>$</th></tr></thead>
-        <tbody id="partsTableBody"></tbody>
-        <tfoot>
-          <tr><td colspan="3" style="color:var(--text-dim);font-size:9px;padding-top:8px">Total BOM</td>
-              <td class="cost" id="partsTotal">—</td></tr>
-        </tfoot>
-      </table>
-    </div>
+    .btn-green:hover {
+      background: rgba(0, 230, 118, .25);
+    }
 
-    <div class="right-section">
-      <h3>Wiring Bus — QWIIC Chain</h3>
-      <div style="font-size:10px;color:var(--text-dim);font-family:monospace;line-height:1.8">
-        RP2040 QWIIC→<br>
-        &nbsp;├─► LSM6DSOX IMU&nbsp;&nbsp;0x6A<br>
-        &nbsp;├─► BME688 Env&nbsp;&nbsp;&nbsp;&nbsp;0x76<br>
-        &nbsp;└─► INA219 Power&nbsp;&nbsp;0x40<br>
-        <br>
-        JST SH 1mm · daisy-chain<br>
-        No soldering required
-      </div>
-    </div>
+    /* ── CENTER PANEL ────────────────────────────────────── */
+    .center {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      overflow-y: auto;
+      background: var(--bg);
+    }
 
-    <div class="right-section">
-      <h3>Material Profile — PETG T0</h3>
-      <div class="stat-row"><span class="stat-label">Yield strength</span><span class="stat-value cyan">51 MPa</span></div>
-      <div class="stat-row"><span class="stat-label">Density</span><span class="stat-value">1.27 g/cm³</span></div>
-      <div class="stat-row"><span class="stat-label">Thermal coeff α</span><span class="stat-value">5×10⁻⁵ /°C</span></div>
-      <div class="stat-row"><span class="stat-label">HDT</span><span class="stat-value green">80°C</span></div>
-      <div class="stat-row"><span class="stat-label">Print temp</span><span class="stat-value">235–250°C</span></div>
-      <div class="stat-row"><span class="stat-label">Bed temp</span><span class="stat-value">70–85°C</span></div>
-    </div>
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin: 16px;
+      overflow: hidden;
+    }
 
-  </aside>
-</div>
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+    }
 
-<script>
-// ── CLOCK ──────────────────────────────────────────────────────────────────
-function updateClock() {
-  const now = new Date();
-  document.getElementById('clock').textContent =
-    now.toLocaleTimeString('en-US', {hour12: false});
-}
-setInterval(updateClock, 1000); updateClock();
+    .panel-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--cyan);
+    }
 
-// ── DATA STORE ──────────────────────────────────────────────────────────────
-let evolutionReport = null;
-let partsData       = null;
-let statusData      = null;
-let evChart         = null;
+    .panel-body {
+      padding: 18px;
+    }
 
-// ── FETCH ALL ───────────────────────────────────────────────────────────────
-async function fetchAll() {
-  try {
-    [evolutionReport, partsData, statusData] = await Promise.all([
-      fetch('/api/evolution').then(r => r.ok ? r.json() : null).catch(() => null),
-      fetch('/api/parts').then(r => r.json()),
-      fetch('/api/status').then(r => r.json()),
-    ]);
-    renderAll();
-  } catch(e) { console.error('fetchAll error:', e); }
-}
+    /* ── METRIC CARDS ────────────────────────────────────── */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
 
-function renderAll() {
-  if (statusData)      renderStatus();
-  if (evolutionReport) renderEvolution();
-  if (partsData)       renderParts();
-}
+    .metric-card {
+      background: rgba(0, 200, 255, .04);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transition: border-color .2s;
+    }
 
-// ── STATUS ──────────────────────────────────────────────────────────────────
-function renderStatus() {
-  const s = statusData;
-  document.getElementById('versionBadge').textContent = s.version || '—';
-  document.getElementById('sVer').textContent         = s.version || '—';
+    .metric-card:hover {
+      border-color: var(--cyan-dim);
+    }
 
-  const gateEl   = document.getElementById('gateBadge');
-  const sGateEl  = document.getElementById('sGate');
-  if (s.approved) {
-    gateEl.textContent  = 'GATE: OPEN';
-    gateEl.className    = 'badge badge-green';
-    sGateEl.textContent = 'OPEN';
-    sGateEl.className   = 'stat-value green';
-  } else {
-    gateEl.textContent  = 'GATE: LOCKED';
-    gateEl.className    = 'badge badge-red';
-    sGateEl.textContent = 'LOCKED';
-    sGateEl.className   = 'stat-value red';
-  }
-  document.getElementById('sEvol').textContent = s.evolution_done ? 'DONE' : 'PENDING';
-}
+    .metric-label {
+      font-size: 9px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
 
-// ── EVOLUTION ───────────────────────────────────────────────────────────────
-function renderEvolution() {
-  const r = evolutionReport;
-  if (!r) return;
+    .metric-value {
+      font-size: 24px;
+      font-weight: 800;
+      font-feature-settings: 'tnum';
+    }
 
-  const winner   = r.winner.metrics;
-  const baseline = r.baseline.metrics;
-  const wp       = r.winner.params;
-  const hist     = r.history;
+    .metric-value.cyan {
+      color: var(--cyan);
+    }
 
-  // Metric cards
-  document.getElementById('mFitness').textContent      = winner.fitness.toFixed(4);
-  document.getElementById('mFitnessDelta').textContent  = `+${(winner.fitness - baseline.fitness).toFixed(4)} vs baseline`;
-  document.getElementById('mSafety').textContent        = `${winner.safety_factor.toFixed(0)}×`;
-  document.getElementById('mSafetyBase').textContent    = `${baseline.safety_factor.toFixed(0)}×`;
-  document.getElementById('mMass').textContent          = `${winner.mass_g.toFixed(0)}g`;
-  document.getElementById('mMassDelta').textContent     = `${(winner.mass_g - baseline.mass_g).toFixed(0)}g vs baseline`;
-  document.getElementById('mThermal').textContent       = `${(winner.thermal_ratio * 100).toFixed(1)}%`;
-  document.getElementById('mThermalDelta').textContent  = `+${((winner.thermal_ratio - baseline.thermal_ratio)*100).toFixed(1)}% vs baseline`;
-  document.getElementById('iterCount').textContent      = `${r.iterations} iterations`;
+    .metric-value.green {
+      color: var(--green);
+    }
 
-  // Sidebar stats
-  document.getElementById('sFitness').textContent  = winner.fitness.toFixed(4);
-  document.getElementById('sSafety').textContent   = `${winner.safety_factor.toFixed(0)}×`;
-  document.getElementById('sMass').textContent      = `${winner.mass_g.toFixed(0)}g`;
-  document.getElementById('sThermal').textContent   = `${(winner.thermal_ratio*100).toFixed(1)}%`;
-  document.getElementById('sWarp').textContent      = `${winner.warp_mm.toFixed(3)}mm`;
-  document.getElementById('sPrint').textContent     = `${winner.print_time_min.toFixed(0)}min`;
+    .metric-value.amber {
+      color: var(--amber);
+    }
 
-  const od = winner.outer_dims_mm;
-  document.getElementById('sDimsInt').textContent  = `${wp.int_x}×${wp.int_y}×${wp.int_z}mm`;
-  document.getElementById('sDimsOut').textContent  = `${od[0]}×${od[1]}×${od[2]}mm`;
-  document.getElementById('sWall').textContent     = `${wp.wall}mm`;
-  document.getElementById('sVents').textContent    = `${wp.n_vents} × ${wp.vent_w}×${wp.vent_h}mm`;
-  document.getElementById('sliceDims').textContent = `Outer: ${od[0]}×${od[1]}mm`;
+    .metric-value.purple {
+      color: var(--purple);
+    }
 
-  // Chart
-  renderEvolutionChart(hist, baseline.fitness);
+    .metric-delta {
+      font-size: 10px;
+      color: var(--text-dim);
+      margin-top: 2px;
+    }
 
-  // Iteration log
-  renderIterLog(hist);
+    .metric-delta.pos {
+      color: var(--green);
+    }
 
-  // Score bars
-  renderScoreBars(winner.sub_scores);
+    .metric-delta.neg {
+      color: var(--red);
+    }
 
-  // 2D Slice
-  renderSlice(wp, winner);
-}
+    /* ── CHART ───────────────────────────────────────────── */
+    .chart-wrap {
+      height: 220px;
+      position: relative;
+    }
 
-// ── EVOLUTION CHART ─────────────────────────────────────────────────────────
-function renderEvolutionChart(hist, baselineFitness) {
-  const labels  = ['Baseline', ...hist.map(h => `I${h.iteration}`)];
-  const fitness = [baselineFitness, ...hist.map(h => h.metrics.fitness)];
-  const mass    = [evolutionReport.baseline.metrics.mass_g,
-                   ...hist.map(h => h.metrics.mass_g)];
-  const thermal = [evolutionReport.baseline.metrics.thermal_ratio * 100,
-                   ...hist.map(h => h.metrics.thermal_ratio * 100)];
+    /* ── SLICE CANVAS ────────────────────────────────────── */
+    #sliceCanvas {
+      display: block;
+      margin: 0 auto;
+    }
 
-  if (evChart) evChart.destroy();
-  const ctx = document.getElementById('evolutionChart').getContext('2d');
-  evChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [
-        {
-          label: 'Fitness Score',
-          data: fitness, yAxisID: 'y',
-          borderColor: '#00c8ff', backgroundColor: 'rgba(0,200,255,.08)',
-          tension: 0.3, fill: true, pointRadius: 4, pointHoverRadius: 7,
-          borderWidth: 2,
-        },
-        {
-          label: 'Thermal % / 100',
-          data: thermal.map(t => t / 100), yAxisID: 'y',
-          borderColor: '#9c64ff', borderDash: [4,3],
-          tension: 0.3, fill: false, pointRadius: 3, borderWidth: 1.5,
-        },
-        {
-          label: 'Mass (g / 1000)',
-          data: mass.map(m => m / 1000), yAxisID: 'y',
-          borderColor: '#ff8c00', borderDash: [2,4],
-          tension: 0.3, fill: false, pointRadius: 3, borderWidth: 1.5,
-        },
-      ]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false, animation: { duration: 600 },
-      scales: {
-        x: { grid: { color: 'rgba(255,255,255,.04)' }, ticks: { color: '#5a7090', font: {size:10} } },
-        y: { grid: { color: 'rgba(255,255,255,.04)' }, ticks: { color: '#5a7090', font: {size:10} }, min: 0, max: 1.05 }
-      },
-      plugins: {
-        legend: { labels: { color: '#c8d8e8', font: {size:10}, boxWidth: 12, padding: 15 } },
-        tooltip: {
-          backgroundColor: '#0d1420',
-          borderColor: '#1a2a40', borderWidth: 1,
-          titleColor: '#00c8ff', bodyColor: '#c8d8e8',
-          callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y.toFixed(4)}` }
-        }
+    .slice-wrap {
+      text-align: center;
+      position: relative;
+    }
+
+    .slice-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 12px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      color: var(--text-dim);
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+    }
+
+    /* ── ITERATION LOG ────────────────────────────────────── */
+    .iter-log {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .iter-row {
+      display: grid;
+      grid-template-columns: 32px 1fr 80px 70px 70px 70px 80px;
+      gap: 8px;
+      align-items: center;
+      padding: 8px 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, .04);
+      font-size: 11px;
+      transition: background .1s;
+    }
+
+    .iter-row:hover {
+      background: rgba(255, 255, 255, .02);
+    }
+
+    .iter-num {
+      color: var(--cyan);
+      font-weight: 700;
+      font-feature-settings: 'tnum';
+    }
+
+    .iter-changed {
+      color: var(--text-dim);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .iter-fitness {
+      font-weight: 700;
+      font-feature-settings: 'tnum';
+    }
+
+    .iter-log-header {
+      display: grid;
+      grid-template-columns: 32px 1fr 80px 70px 70px 70px 80px;
+      gap: 8px;
+      padding: 8px 12px;
+      font-size: 9px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── RIGHT PANEL ─────────────────────────────────────── */
+    .right-panel {
+      background: var(--panel);
+      border-left: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .right-section {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .right-section h3 {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    /* ── PARTS TABLE ─────────────────────────────────────── */
+    .parts-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10px;
+    }
+
+    .parts-table th {
+      text-align: left;
+      padding: 5px 6px;
+      font-size: 9px;
+      color: var(--text-dim);
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .parts-table td {
+      padding: 5px 6px;
+      border-bottom: 1px solid rgba(255, 255, 255, .03);
+    }
+
+    .parts-table tr:hover td {
+      background: rgba(255, 255, 255, .02);
+    }
+
+    .organ-badge {
+      font-size: 8px;
+      padding: 2px 5px;
+      border-radius: 3px;
+      background: rgba(0, 200, 255, .1);
+      color: var(--cyan);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .cost {
+      font-feature-settings: 'tnum';
+      color: var(--amber);
+    }
+
+    /* ── SCORE BAR ───────────────────────────────────────── */
+    .score-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 5px 0;
+    }
+
+    .score-bar-label {
+      font-size: 10px;
+      color: var(--text-dim);
+      width: 70px;
+      flex-shrink: 0;
+    }
+
+    .score-bar-track {
+      flex: 1;
+      height: 5px;
+      background: var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .score-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width .4s;
+    }
+
+    .score-bar-val {
+      font-size: 10px;
+      color: var(--text);
+      width: 36px;
+      text-align: right;
+      font-feature-settings: 'tnum';
+    }
+
+    /* ── GLOW PULSE ──────────────────────────────────────── */
+    @keyframes pulse-glow {
+
+      0%,
+      100% {
+        box-shadow: 0 0 8px rgba(0, 200, 255, .3);
+      }
+
+      50% {
+        box-shadow: 0 0 18px rgba(0, 200, 255, .6);
       }
     }
-  });
-}
 
-// ── ITERATION LOG ────────────────────────────────────────────────────────────
-function renderIterLog(hist) {
-  const container = document.getElementById('iterLog');
-  container.innerHTML = '';
-  hist.forEach(h => {
-    const m  = h.metrics;
-    const ps = h.print_sim;
-    const delta = h.delta_fitness;
-    const verdictColor = ps.verdict === 'PASS' ? 'var(--green)' :
-                         ps.verdict === 'REVIEW' ? 'var(--amber)' : 'var(--red)';
-    const changed = h.changed_param
-      ? `${h.changed_param} ${h.changed_by > 0 ? '+' : ''}${h.changed_by}`
-      : '(converged)';
-    const row = document.createElement('div');
-    row.className = 'iter-row';
-    row.innerHTML = `
+    .glow {
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+
+    /* ── SCROLLBARS ──────────────────────────────────────── */
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 2px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── HEADER ──────────────────────────────────────────────────────── -->
+  <header>
+    <div class="logo">
+      <div class="logo-icon">🦾</div>
+      <div>
+        <h1>AGENT BODY LAB</h1>
+        <sub>Design Console v1.0</sub>
+      </div>
+    </div>
+    <div class="header-right">
+      <span id="clock">--:--:--</span>
+      <span class="badge badge-cyan" id="versionBadge">v—</span>
+      <span class="badge badge-amber" id="modeBadge">DRY RUN</span>
+      <span class="badge badge-red" id="gateBadge">GATE: LOCKED</span>
+    </div>
+  </header>
+
+  <!-- ── MAIN ────────────────────────────────────────────────────────── -->
+  <div class="main">
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-section">
+        <h3>Pipeline Status</h3>
+        <div class="stat-row"><span class="stat-label">Printer</span><span class="stat-value red">OFFLINE</span></div>
+        <div class="stat-row"><span class="stat-label">Gate</span><span class="stat-value" id="sGate">LOCKED</span>
+        </div>
+        <div class="stat-row"><span class="stat-label">Evolution</span><span class="stat-value green"
+            id="sEvol">DONE</span></div>
+        <div class="stat-row"><span class="stat-label">Version</span><span class="stat-value cyan" id="sVer">—</span>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <h3>Winning Metrics</h3>
+        <div class="stat-row"><span class="stat-label">Fitness</span><span class="stat-value cyan"
+            id="sFitness">—</span></div>
+        <div class="stat-row"><span class="stat-label">Safety</span><span class="stat-value green" id="sSafety">—</span>
+        </div>
+        <div class="stat-row"><span class="stat-label">Mass</span><span class="stat-value amber" id="sMass">—</span>
+        </div>
+        <div class="stat-row"><span class="stat-label">Thermal</span><span class="stat-value cyan"
+            id="sThermal">—</span></div>
+        <div class="stat-row"><span class="stat-label">Warp δ</span><span class="stat-value" id="sWarp">—</span></div>
+        <div class="stat-row"><span class="stat-label">Print time</span><span class="stat-value" id="sPrint">—</span>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <h3>Chassis Dims</h3>
+        <div class="stat-row"><span class="stat-label">Internal</span><span class="stat-value amber"
+            id="sDimsInt">—</span></div>
+        <div class="stat-row"><span class="stat-label">Outer</span><span class="stat-value" id="sDimsOut">—</span></div>
+        <div class="stat-row"><span class="stat-label">Wall</span><span class="stat-value" id="sWall">—</span></div>
+        <div class="stat-row"><span class="stat-label">Vents</span><span class="stat-value" id="sVents">—</span></div>
+      </div>
+
+      <div class="sidebar-section" style="display:flex;flex-direction:column;gap:8px;">
+        <h3>Actions</h3>
+        <button class="btn btn-green" onclick="approveDesign()">✅ Approve Design</button>
+        <button class="btn btn-primary" onclick="runEvolution()">🧬 Re-run Evolution</button>
+        <button class="btn btn-ghost" onclick="fetchAll()">🔄 Refresh</button>
+      </div>
+    </aside>
+
+    <!-- CENTER -->
+    <main class="center">
+
+      <!-- METRIC CARDS -->
+      <div class="panel" style="margin-bottom:0">
+        <div class="panel-header">
+          <span class="panel-title">📊 Design Metrics — Baseline vs Winner</span>
+          <span class="badge badge-cyan" id="iterCount">10 iterations</span>
+        </div>
+        <div class="panel-body">
+          <div class="metrics-grid">
+            <div class="metric-card glow">
+              <div class="metric-label">Composite Fitness</div>
+              <div class="metric-value cyan" id="mFitness">—</div>
+              <div class="metric-delta pos" id="mFitnessDelta">—</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">Safety Factor</div>
+              <div class="metric-value green" id="mSafety">—</div>
+              <div class="metric-delta" id="mSafetyDelta">vs <span id="mSafetyBase">—</span> baseline</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">PETG Mass</div>
+              <div class="metric-value amber" id="mMass">—</div>
+              <div class="metric-delta" id="mMassDelta">—</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">Thermal Venting</div>
+              <div class="metric-value purple" id="mThermal">—</div>
+              <div class="metric-delta pos" id="mThermalDelta">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EVOLUTION CHART -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">📈 Fitness Evolution — 10 Iterations</span>
+          <span style="font-size:10px;color:var(--text-dim)">Hill-climbing coordinate descent</span>
+        </div>
+        <div class="panel-body">
+          <div class="chart-wrap"><canvas id="evolutionChart"></canvas></div>
+        </div>
+      </div>
+
+      <!-- 2D SLICE VIEW + SCORE BARS -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">✂️ 2D Chassis Slice — XY Cross Section at Z=80mm (Pi 5 Layer)</span>
+          <span style="font-size:10px;color:var(--text-dim)" id="sliceDims">—</span>
+        </div>
+        <div class="panel-body" style="display:grid;grid-template-columns:1fr 200px;gap:24px;align-items:start">
+          <div class="slice-wrap">
+            <canvas id="sliceCanvas" width="480" height="320"></canvas>
+            <div class="slice-legend" id="sliceLegend"></div>
+          </div>
+          <div>
+            <div
+              style="font-size:10px;color:var(--text-dim);margin-bottom:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;">
+              Sub-Scores</div>
+            <div id="scoreBarContainer"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3D VIEWER -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">🧊 3D Body View — Parametric Three.js Model</span>
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="btn btn-ghost" style="padding:4px 10px;font-size:11px" id="explodeBtn"
+              onclick="toggleExplode()">💥 Explode Layers</button>
+            <button class="btn btn-ghost" style="padding:4px 10px;font-size:11px" onclick="resetCamera()">⟳ Reset
+              View</button>
+            <button class="btn btn-ghost" style="padding:4px 10px;font-size:11px" onclick="exportSTL()">📦 Export
+              STL</button>
+          </div>
+        </div>
+        <div style="position:relative">
+          <canvas id="threeCanvas" style="width:100%;height:420px;display:block;cursor:grab"></canvas>
+          <div id="stlToast" style="
+          position:absolute;bottom:12px;left:50%;transform:translateX(-50%);
+          background:#0d1420;border:1px solid var(--border);padding:8px 16px;
+          border-radius:8px;font-size:11px;color:var(--text-dim);
+          display:none;pointer-events:none;white-space:nowrap
+        "></div>
+          <div style="
+          position:absolute;top:12px;left:14px;font-size:10px;color:var(--text-dim);
+          display:flex;flex-wrap:wrap;gap:10px
+        " id="threeLegend"></div>
+        </div>
+      </div>
+
+      <!-- ITERATION LOG -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">🔬 Iteration Log — Print Simulation Results</span>
+        </div>
+        <div class="panel-body" style="padding:0">
+          <div class="iter-log-header">
+            <div>#</div>
+            <div>Changed</div>
+            <div>Fitness</div>
+            <div>Mass</div>
+            <div>Thermal</div>
+            <div>Safety</div>
+            <div>Verdict</div>
+          </div>
+          <div class="iter-log" id="iterLog"></div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- RIGHT PANEL -->
+    <aside class="right-panel">
+
+      <div class="right-section">
+        <h3>Parts DOM — 13 Organs</h3>
+        <table class="parts-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Organ</th>
+              <th>Component</th>
+              <th>$</th>
+            </tr>
+          </thead>
+          <tbody id="partsTableBody"></tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3" style="color:var(--text-dim);font-size:9px;padding-top:8px">Total BOM</td>
+              <td class="cost" id="partsTotal">—</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <div class="right-section">
+        <h3>Wiring Bus — QWIIC Chain</h3>
+        <div style="font-size:10px;color:var(--text-dim);font-family:monospace;line-height:1.8">
+          RP2040 QWIIC→<br>
+          &nbsp;├─► LSM6DSOX IMU&nbsp;&nbsp;0x6A<br>
+          &nbsp;├─► BME688 Env&nbsp;&nbsp;&nbsp;&nbsp;0x76<br>
+          &nbsp;└─► INA219 Power&nbsp;&nbsp;0x40<br>
+          <br>
+          JST SH 1mm · daisy-chain<br>
+          No soldering required
+        </div>
+      </div>
+
+      <div class="right-section">
+        <h3>Material Profile — PETG T0</h3>
+        <div class="stat-row"><span class="stat-label">Yield strength</span><span class="stat-value cyan">51 MPa</span>
+        </div>
+        <div class="stat-row"><span class="stat-label">Density</span><span class="stat-value">1.27 g/cm³</span></div>
+        <div class="stat-row"><span class="stat-label">Thermal coeff α</span><span class="stat-value">5×10⁻⁵ /°C</span>
+        </div>
+        <div class="stat-row"><span class="stat-label">HDT</span><span class="stat-value green">80°C</span></div>
+        <div class="stat-row"><span class="stat-label">Print temp</span><span class="stat-value">235–250°C</span></div>
+        <div class="stat-row"><span class="stat-label">Bed temp</span><span class="stat-value">70–85°C</span></div>
+      </div>
+
+    </aside>
+  </div>
+
+  <script>
+    // ── CLOCK ──────────────────────────────────────────────────────────────────
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('clock').textContent =
+        now.toLocaleTimeString('en-US', { hour12: false });
+    }
+    setInterval(updateClock, 1000); updateClock();
+
+    // ── DATA STORE ──────────────────────────────────────────────────────────────
+    let evolutionReport = null;
+    let partsData = null;
+    let statusData = null;
+    let evChart = null;
+
+    // ── FETCH ALL ───────────────────────────────────────────────────────────────
+    async function fetchAll() {
+      try {
+        [evolutionReport, partsData, statusData] = await Promise.all([
+          fetch('/api/evolution').then(r => r.ok ? r.json() : null).catch(() => null),
+          fetch('/api/parts').then(r => r.json()),
+          fetch('/api/status').then(r => r.json()),
+        ]);
+        renderAll();
+      } catch (e) { console.error('fetchAll error:', e); }
+    }
+
+    function renderAll() {
+      if (statusData) renderStatus();
+      if (evolutionReport) renderEvolution();
+      if (partsData) renderParts();
+    }
+
+    // ── STATUS ──────────────────────────────────────────────────────────────────
+    function renderStatus() {
+      const s = statusData;
+      document.getElementById('versionBadge').textContent = s.version || '—';
+      document.getElementById('sVer').textContent = s.version || '—';
+
+      const gateEl = document.getElementById('gateBadge');
+      const sGateEl = document.getElementById('sGate');
+      if (s.approved) {
+        gateEl.textContent = 'GATE: OPEN';
+        gateEl.className = 'badge badge-green';
+        sGateEl.textContent = 'OPEN';
+        sGateEl.className = 'stat-value green';
+      } else {
+        gateEl.textContent = 'GATE: LOCKED';
+        gateEl.className = 'badge badge-red';
+        sGateEl.textContent = 'LOCKED';
+        sGateEl.className = 'stat-value red';
+      }
+      document.getElementById('sEvol').textContent = s.evolution_done ? 'DONE' : 'PENDING';
+    }
+
+    // ── EVOLUTION ───────────────────────────────────────────────────────────────
+    function renderEvolution() {
+      const r = evolutionReport;
+      if (!r) return;
+
+      const winner = r.winner.metrics;
+      const baseline = r.baseline.metrics;
+      const wp = r.winner.params;
+      const hist = r.history;
+
+      // Metric cards
+      document.getElementById('mFitness').textContent = winner.fitness.toFixed(4);
+      document.getElementById('mFitnessDelta').textContent = `+${(winner.fitness - baseline.fitness).toFixed(4)} vs baseline`;
+      document.getElementById('mSafety').textContent = `${winner.safety_factor.toFixed(0)}×`;
+      document.getElementById('mSafetyBase').textContent = `${baseline.safety_factor.toFixed(0)}×`;
+      document.getElementById('mMass').textContent = `${winner.mass_g.toFixed(0)}g`;
+      document.getElementById('mMassDelta').textContent = `${(winner.mass_g - baseline.mass_g).toFixed(0)}g vs baseline`;
+      document.getElementById('mThermal').textContent = `${(winner.thermal_ratio * 100).toFixed(1)}%`;
+      document.getElementById('mThermalDelta').textContent = `+${((winner.thermal_ratio - baseline.thermal_ratio) * 100).toFixed(1)}% vs baseline`;
+      document.getElementById('iterCount').textContent = `${r.iterations} iterations`;
+
+      // Sidebar stats
+      document.getElementById('sFitness').textContent = winner.fitness.toFixed(4);
+      document.getElementById('sSafety').textContent = `${winner.safety_factor.toFixed(0)}×`;
+      document.getElementById('sMass').textContent = `${winner.mass_g.toFixed(0)}g`;
+      document.getElementById('sThermal').textContent = `${(winner.thermal_ratio * 100).toFixed(1)}%`;
+      document.getElementById('sWarp').textContent = `${winner.warp_mm.toFixed(3)}mm`;
+      document.getElementById('sPrint').textContent = `${winner.print_time_min.toFixed(0)}min`;
+
+      const od = winner.outer_dims_mm;
+      document.getElementById('sDimsInt').textContent = `${wp.int_x}×${wp.int_y}×${wp.int_z}mm`;
+      document.getElementById('sDimsOut').textContent = `${od[0]}×${od[1]}×${od[2]}mm`;
+      document.getElementById('sWall').textContent = `${wp.wall}mm`;
+      document.getElementById('sVents').textContent = `${wp.n_vents} × ${wp.vent_w}×${wp.vent_h}mm`;
+      document.getElementById('sliceDims').textContent = `Outer: ${od[0]}×${od[1]}mm`;
+
+      // Chart
+      renderEvolutionChart(hist, baseline.fitness);
+
+      // Iteration log
+      renderIterLog(hist);
+
+      // Score bars
+      renderScoreBars(winner.sub_scores);
+
+      // 2D Slice
+      renderSlice(wp, winner);
+    }
+
+    // ── EVOLUTION CHART ─────────────────────────────────────────────────────────
+    function renderEvolutionChart(hist, baselineFitness) {
+      const labels = ['Baseline', ...hist.map(h => `I${h.iteration}`)];
+      const fitness = [baselineFitness, ...hist.map(h => h.metrics.fitness)];
+      const mass = [evolutionReport.baseline.metrics.mass_g,
+      ...hist.map(h => h.metrics.mass_g)];
+      const thermal = [evolutionReport.baseline.metrics.thermal_ratio * 100,
+      ...hist.map(h => h.metrics.thermal_ratio * 100)];
+
+      if (evChart) evChart.destroy();
+      const ctx = document.getElementById('evolutionChart').getContext('2d');
+      evChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [
+            {
+              label: 'Fitness Score',
+              data: fitness, yAxisID: 'y',
+              borderColor: '#00c8ff', backgroundColor: 'rgba(0,200,255,.08)',
+              tension: 0.3, fill: true, pointRadius: 4, pointHoverRadius: 7,
+              borderWidth: 2,
+            },
+            {
+              label: 'Thermal % / 100',
+              data: thermal.map(t => t / 100), yAxisID: 'y',
+              borderColor: '#9c64ff', borderDash: [4, 3],
+              tension: 0.3, fill: false, pointRadius: 3, borderWidth: 1.5,
+            },
+            {
+              label: 'Mass (g / 1000)',
+              data: mass.map(m => m / 1000), yAxisID: 'y',
+              borderColor: '#ff8c00', borderDash: [2, 4],
+              tension: 0.3, fill: false, pointRadius: 3, borderWidth: 1.5,
+            },
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false, animation: { duration: 600 },
+          scales: {
+            x: { grid: { color: 'rgba(255,255,255,.04)' }, ticks: { color: '#5a7090', font: { size: 10 } } },
+            y: { grid: { color: 'rgba(255,255,255,.04)' }, ticks: { color: '#5a7090', font: { size: 10 } }, min: 0, max: 1.05 }
+          },
+          plugins: {
+            legend: { labels: { color: '#c8d8e8', font: { size: 10 }, boxWidth: 12, padding: 15 } },
+            tooltip: {
+              backgroundColor: '#0d1420',
+              borderColor: '#1a2a40', borderWidth: 1,
+              titleColor: '#00c8ff', bodyColor: '#c8d8e8',
+              callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y.toFixed(4)}` }
+            }
+          }
+        }
+      });
+    }
+
+    // ── ITERATION LOG ────────────────────────────────────────────────────────────
+    function renderIterLog(hist) {
+      const container = document.getElementById('iterLog');
+      container.innerHTML = '';
+      hist.forEach(h => {
+        const m = h.metrics;
+        const ps = h.print_sim;
+        const delta = h.delta_fitness;
+        const verdictColor = ps.verdict === 'PASS' ? 'var(--green)' :
+          ps.verdict === 'REVIEW' ? 'var(--amber)' : 'var(--red)';
+        const changed = h.changed_param
+          ? `${h.changed_param} ${h.changed_by > 0 ? '+' : ''}${h.changed_by}`
+          : '(converged)';
+        const row = document.createElement('div');
+        row.className = 'iter-row';
+        row.innerHTML = `
       <div class="iter-num">${h.iteration}</div>
       <div class="iter-changed" title="${changed}">${changed}</div>
       <div class="iter-fitness" style="color:var(--cyan)">${m.fitness.toFixed(4)}</div>
       <div style="color:var(--amber)">${m.mass_g.toFixed(0)}g</div>
-      <div style="color:var(--purple)">${(m.thermal_ratio*100).toFixed(1)}%</div>
+      <div style="color:var(--purple)">${(m.thermal_ratio * 100).toFixed(1)}%</div>
       <div style="color:var(--green)">${m.safety_factor.toFixed(0)}×</div>
       <div style="color:${verdictColor};font-weight:700">${ps.verdict}</div>
     `;
-    container.appendChild(row);
-  });
-}
+        container.appendChild(row);
+      });
+    }
 
-// ── SCORE BARS ───────────────────────────────────────────────────────────────
-function renderScoreBars(scores) {
-  const container = document.getElementById('scoreBarContainer');
-  container.innerHTML = '';
-  const items = [
-    {key:'structural', label:'Structure', color:'#00e676'},
-    {key:'thermal',    label:'Thermal',   color:'#9c64ff'},
-    {key:'mass',       label:'Mass',      color:'#ff8c00'},
-    {key:'clearance',  label:'Clearance', color:'#00c8ff'},
-    {key:'print_time', label:'Print',     color:'#5a7090'},
-    {key:'warp',       label:'Warp',      color:'#ff3d57'},
-    {key:'adhesion',   label:'Adhesion',  color:'#ff8c00'},
-  ];
-  items.forEach(({key, label, color}) => {
-    const val = scores[key] ?? 0;
-    container.innerHTML += `
+    // ── SCORE BARS ───────────────────────────────────────────────────────────────
+    function renderScoreBars(scores) {
+      const container = document.getElementById('scoreBarContainer');
+      container.innerHTML = '';
+      const items = [
+        { key: 'structural', label: 'Structure', color: '#00e676' },
+        { key: 'thermal', label: 'Thermal', color: '#9c64ff' },
+        { key: 'mass', label: 'Mass', color: '#ff8c00' },
+        { key: 'clearance', label: 'Clearance', color: '#00c8ff' },
+        { key: 'print_time', label: 'Print', color: '#5a7090' },
+        { key: 'warp', label: 'Warp', color: '#ff3d57' },
+        { key: 'adhesion', label: 'Adhesion', color: '#ff8c00' },
+      ];
+      items.forEach(({ key, label, color }) => {
+        const val = scores[key] ?? 0;
+        container.innerHTML += `
       <div class="score-bar-row">
         <div class="score-bar-label">${label}</div>
         <div class="score-bar-track">
-          <div class="score-bar-fill" style="width:${(val*100).toFixed(1)}%;background:${color}"></div>
+          <div class="score-bar-fill" style="width:${(val * 100).toFixed(1)}%;background:${color}"></div>
         </div>
-        <div class="score-bar-val">${(val*100).toFixed(0)}%</div>
+        <div class="score-bar-val">${(val * 100).toFixed(0)}%</div>
       </div>`;
-  });
-}
-
-// ── 2D SLICE VIEW ────────────────────────────────────────────────────────────
-function renderSlice(params, metrics) {
-  const canvas  = document.getElementById('sliceCanvas');
-  const ctx     = canvas.getContext('2d');
-  const W = canvas.width, H = canvas.height;
-  ctx.clearRect(0, 0, W, H);
-
-  const od      = metrics.outer_dims_mm;
-  const out_x   = od[0], out_y = od[1];
-  const int_x   = params.int_x, int_y = params.int_y;
-  const wall    = params.wall;
-  const vent_w  = params.vent_w, vent_h = params.vent_h;
-  const n_vents = params.n_vents;
-
-  // Scale to fit canvas (with 30px margin)
-  const margin = 30;
-  const scale  = Math.min((W - margin*2) / out_x, (H - margin*2) / out_y);
-  const cx = W/2, cy = H/2;
-
-  // Helper: world mm → canvas px (centred)
-  const px = (x, y) => [cx + x * scale, cy + y * scale];
-
-  function rect(x, y, w, h) {
-    const [sx, sy] = px(x - w/2, y - h/2);
-    return [sx, sy, w * scale, h * scale];
-  }
-
-  // ── Chassis shell background ──────────────────────────
-  ctx.fillStyle = '#1a2030';
-  ctx.strokeStyle = '#3a5070';
-  ctx.lineWidth = 1.5;
-  const [rx, ry, rw, rh] = rect(0, 0, out_x, out_y);
-  roundRect(ctx, rx, ry, rw, rh, 6);
-  ctx.fill(); ctx.stroke();
-
-  // ── Internal cavity ────────────────────────────────────
-  ctx.fillStyle = '#080c14';
-  const [ix, iy, iw, ih] = rect(0, 0, int_x, int_y);
-  roundRect(ctx, ix, iy, iw, ih, 4);
-  ctx.fill();
-
-  // ── Cooling vent slots ─────────────────────────────────
-  ctx.fillStyle = '#0a1020';
-  const vPerSide = Math.floor(n_vents / 4);
-  const vSpacing = int_x / (vPerSide + 1);
-  // Front + back vents
-  for (let side of [-1, 1]) {
-    for (let i = 1; i <= vPerSide; i++) {
-      const vx = -int_x/2 + i * vSpacing;
-      const vy = side * (out_y/2 - wall/2);
-      const [svx, svy, svw, svh] = rect(vx, vy, vent_w, wall + 2);
-      ctx.fillRect(svx, svy, svw, svh);
+      });
     }
-  }
-  // Side vents
-  const vSpacingY = int_y / (vPerSide + 1);
-  for (let side of [-1, 1]) {
-    for (let i = 1; i <= vPerSide; i++) {
-      const vx = side * (out_x/2 - wall/2);
-      const vy = -int_y/2 + i * vSpacingY;
-      const [svx, svy, svw, svh] = rect(vx, vy, wall + 2, vent_h * 0.5);
-      ctx.fillRect(svx, svy, svw, svh);
+
+    // ── 2D SLICE VIEW ────────────────────────────────────────────────────────────
+    function renderSlice(params, metrics) {
+      const canvas = document.getElementById('sliceCanvas');
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0, 0, W, H);
+
+      const od = metrics.outer_dims_mm;
+      const out_x = od[0], out_y = od[1];
+      const int_x = params.int_x, int_y = params.int_y;
+      const wall = params.wall;
+      const vent_w = params.vent_w, vent_h = params.vent_h;
+      const n_vents = params.n_vents;
+
+      // Scale to fit canvas (with 30px margin)
+      const margin = 30;
+      const scale = Math.min((W - margin * 2) / out_x, (H - margin * 2) / out_y);
+      const cx = W / 2, cy = H / 2;
+
+      // Helper: world mm → canvas px (centred)
+      const px = (x, y) => [cx + x * scale, cy + y * scale];
+
+      function rect(x, y, w, h) {
+        const [sx, sy] = px(x - w / 2, y - h / 2);
+        return [sx, sy, w * scale, h * scale];
+      }
+
+      // ── Chassis shell background ──────────────────────────
+      ctx.fillStyle = '#1a2030';
+      ctx.strokeStyle = '#3a5070';
+      ctx.lineWidth = 1.5;
+      const [rx, ry, rw, rh] = rect(0, 0, out_x, out_y);
+      roundRect(ctx, rx, ry, rw, rh, 6);
+      ctx.fill(); ctx.stroke();
+
+      // ── Internal cavity ────────────────────────────────────
+      ctx.fillStyle = '#080c14';
+      const [ix, iy, iw, ih] = rect(0, 0, int_x, int_y);
+      roundRect(ctx, ix, iy, iw, ih, 4);
+      ctx.fill();
+
+      // ── Cooling vent slots ─────────────────────────────────
+      ctx.fillStyle = '#0a1020';
+      const vPerSide = Math.floor(n_vents / 4);
+      const vSpacing = int_x / (vPerSide + 1);
+      // Front + back vents
+      for (let side of [-1, 1]) {
+        for (let i = 1; i <= vPerSide; i++) {
+          const vx = -int_x / 2 + i * vSpacing;
+          const vy = side * (out_y / 2 - wall / 2);
+          const [svx, svy, svw, svh] = rect(vx, vy, vent_w, wall + 2);
+          ctx.fillRect(svx, svy, svw, svh);
+        }
+      }
+      // Side vents
+      const vSpacingY = int_y / (vPerSide + 1);
+      for (let side of [-1, 1]) {
+        for (let i = 1; i <= vPerSide; i++) {
+          const vx = side * (out_x / 2 - wall / 2);
+          const vy = -int_y / 2 + i * vSpacingY;
+          const [svx, svy, svw, svh] = rect(vx, vy, wall + 2, vent_h * 0.5);
+          ctx.fillRect(svx, svy, svw, svh);
+        }
+      }
+
+      // ── Component footprints at Z=80mm (Pi 5 layer) ────────
+      const components = [
+        { label: 'Pi 5', w: 85, h: 58, color: 'rgba(0,200,255,.25)', border: '#00c8ff', ox: 0, oy: 0 },
+        { label: 'Coral', w: 65, h: 30, color: 'rgba(156,100,255,.2)', border: '#9c64ff', ox: 0, oy: 24 },
+        { label: 'USB Hub', w: 55, h: 25, color: 'rgba(255,140,0,.15)', border: '#ff8c00', ox: -18, oy: -22 },
+      ];
+
+      components.forEach(c => {
+        const [cx2, cy2, cw, ch] = rect(c.ox, c.oy, c.w, c.h);
+        ctx.fillStyle = c.color;
+        ctx.strokeStyle = c.border;
+        ctx.lineWidth = 1.2;
+        roundRect(ctx, cx2, cy2, cw, ch, 3);
+        ctx.fill(); ctx.stroke();
+        // Label
+        ctx.fillStyle = c.border;
+        ctx.font = `bold ${Math.max(8, scale * 4)}px Inter, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.fillText(c.label, cx2 + cw / 2, cy2 + ch / 2 + 3);
+      });
+
+      // ── Pi 5 mounting bosses (4 corners) ───────────────────
+      const bossHoles = [[-29 * scale, -24.5 * scale], [29 * scale, -24.5 * scale], [-29 * scale, 24.5 * scale], [29 * scale, 24.5 * scale]];
+      bossHoles.forEach(([bx, by]) => {
+        ctx.beginPath();
+        ctx.arc(cx + bx, cy + by, 3.5, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(0,200,255,.4)';
+        ctx.fill();
+        ctx.strokeStyle = '#00c8ff';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      });
+
+      // ── Wall thickness dimension lines ──────────────────────
+      ctx.strokeStyle = 'rgba(90,112,144,.6)';
+      ctx.setLineDash([3, 3]);
+      ctx.lineWidth = 0.8;
+      const wallPx = wall * scale;
+      // Top wall callout
+      ctx.beginPath();
+      ctx.moveTo(cx - int_x / 2 * scale, ry);
+      ctx.lineTo(cx - int_x / 2 * scale, iy);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Legend
+      renderSliceLegend();
     }
-  }
 
-  // ── Component footprints at Z=80mm (Pi 5 layer) ────────
-  const components = [
-    { label:'Pi 5',     w:85,   h:58,   color:'rgba(0,200,255,.25)', border:'#00c8ff', ox:0,    oy:0   },
-    { label:'Coral',    w:65,   h:30,   color:'rgba(156,100,255,.2)', border:'#9c64ff', ox:0,    oy:24  },
-    { label:'USB Hub',  w:55,   h:25,   color:'rgba(255,140,0,.15)', border:'#ff8c00', ox:-18,  oy:-22 },
-  ];
-
-  components.forEach(c => {
-    const [cx2, cy2, cw, ch] = rect(c.ox, c.oy, c.w, c.h);
-    ctx.fillStyle   = c.color;
-    ctx.strokeStyle = c.border;
-    ctx.lineWidth   = 1.2;
-    roundRect(ctx, cx2, cy2, cw, ch, 3);
-    ctx.fill(); ctx.stroke();
-    // Label
-    ctx.fillStyle = c.border;
-    ctx.font = `bold ${Math.max(8, scale * 4)}px Inter, sans-serif`;
-    ctx.textAlign = 'center';
-    ctx.fillText(c.label, cx2 + cw/2, cy2 + ch/2 + 3);
-  });
-
-  // ── Pi 5 mounting bosses (4 corners) ───────────────────
-  const bossHoles = [[-29*scale, -24.5*scale],[29*scale,-24.5*scale],[-29*scale,24.5*scale],[29*scale,24.5*scale]];
-  bossHoles.forEach(([bx, by]) => {
-    ctx.beginPath();
-    ctx.arc(cx + bx, cy + by, 3.5, 0, Math.PI*2);
-    ctx.fillStyle = 'rgba(0,200,255,.4)';
-    ctx.fill();
-    ctx.strokeStyle = '#00c8ff';
-    ctx.lineWidth = 1;
-    ctx.stroke();
-  });
-
-  // ── Wall thickness dimension lines ──────────────────────
-  ctx.strokeStyle = 'rgba(90,112,144,.6)';
-  ctx.setLineDash([3,3]);
-  ctx.lineWidth   = 0.8;
-  const wallPx = wall * scale;
-  // Top wall callout
-  ctx.beginPath();
-  ctx.moveTo(cx - int_x/2*scale, ry);
-  ctx.lineTo(cx - int_x/2*scale, iy);
-  ctx.stroke();
-  ctx.setLineDash([]);
-
-  // Legend
-  renderSliceLegend();
-}
-
-function renderSliceLegend() {
-  document.getElementById('sliceLegend').innerHTML = `
+    function renderSliceLegend() {
+      document.getElementById('sliceLegend').innerHTML = `
     <div class="legend-item"><div class="legend-dot" style="background:#1a2030;border:1px solid #3a5070"></div>PETG Wall</div>
     <div class="legend-item"><div class="legend-dot" style="background:rgba(0,200,255,.3)"></div>Pi 5</div>
     <div class="legend-item"><div class="legend-dot" style="background:rgba(156,100,255,.3)"></div>Coral</div>
@@ -751,55 +1135,242 @@ function renderSliceLegend() {
     <div class="legend-item"><div class="legend-dot" style="background:rgba(0,200,255,.4);border-radius:50%"></div>M2.5 Boss</div>
     <div class="legend-item"><div class="legend-dot" style="background:#0a1020;border:1px dashed #3a5070"></div>Vent cutout</div>
   `;
-}
+    }
 
-// ── PARTS TABLE ──────────────────────────────────────────────────────────────
-function renderParts() {
-  const tbody = document.getElementById('partsTableBody');
-  tbody.innerHTML = '';
-  partsData.parts.forEach(p => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
+    // ── PARTS TABLE ──────────────────────────────────────────────────────────────
+    function renderParts() {
+      const tbody = document.getElementById('partsTableBody');
+      tbody.innerHTML = '';
+      partsData.parts.forEach(p => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
       <td style="color:var(--text-dim)">${p.id}</td>
       <td><span class="organ-badge">${p.organ}</span></td>
       <td style="font-size:9px">${p.part}</td>
       <td class="cost">$${p.cost}</td>
     `;
-    tbody.appendChild(tr);
-  });
-  document.getElementById('partsTotal').textContent = `$${partsData.total_cost_usd}`;
-}
+        tbody.appendChild(tr);
+      });
+      document.getElementById('partsTotal').textContent = `$${partsData.total_cost_usd}`;
+    }
 
-// ── ACTIONS ──────────────────────────────────────────────────────────────────
-async function approveDesign() {
-  const r = await fetch('/api/approve', {method:'POST'});
-  const j = await r.json();
-  alert(j.message || j.error);
-  fetchAll();
-}
+    // ── ACTIONS ──────────────────────────────────────────────────────────────────
+    async function approveDesign() {
+      const r = await fetch('/api/approve', { method: 'POST' });
+      const j = await r.json();
+      alert(j.message || j.error);
+      fetchAll();
+    }
 
-async function runEvolution() {
-  if (!confirm('Re-run 10-iteration evolution? This will overwrite current results.')) return;
-  const r = await fetch('/api/run-evolution', {method:'POST'});
-  const j = await r.json();
-  alert(j.message);
-  setTimeout(fetchAll, 3000);
-}
+    async function runEvolution() {
+      if (!confirm('Re-run 10-iteration evolution? This will overwrite current results.')) return;
+      const r = await fetch('/api/run-evolution', { method: 'POST' });
+      const j = await r.json();
+      alert(j.message);
+      setTimeout(fetchAll, 3000);
+    }
 
-// ── UTILITIES ────────────────────────────────────────────────────────────────
-function roundRect(ctx, x, y, w, h, r) {
-  ctx.beginPath();
-  ctx.moveTo(x + r, y);
-  ctx.lineTo(x + w - r, y); ctx.arcTo(x+w, y, x+w, y+r, r);
-  ctx.lineTo(x + w, y + h - r); ctx.arcTo(x+w, y+h, x+w-r, y+h, r);
-  ctx.lineTo(x + r, y + h); ctx.arcTo(x, y+h, x, y+h-r, r);
-  ctx.lineTo(x, y + r); ctx.arcTo(x, y, x+r, y, r);
-  ctx.closePath();
-}
+    // ── UTILITIES ────────────────────────────────────────────────────────────────
+    function roundRect(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + w - r, y); ctx.arcTo(x + w, y, x + w, y + r, r);
+      ctx.lineTo(x + w, y + h - r); ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+      ctx.lineTo(x + r, y + h); ctx.arcTo(x, y + h, x, y + h - r, r);
+      ctx.lineTo(x, y + r); ctx.arcTo(x, y, x + r, y, r);
+      ctx.closePath();
+    }
 
-// ── INIT ──────────────────────────────────────────────────────────────────────
-fetchAll();
-setInterval(fetchAll, 15000);  // Auto-refresh every 15s
-</script>
+    // ── INIT ──────────────────────────────────────────────────────────────────────
+    fetchAll();
+    setInterval(fetchAll, 15000);  // Auto-refresh every 15s
+  </script>
+
+  <!-- Three.js 3D Viewer (loaded after main script so DOM exists) -->
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+    const data = await fetch('/api/stl-params').then(r => r.json()).catch(() => null);
+    if (!data) { console.warn('stl-params failed'); return; }
+
+    const canvas = document.getElementById('threeCanvas');
+    const W = canvas.clientWidth || 700, H = 420;
+
+    // ── Renderer ──────────────────────────────────────────
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(W, H);
+    renderer.setClearColor(0x080c14, 1);
+    renderer.shadowMap.enabled = true;
+
+    // ── Scene + Lights ────────────────────────────────────
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.Fog(0x080c14, 800, 1600);
+    scene.add(new THREE.AmbientLight(0x334466, 1.0));
+    const sun = new THREE.DirectionalLight(0x00c8ff, 1.4);
+    sun.position.set(160, 280, 200); sun.castShadow = true;
+    scene.add(sun);
+    scene.add(Object.assign(new THREE.DirectionalLight(0x9c64ff, 0.5),
+      { position: new THREE.Vector3(-120, -80, -100) }));
+
+    // ── Camera ────────────────────────────────────────────
+    const { out_x, out_y, out_z } = data.chassis;
+    const camera = new THREE.PerspectiveCamera(42, W / H, 1, 3000);
+    camera.position.set(out_x * 2.0, out_z * 1.3, out_y * 2.5);
+    camera.lookAt(0, out_z / 2, 0);
+
+    // ── Controls ──────────────────────────────────────────
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true; controls.dampingFactor = 0.08;
+    controls.target.set(0, out_z / 2, 0); controls.update();
+
+    // ── Grid ──────────────────────────────────────────────
+    const grid = new THREE.GridHelper(500, 25, 0x1a2a40, 0x1a2a40);
+    grid.position.y = -42; scene.add(grid);
+
+    // ── Helper: solid box with glowing edge ───────────────
+    function solidBox(w, h, d, hexColor, opacity = 1) {
+      const mat = new THREE.MeshPhongMaterial({
+        color: hexColor, opacity, transparent: opacity < 1,
+        depthWrite: opacity >= 0.99, shininess: 80,
+      });
+      const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
+      mesh.castShadow = mesh.receiveShadow = true;
+      // Edge glow
+      const edges = new THREE.LineSegments(
+        new THREE.EdgesGeometry(mesh.geometry),
+        new THREE.LineBasicMaterial({ color: hexColor, opacity: 0.7, transparent: true })
+      );
+      mesh.add(edges);
+      return mesh;
+    }
+
+    // ── Chassis shell — 5 separate PETG wall panels ───────
+    const petgMat = new THREE.MeshPhongMaterial({
+      color: 0x1a3a5a, opacity: 0.18, transparent: true,
+      side: THREE.DoubleSide, depthWrite: false, shininess: 120,
+    });
+    const wall = data.chassis.wall;
+    const int_x = data.chassis.int_x, int_y = data.chassis.int_y, int_z = data.chassis.int_z;
+    const walls = [
+      [out_x, out_z, wall, 0, out_z / 2, int_y / 2 + wall / 2],   // front
+      [out_x, out_z, wall, 0, out_z / 2, -int_y / 2 - wall / 2],   // back
+      [wall, out_z, int_y, -int_x / 2 - wall / 2, out_z / 2, 0],              // left
+      [wall, out_z, int_y, int_x / 2 + wall / 2, out_z / 2, 0],              // right
+      [out_x, wall, out_y, 0, wall / 2, 0],                   // floor
+    ];
+    const chassisGroup = new THREE.Group();
+    walls.forEach(([w, h, d, x, y, z]) => {
+      const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), petgMat);
+      m.position.set(x, y, z); chassisGroup.add(m);
+    });
+    // Bounding wireframe
+    const bwire = new THREE.LineSegments(
+      new THREE.EdgesGeometry(new THREE.BoxGeometry(out_x, out_z, out_y)),
+      new THREE.LineBasicMaterial({ color: 0x00c8ff, opacity: 0.35, transparent: true })
+    );
+    bwire.position.set(0, out_z / 2, 0); chassisGroup.add(bwire);
+    scene.add(chassisGroup);
+
+    // ── Vent cut-outs (dark slabs) ────────────────────────
+    data.vents.forEach(v => {
+      const m = solidBox(v.w, v.h, v.d, 0x050a12, 1);
+      m.position.set(v.cx, v.cz, v.cy);
+      scene.add(m);
+    });
+
+    // ── Component boxes ───────────────────────────────────
+    const meshes = [];
+    const baseY = [];
+    const legItems = [];
+
+    data.components.forEach(c => {
+      const col = parseInt(c.color.replace('#', ''), 16);
+      const mesh = solidBox(c.w, c.h, c.d, col, 0.88);
+      // SCAD: z=Z-offset from bottom, y=depth offset
+      // Three.js: Y=up, Z=depth
+      mesh.position.set(c.x, c.z + c.h / 2, c.y);
+      mesh.userData = { label: c.label, color: c.color };
+      scene.add(mesh);
+      meshes.push(mesh);
+      baseY.push(c.z + c.h / 2);
+      legItems.push({ label: c.label, color: c.color });
+    });
+
+    // Legend
+    document.getElementById('threeLegend').innerHTML = legItems.map(l =>
+      `<span style="display:inline-flex;align-items:center;gap:4px;background:rgba(0,0,0,.4);padding:2px 6px;border-radius:4px">
+         <span style="display:inline-block;width:8px;height:8px;background:${l.color};border-radius:2px;flex-shrink:0"></span>
+         <span style="font-size:9px">${l.label}</span>
+       </span>`
+    ).join('');
+
+    // ── Explode animation ─────────────────────────────────
+    let exploded = false;
+    window.toggleExplode = () => {
+      exploded = !exploded;
+      document.getElementById('explodeBtn').textContent =
+        exploded ? '🗜 Collapse' : '💥 Explode Layers';
+      meshes.forEach((m, i) => {
+        m.userData._targetY = baseY[i] + (exploded ? i * 22 : 0);
+        m.userData._anim = true;
+      });
+    };
+    window.resetCamera = () => {
+      camera.position.set(out_x * 2.0, out_z * 1.3, out_y * 2.5);
+      controls.target.set(0, out_z / 2, 0); controls.update();
+    };
+    window.exportSTL = async () => {
+      const toast = document.getElementById('stlToast');
+      toast.style.display = 'block'; toast.textContent = 'Requesting STL export…';
+      const j = await fetch('/api/export-stl', { method: 'POST' }).then(r => r.json());
+      toast.innerHTML = j.ok
+        ? j.message
+        : `${j.message} ${j.install_url
+          ? `<a href="${j.install_url}" target="_blank" style="color:#00c8ff">Download OpenSCAD</a>`
+          : ''}`;
+      setTimeout(() => { toast.style.display = 'none'; }, 10000);
+    };
+
+    // ── Hover tooltip ─────────────────────────────────────
+    const ray = new THREE.Raycaster();
+    const mpos = new THREE.Vector2();
+    const tip = Object.assign(document.createElement('div'), {
+      style: 'position:fixed;background:#0d1420;border:1px solid #1a2a40;padding:4px 10px;border-radius:6px;font-size:11px;color:#c8d8e8;pointer-events:none;display:none;z-index:9999'
+    });
+    document.body.appendChild(tip);
+    canvas.addEventListener('mousemove', e => {
+      const rc = canvas.getBoundingClientRect();
+      mpos.set(((e.clientX - rc.left) / rc.width) * 2 - 1, -((e.clientY - rc.top) / rc.height) * 2 + 1);
+      ray.setFromCamera(mpos, camera);
+      const hit = ray.intersectObjects(meshes);
+      if (hit.length) {
+        tip.textContent = hit[0].object.userData.label;
+        tip.style.display = 'block'; tip.style.left = (e.clientX + 14) + 'px'; tip.style.top = (e.clientY - 4) + 'px';
+      } else { tip.style.display = 'none'; }
+    });
+
+    // ── Render loop ───────────────────────────────────────
+    (function loop() {
+      requestAnimationFrame(loop);
+      controls.update();
+      meshes.forEach(m => {
+        if (m.userData._anim) {
+          const d = m.userData._targetY - m.position.y;
+          if (Math.abs(d) < 0.4) { m.position.y = m.userData._targetY; m.userData._anim = false; }
+          else m.position.y += d * 0.12;
+        }
+      });
+      renderer.render(scene, camera);
+    })();
+
+    // Resize
+    window.addEventListener('resize', () => {
+      const nw = canvas.clientWidth;
+      renderer.setSize(nw, H); camera.aspect = nw / H; camera.updateProjectionMatrix();
+    });
+  </script>
 </body>
+
 </html>

@@ -110,6 +110,117 @@ def api_parts():
     return jsonify({"parts": parts, "total_cost_usd": total})
 
 
+@app.route("/api/stl-params")
+def api_stl_params():
+    """
+    Return chassis geometry data for the Three.js parametric renderer.
+    Includes layer stack, component bounding boxes, and vent slot positions.
+    """
+    report = _load_json(ROOT / "evolution_report.json")
+    if not report:
+        # Fall back to initial design
+        wp = {"wall": 3.5, "int_x": 95, "int_y": 68, "int_z": 130,
+              "vent_w": 12, "vent_h": 35, "n_vents": 12}
+    else:
+        wp = report["winner"]["params"]
+
+    wall  = wp["wall"]
+    int_x = wp["int_x"]; int_y = wp["int_y"]; int_z = wp["int_z"]
+    vent_w = wp["vent_w"]; vent_h = wp["vent_h"]; n_vents = int(wp["n_vents"])
+    out_x = int_x + 2 * wall
+    out_y = int_y + 2 * wall
+    out_z = int_z + wall
+
+    # Component bounding boxes [x, y, z_bottom, w, d, h, color_hex, label]
+    # Positions relative to chassis centre (0,0), z from bottom
+    components = [
+        # NEMA17 base (below chassis, external)
+        {"label": "NEMA17",    "x": 0,   "y": 0,   "z": -40, "w": 42, "d": 42, "h": 40, "color": "#ff8c00"},
+        # Sensor hub bay (Z=40)
+        {"label": "RP2040",    "x": -8,  "y": -15, "z": 42,  "w": 33, "d": 18, "h": 8,  "color": "#00c8ff"},
+        {"label": "LSM6DSOX",  "x":  8,  "y":  18, "z": 42,  "w": 26, "d": 18, "h": 5,  "color": "#00e676"},
+        {"label": "INA219",    "x": -28, "y":   3, "z": 42,  "w": 26, "d": 21, "h": 5,  "color": "#00e676"},
+        # Pi 5 bay (Z=80)
+        {"label": "Pi 5",      "x": 0,   "y": 0,   "z": 82,  "w": 85, "d": 58, "h": 17, "color": "#00c8ff"},
+        {"label": "Coral",     "x": 0,   "y": 24,  "z": 101, "w": 65, "d": 30, "h": 8,  "color": "#9c64ff"},
+        # Battery tray (Z=110)
+        {"label": "18650 ×2",  "x": 0,   "y": 0,   "z": 112, "w": 40, "d": 20, "h": 65, "color": "#ffcc00"},
+        {"label": "PowerBoost","x":-20,  "y":-18,  "z": 112, "w": 37, "d": 23, "h": 6,  "color": "#ff8c00"},
+    ]
+
+    # Vent slot positions [cx, cy, cz, w, d, h] for each vent
+    vents = []
+    per_side = n_vents // 4
+    # Front/back vents (along X, on Y faces)
+    x_spacing = int_x / (per_side + 1)
+    for side_y in [out_y / 2, -out_y / 2]:
+        for i in range(1, per_side + 1):
+            cx = -int_x / 2 + i * x_spacing
+            vents.append({"cx": cx, "cy": side_y, "cz": int_z / 2,
+                          "w": vent_w, "d": wall + 2, "h": vent_h})
+    # Side vents (along Y, on X faces)
+    y_spacing = int_y / (per_side + 1)
+    for side_x in [out_x / 2, -out_x / 2]:
+        for i in range(1, per_side + 1):
+            cy = -int_y / 2 + i * y_spacing
+            vents.append({"cx": side_x, "cy": cy, "cz": int_z / 2,
+                          "w": wall + 2, "d": vent_w, "h": vent_h})
+
+    return jsonify({
+        "chassis": {
+            "out_x": out_x, "out_y": out_y, "out_z": out_z,
+            "int_x": int_x, "int_y": int_y, "int_z": int_z,
+            "wall":  wall
+        },
+        "components": components,
+        "vents":      vents,
+        "params":     wp,
+    })
+
+
+@app.route("/api/export-stl", methods=["POST"])
+def api_export_stl():
+    """Try to export STL via OpenSCAD. Returns instructions if not installed."""
+    import shutil
+    openscad_paths = [
+        shutil.which("openscad"),
+        "/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD",
+        "/usr/local/bin/openscad",
+    ]
+    openscad_bin = next((p for p in openscad_paths if p), None)
+
+    if not openscad_bin:
+        return jsonify({
+            "ok": False,
+            "message": "OpenSCAD not found. Install from openscad.org, then click Export STL again.",
+            "install_url": "https://openscad.org/downloads.html"
+        }), 200
+
+    scad_path = ROOT / "skeleton_v1.scad"
+    stl_path  = ROOT / "skeleton_v1.stl"
+
+    def _export():
+        subprocess.run(
+            [openscad_bin, "-o", str(stl_path), str(scad_path)],
+            cwd=ROOT, capture_output=True, timeout=120
+        )
+
+    threading.Thread(target=_export, daemon=True).start()
+    return jsonify({"ok": True, "message": "STL export started — will be available at /api/stl-file in ~30s."})
+
+
+@app.route("/api/stl-file")
+def api_stl_file():
+    """Serve the exported STL binary for Three.js STLLoader."""
+    stl_path = ROOT / "skeleton_v1.stl"
+    if not stl_path.exists():
+        return jsonify({"error": "STL not yet generated. POST /api/export-stl first."}), 404
+    return send_from_directory(str(ROOT), "skeleton_v1.stl",
+                               mimetype="application/octet-stream")
+
+
+
+
 @app.route("/api/approve", methods=["POST"])
 def api_approve():
     try:
