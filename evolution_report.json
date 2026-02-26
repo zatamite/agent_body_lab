@@ -1,0 +1,690 @@
+{
+  "generated": "2026-02-26T11:08:35.056133",
+  "iterations": 10,
+  "baseline": {
+    "params": {
+      "wall": 3.5,
+      "int_x": 95.0,
+      "int_y": 68.0,
+      "int_z": 130.0,
+      "vent_w": 12.0,
+      "vent_h": 35.0,
+      "n_vents": 12,
+      "boss_od": 7.0,
+      "boss_h": 5.0
+    },
+    "metrics": {
+      "fitness": 0.64711,
+      "safety_factor": 8713.4,
+      "stress_mpa": 0.00585,
+      "thermal_ratio": 0.0918,
+      "mass_g": 211.5,
+      "print_time_min": 565.5,
+      "warp_mm": 0.204,
+      "warp_risk": 0.204,
+      "bed_area_mm2": 7650.0,
+      "adhesion_score": 1.0,
+      "min_clearance_mm": 5.0,
+      "clearance_score": 0.417,
+      "overhang_risk": 0.0,
+      "outer_dims_mm": [
+        102.0,
+        75.0,
+        133.5
+      ],
+      "shell_vol_cm3": 166.5,
+      "sub_scores": {
+        "structural": 1.0,
+        "thermal": 0.459,
+        "mass": 0.648,
+        "clearance": 0.417,
+        "print_time": 0.215,
+        "warp": 0.796,
+        "adhesion": 1.0
+      }
+    }
+  },
+  "winner": {
+    "params": {
+      "wall": 3.0,
+      "int_x": 95.0,
+      "int_y": 68.0,
+      "int_z": 118.0,
+      "vent_w": 20.0,
+      "vent_h": 55.0,
+      "n_vents": 20,
+      "boss_od": 7.0,
+      "boss_h": 5.0
+    },
+    "metrics": {
+      "fitness": 0.81531,
+      "safety_factor": 7424.7,
+      "stress_mpa": 0.00687,
+      "thermal_ratio": 0.4416,
+      "mass_g": 100.0,
+      "print_time_min": 453.0,
+      "warp_mm": 0.202,
+      "warp_risk": 0.202,
+      "bed_area_mm2": 7474.0,
+      "adhesion_score": 1.0,
+      "min_clearance_mm": 5.0,
+      "clearance_score": 0.417,
+      "overhang_risk": 0.0,
+      "outer_dims_mm": [
+        101.0,
+        74.0,
+        121.0
+      ],
+      "shell_vol_cm3": 78.8,
+      "sub_scores": {
+        "structural": 1.0,
+        "thermal": 1.0,
+        "mass": 0.833,
+        "clearance": 0.417,
+        "print_time": 0.371,
+        "warp": 0.798,
+        "adhesion": 1.0
+      }
+    }
+  },
+  "history": [
+    {
+      "iteration": 1,
+      "timestamp": "2026-02-26T11:08:35.052482",
+      "params": {
+        "wall": 3.5,
+        "int_x": 95.0,
+        "int_y": 68.0,
+        "int_z": 130.0,
+        "vent_w": 16.0,
+        "vent_h": 35.0,
+        "n_vents": 12,
+        "boss_od": 7.0,
+        "boss_h": 5.0
+      },
+      "metrics": {
+        "fitness": 0.68301,
+        "safety_factor": 8713.4,
+        "stress_mpa": 0.00585,
+        "thermal_ratio": 0.1224,
+        "mass_g": 204.0,
+        "print_time_min": 565.5,
+        "warp_mm": 0.204,
+        "warp_risk": 0.204,
+        "bed_area_mm2": 7650.0,
+        "adhesion_score": 1.0,
+        "min_clearance_mm": 5.0,
+        "clearance_score": 0.417,
+        "overhang_risk": 0.0,
+        "outer_dims_mm": [
+          102.0,
+          75.0,
+          133.5
+        ],
+        "shell_vol_cm3": 160.6,
+        "sub_scores": {
+          "structural": 1.0,
+          "thermal": 0.612,
+          "mass": 0.66,
+          "clearance": 0.417,
+          "print_time": 0.215,
+          "warp": 0.796,
+          "adhesion": 1.0
+        }
+      },
+      "print_sim": {
+        "iteration": 1,
+        "verdict": "REVIEW",
+        "filament_length_m": 66.77,
+        "removal_risk": "LOW",
+        "recommendations": [
+          "Increase vent area (n_vents or vent dimensions)",
+          "Safety factor 8713.4x is excessive \u2014 reduce wall to save mass"
+        ]
+      },
+      "improved": true,
+      "delta_fitness": 0.0359,
+      "changed_param": "vent_w",
+      "changed_by": 4.0
+    },
+    {
+      "iteration": 2,
+      "timestamp": "2026-02-26T11:08:35.052845",
+      "params": {
+        "wall": 3.5,
+        "int_x": 95.0,
+        "int_y": 68.0,
+        "int_z": 130.0,
+        "vent_w": 16.0,
+        "vent_h": 35.0,
+        "n_vents": 16,
+        "boss_od": 7.0,
+        "boss_h": 5.0
+      },
+      "metrics": {
+        "fitness": 0.73087,
+        "safety_factor": 8713.4,
+        "stress_mpa": 0.00585,
+        "thermal_ratio": 0.1632,
+        "mass_g": 194.1,
+        "print_time_min": 565.5,
+        "warp_mm": 0.204,
+        "warp_risk": 0.204,
+        "bed_area_mm2": 7650.0,
+        "adhesion_score": 1.0,
+        "min_clearance_mm": 5.0,
+        "clearance_score": 0.417,
+        "overhang_risk": 0.0,
+        "outer_dims_mm": [
+          102.0,
+          75.0,
+          133.5
+        ],
+        "shell_vol_cm3": 152.8,
+        "sub_scores": {
+          "structural": 1.0,
+          "thermal": 0.816,
+          "mass": 0.677,
+          "clearance": 0.417,
+          "print_time": 0.215,
+          "warp": 0.796,
+          "adhesion": 1.0
+        }
+      },
+      "print_sim": {
+        "iteration": 2,
+        "verdict": "PASS",
+        "filament_length_m": 63.53,
+        "removal_risk": "LOW",
+        "recommendations": [
+          "Increase vent area (n_vents or vent dimensions)",
+          "Safety factor 8713.4x is excessive \u2014 reduce wall to save mass"
+        ]
+      },
+      "improved": true,
+      "delta_fitness": 0.04786,
+      "changed_param": "n_vents",
+      "changed_by": 4
+    },
+    {
+      "iteration": 3,
+      "timestamp": "2026-02-26T11:08:35.053304",
+      "params": {
+        "wall": 3.5,
+        "int_x": 95.0,
+        "int_y": 68.0,
+        "int_z": 130.0,
+        "vent_w": 16.0,
+        "vent_h": 45.0,
+        "n_vents": 16,
+        "boss_od": 7.0,
+        "boss_h": 5.0
+      },
+      "metrics": {
+        "fitness": 0.77479,
+        "safety_factor": 8713.4,
+        "stress_mpa": 0.00585,
+        "thermal_ratio": 0.2098,
+        "mass_g": 182.7,
+        "print_time_min": 565.5,
+        "warp_mm": 0.204,
+        "warp_risk": 0.204,
+        "bed_area_mm2": 7650.0,
+        "adhesion_score": 1.0,
+        "min_clearance_mm": 5.0,
+        "clearance_score": 0.417,
+        "overhang_risk": 0.0,
+        "outer_dims_mm": [
+          102.0,
+          75.0,
+          133.5
+        ],
+        "shell_vol_cm3": 143.8,
+        "sub_scores": {
+          "structural": 1.0,
+          "thermal": 1.0,
+          "mass": 0.696,
+          "clearance": 0.417,
+          "print_time": 0.215,
+          "warp": 0.796,
+          "adhesion": 1.0
+        }
+      },
+      "print_sim": {
+        "iteration": 3,
+        "verdict": "PASS",
+        "filament_length_m": 59.79,
+        "removal_risk": "LOW",
+        "recommendations": [
+          "Safety factor 8713.4x is excessive \u2014 reduce wall to save mass"
+        ]
+      },
+      "improved": true,
+      "delta_fitness": 0.04392,
+      "changed_param": "vent_h",
+      "changed_by": 10.0
+    },
+    {
+      "iteration": 4,
+      "timestamp": "2026-02-26T11:08:35.053712",
+      "params": {
+        "wall": 3.0,
+        "int_x": 95.0,
+        "int_y": 68.0,
+        "int_z": 130.0,
+        "vent_w": 16.0,
+        "vent_h": 45.0,
+        "n_vents": 16,
+        "boss_od": 7.0,
+        "boss_h": 5.0
+      },
+      "metrics": {
+        "fitness": 0.79245,
+        "safety_factor": 7424.7,
+        "stress_mpa": 0.00687,
+        "thermal_ratio": 0.2132,
+        "mass_g": 155.4,
+        "print_time_min": 497.9,
+        "warp_mm": 0.202,
+        "warp_risk": 0.202,
+        "bed_area_mm2": 7474.0,
+        "adhesion_score": 1.0,
+        "min_clearance_mm": 5.0,
+        "clearance_score": 0.417,
+        "overhang_risk": 0.0,
+        "outer_dims_mm": [
+          101.0,
+          74.0,
+          133.0
+        ],
+        "shell_vol_cm3": 122.4,
+        "sub_scores": {
+          "structural": 1.0,
+          "thermal": 1.0,
+          "mass": 0.741,
+          "clearance": 0.417,
+          "print_time": 0.308,
+          "warp": 0.798,
+          "adhesion": 1.0
+        }
+      },
+      "print_sim": {
+        "iteration": 4,
+        "verdict": "PASS",
+        "filament_length_m": 50.89,
+        "removal_risk": "LOW",
+        "recommendations": [
+          "Safety factor 7424.7x is excessive \u2014 reduce wall to save mass"
+        ]
+      },
+      "improved": true,
+      "delta_fitness": 0.01766,
+      "changed_param": "wall",
+      "changed_by": -0.5
+    },
+    {
+      "iteration": 5,
+      "timestamp": "2026-02-26T11:08:35.054003",
+      "params": {
+        "wall": 3.0,
+        "int_x": 95.0,
+        "int_y": 68.0,
+        "int_z": 120.0,
+        "vent_w": 16.0,
+        "vent_h": 45.0,
+        "n_vents": 16,
+        "boss_od": 7.0,
+        "boss_h": 5.0
+      },
+      "metrics": {
+        "fitness": 0.80152,
+        "safety_factor": 7424.7,
+        "stress_mpa": 0.00687,
+        "thermal_ratio": 0.228,
+        "mass_g": 142.5,
+        "print_time_min": 460.5,
+        "warp_mm": 0.202,
+        "warp_risk": 0.202,
+        "bed_area_mm2": 7474.0,
+        "adhesion_score": 1.0,
+        "min_clearance_mm": 5.0,
+        "clearance_score": 0.417,
+        "overhang_risk": 0.0,
+        "outer_dims_mm": [
+          101.0,
+          74.0,
+          123.0
+        ],
+        "shell_vol_cm3": 112.2,
+        "sub_scores": {
+          "structural": 1.0,
+          "thermal": 1.0,
+          "mass": 0.762,
+          "clearance": 0.417,
+          "print_time": 0.36,
+          "warp": 0.798,
+          "adhesion": 1.0
+        }
+      },
+      "print_sim": {
+        "iteration": 5,
+        "verdict": "PASS",
+        "filament_length_m": 46.65,
+        "removal_risk": "LOW",
+        "recommendations": [
+          "Safety factor 7424.7x is excessive \u2014 reduce wall to save mass"
+        ]
+      },
+      "improved": true,
+      "delta_fitness": 0.00907,
+      "changed_param": "int_z",
+      "changed_by": -10.0
+    },
+    {
+      "iteration": 6,
+      "timestamp": "2026-02-26T11:08:35.054334",
+      "params": {
+        "wall": 3.0,
+        "int_x": 95.0,
+        "int_y": 68.0,
+        "int_z": 120.0,
+        "vent_w": 20.0,
+        "vent_h": 45.0,
+        "n_vents": 16,
+        "boss_od": 7.0,
+        "boss_h": 5.0
+      },
+      "metrics": {
+        "fitness": 0.80481,
+        "safety_factor": 7424.7,
+        "stress_mpa": 0.00687,
+        "thermal_ratio": 0.285,
+        "mass_g": 131.6,
+        "print_time_min": 460.5,
+        "warp_mm": 0.202,
+        "warp_risk": 0.202,
+        "bed_area_mm2": 7474.0,
+        "adhesion_score": 1.0,
+        "min_clearance_mm": 5.0,
+        "clearance_score": 0.417,
+        "overhang_risk": 0.0,
+        "outer_dims_mm": [
+          101.0,
+          74.0,
+          123.0
+        ],
+        "shell_vol_cm3": 103.6,
+        "sub_scores": {
+          "structural": 1.0,
+          "thermal": 1.0,
+          "mass": 0.781,
+          "clearance": 0.417,
+          "print_time": 0.36,
+          "warp": 0.798,
+          "adhesion": 1.0
+        }
+      },
+      "print_sim": {
+        "iteration": 6,
+        "verdict": "PASS",
+        "filament_length_m": 43.07,
+        "removal_risk": "LOW",
+        "recommendations": [
+          "Safety factor 7424.7x is excessive \u2014 reduce wall to save mass"
+        ]
+      },
+      "improved": true,
+      "delta_fitness": 0.00329,
+      "changed_param": "vent_w",
+      "changed_by": 4.0
+    },
+    {
+      "iteration": 7,
+      "timestamp": "2026-02-26T11:08:35.054773",
+      "params": {
+        "wall": 3.0,
+        "int_x": 95.0,
+        "int_y": 68.0,
+        "int_z": 120.0,
+        "vent_w": 20.0,
+        "vent_h": 45.0,
+        "n_vents": 20,
+        "boss_od": 7.0,
+        "boss_h": 5.0
+      },
+      "metrics": {
+        "fitness": 0.80892,
+        "safety_factor": 7424.7,
+        "stress_mpa": 0.00687,
+        "thermal_ratio": 0.3563,
+        "mass_g": 117.9,
+        "print_time_min": 460.5,
+        "warp_mm": 0.202,
+        "warp_risk": 0.202,
+        "bed_area_mm2": 7474.0,
+        "adhesion_score": 1.0,
+        "min_clearance_mm": 5.0,
+        "clearance_score": 0.417,
+        "overhang_risk": 0.0,
+        "outer_dims_mm": [
+          101.0,
+          74.0,
+          123.0
+        ],
+        "shell_vol_cm3": 92.8,
+        "sub_scores": {
+          "structural": 1.0,
+          "thermal": 1.0,
+          "mass": 0.804,
+          "clearance": 0.417,
+          "print_time": 0.36,
+          "warp": 0.798,
+          "adhesion": 1.0
+        }
+      },
+      "print_sim": {
+        "iteration": 7,
+        "verdict": "PASS",
+        "filament_length_m": 38.58,
+        "removal_risk": "LOW",
+        "recommendations": [
+          "Safety factor 7424.7x is excessive \u2014 reduce wall to save mass"
+        ]
+      },
+      "improved": true,
+      "delta_fitness": 0.00411,
+      "changed_param": "n_vents",
+      "changed_by": 4
+    },
+    {
+      "iteration": 8,
+      "timestamp": "2026-02-26T11:08:35.055208",
+      "params": {
+        "wall": 3.0,
+        "int_x": 95.0,
+        "int_y": 68.0,
+        "int_z": 120.0,
+        "vent_w": 20.0,
+        "vent_h": 55.0,
+        "n_vents": 20,
+        "boss_od": 7.0,
+        "boss_h": 5.0
+      },
+      "metrics": {
+        "fitness": 0.81349,
+        "safety_factor": 7424.7,
+        "stress_mpa": 0.00687,
+        "thermal_ratio": 0.4354,
+        "mass_g": 102.6,
+        "print_time_min": 460.5,
+        "warp_mm": 0.202,
+        "warp_risk": 0.202,
+        "bed_area_mm2": 7474.0,
+        "adhesion_score": 1.0,
+        "min_clearance_mm": 5.0,
+        "clearance_score": 0.417,
+        "overhang_risk": 0.0,
+        "outer_dims_mm": [
+          101.0,
+          74.0,
+          123.0
+        ],
+        "shell_vol_cm3": 80.8,
+        "sub_scores": {
+          "structural": 1.0,
+          "thermal": 1.0,
+          "mass": 0.829,
+          "clearance": 0.417,
+          "print_time": 0.36,
+          "warp": 0.798,
+          "adhesion": 1.0
+        }
+      },
+      "print_sim": {
+        "iteration": 8,
+        "verdict": "PASS",
+        "filament_length_m": 33.59,
+        "removal_risk": "LOW",
+        "recommendations": [
+          "Safety factor 7424.7x is excessive \u2014 reduce wall to save mass"
+        ]
+      },
+      "improved": true,
+      "delta_fitness": 0.00457,
+      "changed_param": "vent_h",
+      "changed_by": 10.0
+    },
+    {
+      "iteration": 9,
+      "timestamp": "2026-02-26T11:08:35.055638",
+      "params": {
+        "wall": 3.0,
+        "int_x": 95.0,
+        "int_y": 68.0,
+        "int_z": 118.0,
+        "vent_w": 20.0,
+        "vent_h": 55.0,
+        "n_vents": 20,
+        "boss_od": 7.0,
+        "boss_h": 5.0
+      },
+      "metrics": {
+        "fitness": 0.81531,
+        "safety_factor": 7424.7,
+        "stress_mpa": 0.00687,
+        "thermal_ratio": 0.4416,
+        "mass_g": 100.0,
+        "print_time_min": 453.0,
+        "warp_mm": 0.202,
+        "warp_risk": 0.202,
+        "bed_area_mm2": 7474.0,
+        "adhesion_score": 1.0,
+        "min_clearance_mm": 5.0,
+        "clearance_score": 0.417,
+        "overhang_risk": 0.0,
+        "outer_dims_mm": [
+          101.0,
+          74.0,
+          121.0
+        ],
+        "shell_vol_cm3": 78.8,
+        "sub_scores": {
+          "structural": 1.0,
+          "thermal": 1.0,
+          "mass": 0.833,
+          "clearance": 0.417,
+          "print_time": 0.371,
+          "warp": 0.798,
+          "adhesion": 1.0
+        }
+      },
+      "print_sim": {
+        "iteration": 9,
+        "verdict": "PASS",
+        "filament_length_m": 32.76,
+        "removal_risk": "LOW",
+        "recommendations": [
+          "Safety factor 7424.7x is excessive \u2014 reduce wall to save mass"
+        ]
+      },
+      "improved": true,
+      "delta_fitness": 0.00182,
+      "changed_param": "int_z",
+      "changed_by": -5.0
+    },
+    {
+      "iteration": 10,
+      "timestamp": "2026-02-26T11:08:35.056068",
+      "params": {
+        "wall": 3.0,
+        "int_x": 95.0,
+        "int_y": 68.0,
+        "int_z": 118.0,
+        "vent_w": 20.0,
+        "vent_h": 55.0,
+        "n_vents": 20,
+        "boss_od": 7.0,
+        "boss_h": 5.0
+      },
+      "metrics": {
+        "fitness": 0.81531,
+        "safety_factor": 7424.7,
+        "stress_mpa": 0.00687,
+        "thermal_ratio": 0.4416,
+        "mass_g": 100.0,
+        "print_time_min": 453.0,
+        "warp_mm": 0.202,
+        "warp_risk": 0.202,
+        "bed_area_mm2": 7474.0,
+        "adhesion_score": 1.0,
+        "min_clearance_mm": 5.0,
+        "clearance_score": 0.417,
+        "overhang_risk": 0.0,
+        "outer_dims_mm": [
+          101.0,
+          74.0,
+          121.0
+        ],
+        "shell_vol_cm3": 78.8,
+        "sub_scores": {
+          "structural": 1.0,
+          "thermal": 1.0,
+          "mass": 0.833,
+          "clearance": 0.417,
+          "print_time": 0.371,
+          "warp": 0.798,
+          "adhesion": 1.0
+        }
+      },
+      "print_sim": {
+        "iteration": 10,
+        "verdict": "PASS",
+        "filament_length_m": 32.76,
+        "removal_risk": "LOW",
+        "recommendations": [
+          "Safety factor 7424.7x is excessive \u2014 reduce wall to save mass"
+        ]
+      },
+      "improved": false,
+      "delta_fitness": 0.0,
+      "changed_param": null,
+      "changed_by": 0
+    }
+  ],
+  "payload_summary": {
+    "pi5": 43,
+    "coral": 25,
+    "camera": 8,
+    "nema17": 280,
+    "batteries": 184,
+    "pcbs_misc": 120,
+    "hardware": 50
+  },
+  "total_payload_g": 710,
+  "material": {
+    "yield_mpa": 51.0,
+    "density": 1.27,
+    "alpha": 5e-05,
+    "delta_t": 40.0
+  }
+}

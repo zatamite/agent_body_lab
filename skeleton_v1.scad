@@ -17,19 +17,19 @@
 // =============================================================================
 
 // ── Agentic Parameters ────────────────────────────────────────────────────────
-wall           = 3.5;   // mm — PETG wall thickness (≥3 perimeters at 0.4mm nozzle)
+wall           = 3.00;   // mm — PETG wall thickness (≥3 perimeters at 0.4mm nozzle)
 bolt_dia       = 3.4;   // mm — M3 clearance (3.4mm)
 m25_dia        = 2.7;   // mm — M2.5 clearance
 m2_dia         = 2.2;   // mm — M2 clearance
 boss_od        = 7.0;   // mm — outer diameter of all standoff bosses
 boss_h_m25     = 5.0;   // mm — boss raise height for M2.5 standoffs
 boss_h_m2      = 4.0;   // mm — boss height for M2 standoffs
-tpu_wall       = 1.5;   // mm — TPU skin thickness
+tpu_wall           = 3.00;   // mm — TPU skin thickness
 
 // ── Internal cavity (fits stacked component layers) ───────────────────────────
 int_x     = 95;    // mm — internal width  (Pi 5 = 85mm + clearance)
 int_y     = 68;    // mm — internal depth  (Pi 5 = 58mm + clearance)
-int_z     = 130;   // mm — internal height (full layer stack)
+int_z     = 118;   // mm — internal height (full layer stack)
 
 // Outer envelope
 out_x     = int_x + wall * 2;   // = 102mm
@@ -159,8 +159,8 @@ module battery_tray(z_base) {
 // Inherited from v1.0, now scaled for new chassis size
 // =============================================================================
 module cooling_vents() {
-    vent_w  = 12;
-    vent_h  = 35;
+    vent_w = 20;
+    vent_h = 55;
     vent_d  = wall + 2;
     y_pos   = out_y / 2;
     
